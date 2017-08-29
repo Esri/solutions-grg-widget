@@ -100,7 +100,7 @@ define([
                 this.formatType = itm[0].conversionType;                
                 this.inputType = itm[0].conversionType;
                 this.coordinateEsriGeometry = new EsriPoint(r[0][0],r[0][1],new EsriSpatialReference({wkid: 4326}));
-                this.message = '';
+                this.message = 'Invalid Coordinate';
                 this.inputTypeDef.resolve(this);
               }              
               })), dojoLang.hitch(this, function (r) {
