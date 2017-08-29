@@ -1,1 +1,48 @@
-{}
+{
+  "grg": {
+    "gridSymbol": {
+      "color": [
+        155,
+        187,
+        89,
+        128
+      ],
+      "outline": {
+        "color": [
+          115,
+          140,
+          61,
+          255
+        ],
+        "width": 1.5,
+        "type": "esriSLS",
+        "style": "esriSLSSolid"
+      },
+      "type": "esriSFS",
+      "style": "esriSFSSolid"
+    },
+    "textSymbol": {
+      "color": [
+        0,
+        0,
+        0,
+        255
+      ],
+      "type": "esriTS",
+      "horizontalAlignment": "center",
+      "angle": 0,
+      "xoffset": 0,
+      "yoffset": 0,
+      "text": "",
+      "rotated": false,
+      "kerning": true,
+      "font": {
+        "size": 15,
+        "style": "normal",
+        "variant": "normal",
+        "weight": "normal",
+        "family": "serif"
+      }
+    }
+  }
+}

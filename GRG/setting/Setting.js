@@ -19,7 +19,8 @@ define([
   'jimu/BaseWidgetSetting',
   'dojo/_base/lang',
   'dojo/_base/array',
-  'dijit/_WidgetsInTemplateMixin',
+  'dijit/registry',
+  'dijit/_WidgetsInTemplateMixin',  
   'dojo/_base/Color',
   'dojo/dom-geometry',
   'dojo/on',
@@ -27,6 +28,7 @@ define([
   'esri/symbols/SimpleFillSymbol',
   'esri/symbols/jsonUtils',
   'jimu/dijit/SymbolPicker',
+  'jimu/dijit/Message',
   'dijit/form/HorizontalSlider',
   'dijit/ColorPalette',
   'dijit/form/NumberSpinner',
@@ -37,6 +39,7 @@ define([
     BaseWidgetSetting,
     lang,
     array,
+    registry,
     _WidgetsInTemplateMixin,
     Color,
     domGeometry,
@@ -44,7 +47,8 @@ define([
     TextSymbol,
     SimpleFillSymbol,
     symbolJsonUtils,
-    SymbolPicker
+    SymbolPicker,
+    Message
     ) {
 
     return declare([BaseWidgetSetting, _WidgetsInTemplateMixin], {
@@ -81,11 +85,20 @@ define([
       },
 
       getConfig: function(){
-        this.config.grg = {
-          gridSymbol: this.gridSymbol.getSymbol().toJson(),
-          textSymbol: this.textSymbol.getSymbol().toJson()
-        };      
-        return this.config;
+        var gridSymbolNode = registry.byId(this.gridSymbol.symbolChooser.fillOutlineWidth.id);
+        var textSymbol = registry.byId(this.textSymbol.textFontSize.id);
+        if(gridSymbolNode.isValid() && textSymbol.isValid()) {
+          this.config.grg = {
+            gridSymbol: this.gridSymbol.getSymbol().toJson(),
+            textSymbol: this.textSymbol.getSymbol().toJson()
+          };      
+          return this.config;
+        } else {
+          var alertMessage = new Message({
+            message: this.nls.errorMessage
+          });
+          return false;
+        }        
       }
 
     });

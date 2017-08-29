@@ -197,7 +197,7 @@ define([
                 }
 
                 var circleGeometry = esriGeometryEngine.rotate(new esriCircle(this.tempLine2.getPoint(0,0), {
-                  radius: esriGeometryEngine.planarLength(this.tempLine2, 9001),
+                  radius: esriGeometryEngine.geodesicLength(this.tempLine2, 9001),
                   geodesic: false,
                   numberOfPoints: 4
                 }) ,90 - x);

@@ -1,215 +1,351 @@
-.jimu-widget-GRG  .paddedTop{
-   padding-top: 10px;
-   padding-left: 3px;
+/*------------------------- Styles for widget panel -----------------------*/
+.GRGDrafterMainContainer
+{
+    min-width: 222px;
+    height: 100%;
+    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
 }
 
-.jimu-widget-GRG .control .tab {
-  border-bottom: 1px solid #ccc !important;
-  border-right: 0px solid #fff !important;
-  border-left: 0px solid #fff !important;
-  border-top: 0px solid #fff !important;
-  background-color: transparent !important;
-  font-size: 12px;
+.jimu-widget-GRGDrafter .GRGDrafterFullHeight
+{
+    height: 100%;
 }
 
-.jimu-tab>.control>.tab.jimu-state-selected {
-    border-bottom: 0px solid #24B5CC !important;
-    border-top: 2px solid #24B5CC !important;
-    border-left: 1px solid #ccc !important;
-    border-right: 1px solid #ccc !important;
-    background-color: transparent !important;
-    color: #000;
-}
-
-.jimu-widget-GRG .tabsContainer {
-    border: 1px solid #838383;
-}
-
-.jimu-widget-GRG .selectInput {
-    width: 119px;
-}
-
-.jimu-widget-GRG .textInput {
-    width: 225px;
-    height: 32px;
-}
-
-.jimu-widget-GRG .dijitNumberTextBoxHalfLeft {
-    width: 100px !Important;
-    height: 32px;
-    margin-right: 9px;
-}
-
-.jimu-widget-GRG .dijitNumberTextBoxHalfRight {
-    width: 100px !Important;
-    height: 32px;
-    margin-left: 9px;
-}
-
-
-.jimu-widget-GRG .dijitNumberTextBox {
-    width: 225px;
-    height: 32px;
-}
-
-.jimu-widget-GRG .tabPanel fieldset {
-    border: 1px solid #CCC;
-    padding: 6px;
-    margin-top: 10px;
-}
-
-.jimu-widget-GRG .tabPanel fieldset > div {
-    margin: 3px;
-}
-
-.jimu-widget-GRG .tabPanel fieldset > div > label {
-    width: 50px;
-    display: inline-block;
-}
-
-.jimu-widget-GRG .controls {
-    display: table;
-    margin: 0 auto;
-    border-bottom: 1px solid #CCC;
-    padding-bottom: 20px;
-}
-
-.jimu-widget-GRG .buttonContainer {
+.jimu-widget-GRGDrafter .GRGDrafterFullWidth
+{
     width: 100%;
-    text-align: center;
-    margin-top: 20px;
 }
 
-.jimu-widget-GRG .controlItem {
+.jimu-widget-GRGDrafter .GRGDrafterFullWidthAndPadding
+{
+    width: 100%;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterHalfWidthLeft
+{
+    width: 50%;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterHalfWidthRight
+{
+    padding-left: 10px;
+    width: 50%;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterHalfWidthContainer
+{
     display: flex;
 }
 
-.jimu-widget-GRG .controlGroup {
-    margin-top: 13px;
+.jimu-widget-GRGDrafter .GRGDrafterEllipsis
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.jimu-widget-GRG .controlGroupHidden {
+.jimu-widget-GRGDrafter .GRGDrafterPointer
+{
+    cursor: pointer;
+}
+
+/*------------------------- Styles for Main Page starts-----------------------*/
+.jimu-widget-GRGDrafter .GRGDrafterMainPageRow
+{
+    width: calc(100% - 40px);
+    margin: 20px 20px 20px 20px;
+    display: inline-block;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterButtonLabel
+{
+    float: left;
+    width: calc(100% - 25px);
+    padding: 5px 5px 0px 0;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterInputLabel
+{
+    float: left;
+    line-height: 28px;
+    padding: 5px 5px 0px 0;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGPointButton
+{
+    background: url("../images/new-grgPoint.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGAreaButton
+{
+    background: url("../images/new-grgArea.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterButtonIcon
+{
+    height: 45px;
+    width: 45px;
+    float: right;
+    background-size: 45px;
+}
+
+.esriRtl .jimu-widget-GRGDrafter .GRGDrafterButtonIcon
+{
+    float: left;
+}
+
+/*------------------------- Styles for Main Page End-----------------------*/
+
+/*------------------------- Styles for GRG Pages-----------------------*/
+.jimu-widget-GRGDrafter .claro .dijitSelect, .claro .dijitSelect .dijitButtonContents, .claro .dijitTextBox, .claro .dijitTextBox .dijitButtonNode {
+    width: calc(100% - 60px);
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGHeader
+{
+    float: left;
+    height: 30px;
+    border-bottom: 1px solid #464646;
+    padding: 0px 10px;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterSettingsIcon
+{
+    background-image: url('../images/settings.png');
+    height: 20px;
+    width: 20px;
+    background-size: 20px;
+    float: right;
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .dijitTextBox .dijitInputInner
+{
+    height: 18px !important;
+    text-align: right;
+}
+
+.jimu-widget-GRGDrafter .dijitTextBoxFocused .dijitInputContainer
+{
+    background: transparent;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterHidden
+{
     display: none;
 }
 
-.jimu-widget-GRG .controlGroup .controlGroupChild{
-    margin-top: 6px;
+/*------------------------- Styles for GRG Pages End-----------------------*/
+
+/*------------------------- Styles for GRG Settings-----------------------*/
+.jimu-widget-GRGDrafter .GRGDrafterSettingsNode
+{
+    width: 100%;
+    height: calc(100% - 30px);
+    display: inline-block;
+    overflow-y: auto;
 }
 
-.jimu-widget-GRG .controlGroup .splitRight {
-    position: absolute;
-    right: 25px;
+.jimu-widget-GRGDrafter .GRGDrafterSettingsContainer
+{
+    margin: 20px;
+    display: inline-block;
+    width: calc(100% - 40px);
 }
 
-.jimu-widget-GRG .controlGroup > label {
-    width: 100px;
+.jimu-widget-GRGDrafter .GRGDrafterSettingRow
+{
+    padding-bottom: 6px;
 }
 
-.jimu-widget-GRG .controlSpace {
-    margin-left: 6px;
+.jimu-widget-GRGDrafter .GRGDrafterSettingRowDouble
+{
+    padding-bottom: 12px;
 }
 
-.jimu-widget-GRG .rotateBtn {
-    background: url(../images/rotate.png) no-repeat;
-    width: 32px;
-    height: 32px;
+.jimu-widget-GRGDrafter .GRGDrafterDropdownLabel
+{
+    padding-bottom: 5px;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterSettingHeader
+{
+    float: left;
+    height: 30px;
+    border-bottom: 1px solid #464646;
+    padding: 0px 10px;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterBackButton
+{
+    width: 25%;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterTitleDiv
+{
+    line-height: 10px;
+    font-weight: bold;
+    text-align: center;
+    width: calc(100% - 50px);
+    padding: 5px;
+    display: inline-block;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterItemLeftArrow
+{
+    background-image: url('../images/left-arrow.png');
+    float: left;
+    margin: 0px 5px 0px 0px;
+    width: 15px;
+    height: 20px;
     background-repeat: no-repeat;
     background-position: center center;
-
 }
 
-.jimu-widget-GRG .rotateBtn:hover {
-    background-color: #c0c0c0;
+/* overriding CSS for the dijitSelect box starts */
+.jimu-widget-GRGDrafter .dijitSelect .dijitButtonContents
+{
+    border-style: none none none none;
+    background-color: #fafafc;
 }
 
-.jimu-widget-GRG .rotateBtn.jimu-state-active {
-    background-color: #c0c0c0;
+.jimu-widget-GRGDrafter .dijitSelect .dijitButtonContentsDartTheme {
+    background-color: inherit;
 }
 
-.jimu-widget-GRG .rotateBtn.jimu-state-hidden {
-    display: none;
+.jimu-widget-GRGDrafter .dijitSelect .dijitArrowButton
+{
+    background-color: #fafafc;
+    background-image: none;
+    border-color: #fafafc;
 }
 
-.jimu-widget-GRG .deleteBtn {
-    background: url(../images/delete.png) no-repeat;
-    width: 32px;
-    height: 32px;
-    background-repeat: no-repeat;
-    background-position: center center;
-
+.jimu-widget-GRGDrafter .dijitSelect .dijitArrowButtonDartTheme {
+    background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.jimu-widget-GRG .deleteBtn:hover {
-    background-color: #c0c0c0;
+.jimu-widget-GRGDrafter .dijitMenuItem
+{
+    color: #7989a0;
 }
 
-.jimu-widget-GRG .deleteBtn.jimu-state-active {
-    background-color: #c0c0c0;
+.jimu-widget-GRGDrafter .dijitSelect .dijitInputField
+{
+    margin-right: 8px;
 }
 
-.jimu-widget-GRG .deleteBtn.jimu-state-hidden {
-    display: none;
+/* overriding CSS for the dijitSelect box starts */
+
+/*------------------------- Styles for Plan Settings-----------------------*/
+
+.jimu-widget-GRGDrafter .dijitTextBox .dijitPlaceHolder{
+    font-size: 12px;
 }
-/**
- * Coordinate Format Dialog
- **/
+
+.jimu-widget-GRGDrafter  .dijitTextBoxError {
+    border-color: #d9dde0 !important;
+    box-shadow: inset 0 0 0 2px #d46464;
+}
+
+/* CSS for RTL Mode Starts */
+
+.esriRtl .jimu-widget-GRGDrafter .GRGDrafterInputLabel
+{
+    float: right;
+    padding: 5px 5px 0px 0px;
+}
+
+.esriRtl .jimu-widget-GRGDrafter .GRGDrafterItemLeftArrow
+{
+    float: right;
+    margin: 0px 0px 00px 10px;
+}
+
+.esriRtl .jimu-widget-GRGDrafter .GRGDrafterSettingsIcon
+{
+    float: left;
+}
+
+.esriRtl .jimu-widget-GRGDrafter .GRGDrafterItemLeftArrow
+{
+    background-image: url('../images/right-arrow.png');
+}
+
+.esriRtl .jimu-widget-GRGDrafter .dijitSelect .dijitInputField
+{
+    margin-left: 8px;
+    margin-right: 0;
+}
+/* CSS for RTL Mode Ends */
+
+/*------------------------- Styles for widget panel -----------------------*/
+
+.jimu-widget-GRGDrafter .jimu-state-active{
+  background-color: #DDDDDD;
+  border: 1px solid #000000;
+}
+
+.jimu-widget-GRGDrafter .jimu-icon-setting {
+   width: 19px;
+   height: 20px;
+}
+
+.jimu-widget-GRGDrafter .jimu-icon-edit {
+   width: 23px;
+   height: 23px;
+   background-position: 3px -170px;
+}
+
+.jimu-widget-GRGDrafter .jimu-icon-edit:hover {
+    background-color: #DDDDDD;
+}
+
+.jimu-widget-GRGDrafter .jimu-icon-delete {
+   width: 21px;
+   height: 21px;
+}
+
+.jimu-widget-GRGDrafter .add-with-icon {
+  vertical-align: text-top !important;
+}
 
 
 .btnContainer {
     text-align: right;
-    margin-top: 6px;
+    margin-top: 15px;
 }
 
-.settingsContainer {
-    margin-top: 6px;
-}
-
-.controlContainer {
-    margin-top: 6px;
-}
-
-.claro .dijitTextBox .dijitInputInner {
-    height: 20px !important;
+.jimu-widget-GRGDrafter .GRGDrafterBtnContainer {
     text-align: right;
+    margin-top: 15px;
+    display: grid;
 }
 
-.controlContainer {
-    margin-top: 6px;
+.jimu-widget-GRGDrafter .controlGroupHidden {
+    display: none;
 }
 
-.add-with-icon {
-    display: inline-block;
-    height: 32px;
-    line-height:37px;
-    color: #838383;
+.jimu-widget-GRGDrafter .controlItem {
+    display: flex;
 }
 
-.add-with-icon .draw {
-  display: inline-block;
-  background: url(../images/draw_point.png);
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 30px;
-  height: 30px;
-}
-
-.jimu-state-active {
-    background-color: #c0c0c0 !important;
-}
-
-.jimu-icon-setting {
-  background-position: -0px -276px;
-  width: 18px;
-  height: 18px;
-}
-
-.controlItem .paddedLeft{
-   padding-left: 14px;
+.jimu-widget-GRGDrafter .jimu-btn {
+    margin-bottom: 6px;
 }
 
 /****** Dart Theme Overrides ******/
+
+.DartTheme .jimu-widget-GRGDrafter  .dijitSelectDisabled,
+.DartTheme .jimu-widget-GRGDrafter .dijitTextBoxDisabled,
+.DartTheme .jimu-widget-GRGDrafter .dijitTextBoxDisabled .dijitInputContainer ,
+.DartTheme .jimu-widget-GRGDrafter .dijitTextBoxDisabled {
+     background-color: #4c4c4c; 
+}
+
+
 
 .claro .dartThemeClaroDijitTooltipContainerOverride .dijitTooltipContainer {
     background-color: #4c4c4c;
@@ -224,68 +360,4 @@
 
 .claro .dartThemeClaroDijitTooltipContainerOverride .dijitTooltipConnector {    
     background-image: url(images/tooltip.png);    
-}
-
-.DartTheme .jimu-icon {
-    background-image: url(images/sprite.png);
-}
-
-.DartTheme  .jimu-widget-cw .cpbtn {
-    background: url(../images/copy.png);
-}
-
-.DartTheme  .add-with-icon .draw {
-  background: url(../images/draw_point_dart.png);
-  display: inline-block;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 30px;
-  height: 30px;
-  margin-left: 5px;
-}
-
-.DartTheme .jimu-widget-GRG  .jimu-state-active {
-    background-color: #000000 !Important;
-}
-
-.DartTheme .jimu-widget-GRG .add-with-icon .draw:hover {
-    background-color: #000000;
-}
-
-.DartTheme .jimu-widget-GRG .control .tab {
-  border-bottom: 1px solid #ccc !important;
-  border-right: 0px solid #fff !important;
-  border-left: 0px solid #fff !important;
-  border-top: 0px solid #fff !important;
-  background-color: transparent !important;
-  font-size: 12px;
-}
-
-.DartTheme .jimu-tab>.control>.tab.jimu-state-selected {
-    border-bottom: 0px solid #24B5CC !important;
-    border-top: 2px solid #24B5CC !important;
-    border-left: 1px solid #ccc !important;
-    border-right: 1px solid #ccc !important;
-    background-color: transparent !important;
-    color: #000;
-}
-
-.DartTheme .dijitReset.dijitLeft.dijitButtonNode.dijitArrowButton.dijitDownArrowButton {
-  border: solid 0px #ffffff !important;
-  background-color: #4c4c4c !important;
-  margin: 0px 0px 0px 0px !important;
-  background-image: none !important;
-}
-
-.DartTheme .dijitReset.dijitLeft.dijitButtonNode.dijitArrowButton.dijitUpArrowButton {
-  border: solid 0px #ffffff !important;
-  background-color: #4c4c4c !important;
-  margin: 0px 0px 0px 0px !important;
-  background-image: none !important;
-}
-
-.DartTheme .dijitSpinner .dijitArrowButtonInner {
-  border: solid 0px #ffffff !important;
 }

@@ -1,5 +1,5 @@
 define({
   root: ({
-    serviceUrl: "Set service url:"
+    errorMessage: "The settings window contains errors please fix before applying.",
   })
 });
