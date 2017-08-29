@@ -283,24 +283,41 @@
 
 /*------------------------- Styles for widget panel -----------------------*/
 
-.jimu-widget-GRGDrafter .jimu-state-active{
-  background-color: #DDDDDD;
-  border: 1px solid #000000;
+.jimu-widget-GRGDrafter .settingBtn {
+    display: inline-block;
+    background: url(./images/settings_black.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+    margin-bottom: 4px;
+    margin-left: 5px;
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-setting {
-   width: 19px;
-   height: 20px;
+.jimu-widget-GRGDrafter .settingBtn:hover {
+    background: url('./images/settings_black_hover_black.png');
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-edit {
-   width: 23px;
-   height: 23px;
-   background-position: 3px -170px;
+.jimu-widget-GRGDrafter .editBtn {
+    display: inline-block;
+    background: url(./images/edit_default.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+    margin-bottom: 4px;
+    margin-left: 5px;
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-edit:hover {
-    background-color: #DDDDDD;
+.jimu-widget-GRGDrafter .editBtn:hover {
+    background: url('./images/edit_gray_hover.png');
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .jimu-state-active {
+    background: url('./images/edit_gray_hover.png');
+    background-repeat: no-repeat;
+    border: none;
 }
 
 .jimu-widget-GRGDrafter .jimu-icon-delete {
