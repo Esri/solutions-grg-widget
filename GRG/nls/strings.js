@@ -34,6 +34,7 @@ define({
     "drawToolTip1": 'Click to set GRG base angle',
     "drawToolTip2": 'Click to finish GRG Area',
     "missingLayerNameMessage": 'You must enter a GRG Layer Name before you can publish',
+    "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.', //Shown as error message for unknown coordinates
     "gridSettings": {
       "planSettingsTitle": "Grid Settings", // Shown as Title for Grid Settings page
       

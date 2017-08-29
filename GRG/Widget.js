@@ -652,7 +652,7 @@ define([
             function (r) {
               if(r.inputType == "UNKNOWN"){
                 var alertMessage = new Message({
-                  message: this.nls.coordInputError
+                  message: this.nls.parseCoordinatesError
                 });
               } else {
                 this._reset();
