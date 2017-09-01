@@ -100,7 +100,7 @@ define([
                 this.formatType = itm[0].conversionType;                
                 this.inputType = itm[0].conversionType;
                 this.coordinateEsriGeometry = new EsriPoint(r[0][0],r[0][1],new EsriSpatialReference({wkid: 4326}));
-                this.message = '';
+                this.message = 'Invalid Coordinate';
                 this.inputTypeDef.resolve(this);
               }              
               })), dojoLang.hitch(this, function (r) {
@@ -113,7 +113,7 @@ define([
           } else {
             var dialog = new dialogConfirm({
                nls: this.nls,
-               title: this.nls.confirmNotationTitle,
+               title: this.nls.comfirmInputNotation,
                content: new ConfirmNotation(itm,{nls: this.nls}),
                style: "width: 400px",
                hasSkipCheckBox: false

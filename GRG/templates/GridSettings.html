@@ -15,6 +15,14 @@
         </select>
     </div>
     
+    <!-- Grid Origin -->
+    <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.gridOrigin}">
+            ${nls.gridSettings.gridOrigin}</div>
+        <select data-dojo-attach-point="gridOrigin" style="width: 100%" data-dojo-type="dijit/form/Select">
+        </select>
+    </div>
+    
     <!-- Label Start Position Selector -->
     <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
         <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelStartPosition}">
@@ -31,11 +39,11 @@
         </select>
     </div>
     
-    <!-- Grid Origin -->
-    <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
-        <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.gridOrigin}">
-            ${nls.gridSettings.gridOrigin}</div>
-        <select data-dojo-attach-point="gridOrigin" style="width: 100%" data-dojo-type="dijit/form/Select">
-        </select>
+    <!-- Show Labels Toggle -->
+    <div class="GRGDrafterFullWidth GRGDrafterSettingRow" >
+      <div>
+        <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.gridSettings.showLabels}">${nls.gridSettings.showLabels}</div>
+        <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="settingsShowLabelsToggle" checked="true" />
+      </div>
     </div>
 </div>

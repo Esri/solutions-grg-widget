@@ -55,8 +55,8 @@
 /*------------------------- Styles for Main Page starts-----------------------*/
 .jimu-widget-GRGDrafter .GRGDrafterMainPageRow
 {
-    width: calc(100% - 40px);
-    margin: 20px 20px 20px 20px;
+    width: calc(100% - 20px);
+    margin: 10px 50px 10px 20px;
     display: inline-block;
 }
 
@@ -64,6 +64,13 @@
 {
     float: left;
     width: calc(100% - 25px);
+    padding: 5px 5px 0px 0;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterToggleLabel
+{
+    float: left;
+    width: calc(100% - 35px);
     padding: 5px 5px 0px 0;
 }
 
@@ -151,14 +158,15 @@
 
 .jimu-widget-GRGDrafter .GRGDrafterSettingsContainer
 {
-    margin: 20px;
+    margin: 10px;
     display: inline-block;
-    width: calc(100% - 40px);
+    width: calc(100% - 20px);
 }
 
 .jimu-widget-GRGDrafter .GRGDrafterSettingRow
 {
     padding-bottom: 6px;
+    padding-top: 6px;
 }
 
 .jimu-widget-GRGDrafter .GRGDrafterSettingRowDouble
@@ -237,6 +245,67 @@
     margin-right: 8px;
 }
 
+
+.jimu-widget-GRGDrafter .switch-toggle-group {
+  padding: 5px;
+}
+.jimu-widget-GRGDrafter .switch-toggle-group .checkbox-inline {
+  padding-left: 36px;
+  vertical-align: top;
+}
+.jimu-widget-GRGDrafter .switch-toggle-group .switch-toggle.dijitCheckBox {
+  margin-left: -36px;
+}
+
+.jimu-widget-GRGDrafter .switch-toggle.dijitCheckBox {
+  height: 16px;
+  width: 28px;
+  border: 0 none;
+  background: #e04f1d;
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+.jimu-widget-GRGDrafter .switch-toggle.dijitCheckBox:before {
+  content: "";
+  background: #f8f8f8;
+  position: absolute;
+  padding: 0;
+  height: 12px;
+  width: 12px;
+  left: auto;
+  right: 2px;
+  top: 2px;
+  z-index: 1;
+  -webkit-transition: right 0.3s;
+  -moz-transition: right 0.3s;
+  -o-transition: right 0.3s;
+  transition: right 0.3s;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+}
+.jimu-widget-GRGDrafter .switch-toggle.dijitCheckBox input {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  z-index: 2;
+}
+.jimu-widget-GRGDrafter .switch-toggle.dijitCheckBox.dijitCheckBoxChecked {
+  background: #50ad4e;
+}
+.jimu-widget-GRGDrafter .switch-toggle.dijitCheckBox.dijitCheckBoxChecked:before {
+  right: 14px;
+}
+
+
+
+
+
 /* overriding CSS for the dijitSelect box starts */
 
 /*------------------------- Styles for Plan Settings-----------------------*/
@@ -283,24 +352,41 @@
 
 /*------------------------- Styles for widget panel -----------------------*/
 
-.jimu-widget-GRGDrafter .jimu-state-active{
-  background-color: #DDDDDD;
-  border: 1px solid #000000;
+.jimu-widget-GRGDrafter .settingBtn {
+    display: inline-block;
+    background: url(./images/settings_black.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+    margin-bottom: 4px;
+    margin-left: 5px;
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-setting {
-   width: 19px;
-   height: 20px;
+.jimu-widget-GRGDrafter .settingBtn:hover {
+    background: url('./images/settings_black_hover_black.png');
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-edit {
-   width: 23px;
-   height: 23px;
-   background-position: 3px -170px;
+.jimu-widget-GRGDrafter .editBtn {
+    display: inline-block;
+    background: url(./images/edit_default.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 15px;
+    height: 15px;
+    margin-bottom: 4px;
+    margin-left: 5px;
 }
 
-.jimu-widget-GRGDrafter .jimu-icon-edit:hover {
-    background-color: #DDDDDD;
+.jimu-widget-GRGDrafter .editBtn:hover {
+    background: url('./images/edit_gray_hover.png');
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .jimu-state-active {
+    background: url('./images/edit_gray_hover.png');
+    background-repeat: no-repeat;
+    border: none;
 }
 
 .jimu-widget-GRGDrafter .jimu-icon-delete {

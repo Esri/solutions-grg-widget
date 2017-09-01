@@ -22,9 +22,9 @@
     query
   ) {
     return declare([BaseWidget, _WidgetsInTemplateMixin, Evented], {
-      baseClass: 'jimu-widget-GRGDrafter-PlanSettings',
+      baseClass: 'jimu-widget-GRGDrafter-Settings',
       templateString: GridSettingsTemplate,
-      selectedGridSettings: {}, //Holds selected planSettings
+      selectedGridSettings: {}, //Holds selected Settings
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
@@ -62,7 +62,7 @@
       /**
       * This function overrides dijit/select
       * background color for dart theme
-      * @memberOf widgets/ParcelDrafter/PlanSettings
+      * @memberOf widgets/GRGDrafter/Settings
       **/
       _setBackgroundColorForDartTheme: function () {
         var buttonContentsDiv, i, selectBoxArrowDiv;
@@ -81,7 +81,7 @@
 
       /**
       * Add options to passed dropdown
-      * @memberOf widgets/ParcelDrafter/PlanSettings
+      * @memberOf widgets/GRGDrafter/Settings
       **/
       _loadOptionsForDropDown: function (dropDown, dropDownOptions) {
         var options = [], option;
@@ -99,7 +99,7 @@
 
       /**
       * Return's flag based on plan settings are changed or not
-      * @memberOf widgets/ParcelDrafter/PlanSettings
+      * @memberOf widgets/GRGDrafter/Settings
       **/
       _isSettingsChanged: function () {
         var isDataChanged = false;
@@ -123,13 +123,17 @@
           this.gridOrigin.get('value')) {
           //check if gridOrigin is changed
           isDataChanged = true;
+        } else if (this.selectedGridSettings.showLabels !==
+          this.settingsShowLabelsToggle.checked) {
+          //check if gridOrigin is changed
+          isDataChanged = true;
         }
         return isDataChanged;
       },
 
       /**
-      * Update's PlanSettings on close of the widget
-      * @memberOf widgets/ParcelDrafter/PlanSettings
+      * Update's Settings on close of the widget
+      * @memberOf widgets/GRGDrafter/Settings
       **/
       onClose: function () {
         if (this._isSettingsChanged()) {
@@ -139,7 +143,7 @@
 
       /**
       * Set's the selectedGridSettings on any value change
-      * @memberOf widgets/ParcelDrafter/PlanSettings
+      * @memberOf widgets/GRGDrafter/Settings
       **/
       onGridsettingsChanged: function () {
         this.selectedGridSettings = {
@@ -148,6 +152,7 @@
           "cellUnits": this.cellUnits.get('value'),
           "labelType": this.labelType.get('value'),
           "gridOrigin": this.gridOrigin.get('value'),
+          "showLabels": this.settingsShowLabelsToggle.checked,
         };
         this.emit("gridSettingsChanged", this.selectedGridSettings);
       }
