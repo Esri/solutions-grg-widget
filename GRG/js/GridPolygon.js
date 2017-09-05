@@ -151,6 +151,10 @@ define([
     /** If grid is 100k or less then this property holds the 100k GZD
      * @type String
      */
+    "latitudeZone": "",
+    /** If grid is 100k or less then this property holds the latitude zone
+     * @type String
+     */
     "GZD": "",
     /** The label text for the polygon
      * @type String
@@ -185,6 +189,7 @@ define([
       this.ymax = args.ymax;
       this.minMaxType = args.minMaxType;
       this.utmZone = Math.round(args.utmZone);
+      this.latitudeZone = args.latitudeZone;
       this.GZD = args.GZD;
       this.text = args.text;
       this.labelParameters = args.labelParameters;

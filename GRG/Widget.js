@@ -20,6 +20,9 @@ define([
   'dijit/registry',
   'dijit/TooltipDialog',
   'dijit/popup',
+  "dijit/Menu",
+  "dijit/MenuItem",
+  "dijit/MenuSeparator",
   
   'jimu/dijit/Message',
   'jimu/dijit/LoadingIndicator',
@@ -80,7 +83,10 @@ define([
     dijitWidgetsInTemplate,
     dijitRegistry,
     dijitTooltipDialog,
-    dijitPopup,    
+    dijitPopup,
+    Menu, 
+    MenuItem, 
+    MenuSeparator,      
     Message,
     LoadingIndicator,
     jimuLayerInfos,
@@ -808,12 +814,7 @@ define([
           this.map.enableMapNavigation();
         } else {
           html.addClass(this.grgAreaByRefSystemSaveGRGButton, 'controlGroupHidden');
-          this._graphicsLayerGRGExtent.clear();
-          this.GRGArea.clear();
-          //refresh each of the feature/graphic layers to enusre labels are removed
-          for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
-            this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
-          }
+          this._graphicsLayerGRGExtent.clear();          
           this.coordTool.manualInput = false;        
           this.map.disableMapNavigation();          
           this.dt_AreaByRefSystem.activate('extent');        
@@ -1052,8 +1053,13 @@ define([
       
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
-        if (this._graphicsLayerGRGExtent.graphics[0]) {          
-          
+        if (this._graphicsLayerGRGExtent.graphics[0]) {
+          var TRString, BRString;          
+          this.GRGArea.clear();
+          //refresh each of the feature/graphic layers to enusre labels are removed
+          for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
+            this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
+          }          
           // determine which UTM grid zones and bands fall within the extent
           zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0],this.map);
           var features = [];
@@ -1070,119 +1076,156 @@ define([
                 features.push(graphic);
               }            
               break;
-            case '100000':
-              var polys100k = mgrsUtils.processZonePolygons(zones, this.map, 100000);
-              for (i = 0; i < polys100k.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(polys100k[i].clippedPolygon);
-                } else {
-                  var graphic = new Graphic(polys100k[i].clippedPolyToUTMZone);
+            default:
+              var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
+              var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
+              if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
+                var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000);
+                var currentValue = 10000;              
+                while (currentValue >= this.grgAreaByRefSystemGridSize.getValue()) {
+                  var polys = [];
+                  for (i = 0; i < polysToLoop.length; i++) {
+                    polys = polys.concat(mgrsUtils.handleGridSquares(polysToLoop[i],this.map, currentValue, this._graphicsLayerGRGExtent.graphics[0]));
+                  }
+                  polysToLoop = [];
+                  polysToLoop = polys;
+                  currentValue = currentValue / 10;                
                 }
-                graphic.setAttributes({'grid': polys100k[i].text});
-                features.push(graphic);
-              }            
-              break;
-            case '10000':
-              var polys100k = mgrsUtils.processZonePolygons(zones, this.map, 100000);
-              var polys10k = [];
-              for (i = 0; i < polys100k.length; i++) {
-                polys10k = polys10k.concat(mgrsUtils.handleGridSquares(polys100k[i],this.map, 10000));
-              }
-              polys10k.sort(function(a, b){
-                  var x = a.text.toLowerCase();
-                  var y = b.text.toLowerCase();
-                  if (x < y) {return -1;}
-                  if (x > y) {return 1;}
-                  return 0;
-              });
-              for (i = 0; i < polys10k.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(polys10k[i].clippedPolygon);
-                } else {
-                  var graphic = new Graphic(polys10k[i].clippedPolyToUTMZone);
+                
+                
+                
+                /**
+                var sortedArray = [];
+                var compareFeature = polysToLoop[0];
+                var nextCompareFeature = [];
+                sortedArray.push(polysToLoop[0])
+                polysToLoop.splice(0, 1);
+                
+                
+                while (polysToLoop.length > 0){
+                  var rowComplete = true;                  
+                  for(i = 0; i < polysToLoop.length; i++) {                    
+                    if (GeometryEngine.touches(compareFeature.clippedPolyToUTMZone, polysToLoop[i].clippedPolyToUTMZone)){
+                        var angle = geometryUtils.getAngleBetweenPoints(WebMercatorUtils.webMercatorToGeographic(compareFeature.clippedPolyToUTMZone.getCentroid()), 
+                          WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone.getCentroid()));
+                        if (angle > 75 && angle < 105) {
+                          sortedArray.push(polysToLoop[i]);
+                          polysToLoop.splice(i, 1);
+                          rowComplete = false;
+                        } else if ((angle >= 335 || angle <= 25) && nextCompareFeature.length < 1) {
+                          nextCompareFeature.push(polysToLoop[i]);
+                        }
+                    }                    
+                  }
+                  if(rowComplete) {
+                    compareFeature = nextCompareFeature[0];
+                    nextCompareFeature = [];
+                  } else {
+                    compareFeature = sortedArray[sortedArray.length -1]; //grab the last feature
+                  }
                 }                
-                graphic.setAttributes({'grid': polys10k[i].text});
-                features.push(graphic);                    
-              }
-              break;
-            case '1000':
-              var polys100k = mgrsUtils.processZonePolygons(zones, this.map, 100000);
-              var polys10k = [];
-              for (i = 0; i < polys100k.length; i++) {
-                polys10k = polys10k.concat(mgrsUtils.handleGridSquares(polys100k[i],this.map, 10000));
-              }
-              var polys1000m = [];
-              for (i = 0; i < polys10k.length; i++) {
-                polys1000m = polys1000m.concat(mgrsUtils.handleGridSquares(polys10k[i],this.map, 1000));
-              }
-              for (i = 0; i < polys1000m.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(polys1000m[i].clippedPolygon);
-                } else {
-                  var graphic = new Graphic(polys1000m[i].clippedPolyToUTMZone);
+                **/
+               
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                var count = 1;
+                for (i = 0; i < polysToLoop.length; i++) {
+                  if(this.grgAreaByRefSystemClipToggle.checked) {
+                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);
+                    /**var symbol = new SimpleMarkerSymbol({
+                        "color": [255,255,255,64],
+                        "size": 12,
+                        "type": "esriSMS",
+                        "style": "esriSMSCircle",
+                        "outline": {
+                          "color": [0,0,0,255],
+                          "width": 1,
+                          "type": "esriSLS",
+                          "style": "esriSLSSolid"
+                        }
+                      });
+                      var symbol2 = new SimpleMarkerSymbol({
+                        "color": [255,0,0,64],
+                        "size": 12,
+                        "type": "esriSMS",
+                        "style": "esriSMSCircle",
+                        "outline": {
+                          "color": [255,0,0,255],
+                          "width": 1,
+                          "type": "esriSLS",
+                          "style": "esriSLSSolid"
+                        }
+                      });
+                    var pointGraphic = new Graphic(polysToLoop[i].clippedPolygon.getPoint(0, 0),symbol);
+                    var pointGraphic2 = new Graphic(polysToLoop[i].clippedPolygon.getPoint(0, polysToLoop[i].clippedPolygon.rings[0].length - 2),symbol2);
+                    this.map.graphics.add(pointGraphic);
+                    this.map.graphics.add(pointGraphic2);**/
+                  } else {
+                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                    /**var symbol = new SimpleMarkerSymbol({
+                        "color": [255,255,255,64],
+                        "size": 12,
+                        "type": "esriSMS",
+                        "style": "esriSMSCircle",
+                        "outline": {
+                          "color": [0,0,0,255],
+                          "width": 1,
+                          "type": "esriSLS",
+                          "style": "esriSLSSolid"
+                        }
+                      });
+                    var pointGraphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone.getPoint(0, 0),symbol);
+                    this.map.graphics.add(pointGraphic);**/
+                  }                
+                  //graphic.setAttributes({'grid': polysToLoop[i].text});
+                  graphic.setAttributes({'grid': count});
+                  features.push(graphic);
+                  count++;
                 }
-                graphic.setAttributes({'grid': polys1000m[i].text});
-                features.push(graphic);                    
+                
+                
               }
-              break;
-            case '100':
-              var polys100k = mgrsUtils.processZonePolygons(zones, this.map, 100000);
-              var polys10k = [];
-              for (i = 0; i < polys100k.length; i++) {
-                polys10k = polys10k.concat(mgrsUtils.handleGridSquares(polys100k[i],this.map, 10000));
-              }
-              var polys1000m = [];
-              for (i = 0; i < polys10k.length; i++) {
-                polys1000m = polys1000m.concat(mgrsUtils.handleGridSquares(polys10k[i],this.map, 1000));
-              }
-              var polys100m = [];
-              for (i = 0; i < polys1000m.length; i++) {
-                polys100m = polys100m.concat(mgrsUtils.handleGridSquares(polys1000m[i],this.map, 100));
-              } 
-              for (i = 0; i < polys100m.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(polys100m[i].clippedPolygon);
-                } else {
-                  var graphic = new Graphic(polys100m[i].clippedPolyToUTMZone);
-                }
-                graphic.setAttributes({'grid': polys1000m[i].text});
-                features.push(graphic);                    
-              }
-              break;
-            case '10':
-              var polys100k = mgrsUtils.processZonePolygons(zones, this.map, 100000);
-              var polys10k = [];
-              for (i = 0; i < polys100k.length; i++) {
-                polys10k = polys10k.concat(mgrsUtils.handleGridSquares(polys100k[i],this.map, 10000));
-              }
-              var polys1000m = [];
-              for (i = 0; i < polys10k.length; i++) {
-                polys1000m = polys1000m.concat(mgrsUtils.handleGridSquares(polys10k[i],this.map, 1000));
-              }
-              var polys100m = [];
-              for (i = 0; i < polys1000m.length; i++) {
-                polys100m = polys100m.concat(mgrsUtils.handleGridSquares(polys1000m[i],this.map, 100));
-              }
-              var polys10m = [];
-              for (i = 0; i < polys100m.length; i++) {
-                polys10m = polys10m.concat(mgrsUtils.handleGridSquares(polys100m[i],this.map, 10));
-              }              
-              for (i = 0; i < polys10m.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(polys10m[i].clippedPolygon);
-                } else {
-                  var graphic = new Graphic(polys10m[i].clippedPolyToUTMZone);
-                }
-                graphic.setAttributes({'grid': polys10m[i].text});
-                features.push(graphic);                    
-              }            
-              break;
+              break;            
           }
+          
           //apply the edits to the feature layer
           this.GRGArea.applyEdits(features, null, null);
-          this._graphicsLayerGRGExtent.clear();
+          this.createGraphicDeleteMenu();
         }
       },
+      
+      createGraphicDeleteMenu: function () {
+          // Creates right-click context menu for GRAPHICS
+          ctxMenuForGraphics = new Menu({}); 
+                  
+          ctxMenuForGraphics.addChild(new MenuItem({ 
+            label: "Delete",
+            onClick: lang.hitch(this, function() {
+              this.GRGArea.remove(selected);
+              //refresh each of the feature/graphic layers to enusre labels are removed
+              this.GRGArea.refresh();             
+            })
+          }));
+
+          ctxMenuForGraphics.startup();
+
+          this.GRGArea.on("mouse-over", function(evt) {
+            selected = evt.graphic;           
+            ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
+          });
+
+          this.GRGArea.on("mouse-out", function(evt) {
+            ctxMenuForGraphics.unBindDomNode(evt.graphic.getDojoShape().getNode());
+          });
+        },
             
       /*
        *

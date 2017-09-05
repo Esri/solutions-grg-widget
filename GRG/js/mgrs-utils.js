@@ -27,6 +27,7 @@ define([
   "dojo/json",
   "./constants",
   "./geometry-utils",
+  "./geometryUtils",
   "./labeling-utils",
   "./mgrs",
   "./NonPolarGridZone",
@@ -38,6 +39,7 @@ define([
   "esri/geometry/Polyline",
   "esri/geometry/Polygon",
   "esri/symbols/SimpleLineSymbol",
+  "esri/symbols/SimpleFillSymbol",
   "esri/symbols/TextSymbol",
   "esri/symbols/Font",
   "esri/Color"
@@ -45,6 +47,7 @@ define([
   JSON,
   constants,
   gridGeomUtils,
+  geomUtils,
   gridLabelUtils,
   mgrs,
   NonPolarGridZone,
@@ -56,6 +59,7 @@ define([
   Polyline,
   Polygon,
   SimpleLineSymbol,
+  SimpleFillSymbol,
   TextSymbol,
   Font,
   Color
@@ -459,75 +463,24 @@ define([
      * @param  {object} grid The grid overlay object that is calling this method
      */
     processZonePolygons: function(visibleGridZones, map, interval) {
-      // Since MGRS grid zones are essentially UTM zones, further divided vertically,
-      // it is more efficient to handle them in two different ways:
-      //   1) The MGRS grid zone polygon does care about the vertical division of the UTM zone,
-      //      and will deal with each individually
-      //   2) The 100K grid zones and interval lines, do not care about the vertical division,
-      //      and it is more efficient to group them by UTM zone, and handle these groups
-      //      together
-      // The utmZonePolygons object is a dictionary that holds information for scenario #2 above
-
+     
       var utmZonePolygons = {};
       var intervalSpacing = interval;
       var polys = [];
       
-      // process each grid zone separately
       for (var i = 0; i < visibleGridZones.length; i++) {
         var visibleGridZone = visibleGridZones[i];
         if (visibleGridZone) {
-          // This is the handler for scenario #1 described above
-          //this.handleZonePolygon(visibleGridZone, grid);
-
-          // if intervalSpacing == 0 (or false), then processing can
-          // stop as no 100K grids or intervals will be drawn
-          if (intervalSpacing) {
-            if (!utmZonePolygons[visibleGridZone.nonPolarGridZone.utmZone]) {
-              // this is the first instance of a specific UTM zone, from scenario #2 above
-              utmZonePolygons[visibleGridZone.nonPolarGridZone.utmZone] = {
-                polygon: gridGeomUtils.toWebMercator(visibleGridZone.polygon),
-                offset: visibleGridZone.offset
-              };
-            } else {
-              // from scenario #2 above, the UTM zone instance already exists,
-              // and will be merged with the new data
-
-              // the polygon property is the union of the visibleGridZone geometry
-              // and the already existing geometry
-              utmZonePolygons[visibleGridZone.nonPolarGridZone.utmZone].polygon =
-                geometryEngine.union([
-                  gridGeomUtils.toWebMercator(visibleGridZone.polygon),
-                  utmZonePolygons[visibleGridZone.nonPolarGridZone.utmZone].polygon
-              ]);
-            }
-            utmZonePolygons[visibleGridZone.nonPolarGridZone.utmZone].fullZoneGeometry = visibleGridZone.fullZoneGeometry;
-          }
           
-        }
-      }
-
-      // after processing each visibleGridZone individually (scenario #1),
-      // the following with handle each UTM zone
-      // as a single group (scenario #2), only if intervalSpacing is greater
-      // than 0 and less than or equal to 100K
-      if (intervalSpacing) {
-        var utmZoneKeys = Object.keys(utmZonePolygons);
-        for (var j = 0; j < utmZoneKeys.length; j++) {
-          var utmZone = utmZoneKeys[j];
-          var utmZonePolygon = utmZonePolygons[utmZone].polygon;
-          var offset = utmZonePolygons[utmZone].offset;
-          var fullZoneGeometry = utmZonePolygons[utmZone].fullZoneGeometry;
+          var latitudeZone = visibleGridZone.nonPolarGridZone.latitudeZone;
           
-          
-          // using the extent of the utm zone polygon, determine the min/max eastings and northings
-          // this will narrow down the amount of work each handler will need to do
-          var clippedExtent = gridGeomUtils.toGeographic(utmZonePolygon.getExtent());
+          var clippedExtent = gridGeomUtils.toGeographic(visibleGridZone.polygon.getExtent());
 
           // compute the UTM of each extent corner, as a basis for finding the min/max values
-          var lowerLeftUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmin, utmZone);
-          var lowerRightUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmax, utmZone);
-          var upperRightUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmax, utmZone);
-          var upperLeftUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmin, utmZone);
+          var lowerLeftUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmin, visibleGridZone.nonPolarGridZone.utmZone);
+          var lowerRightUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmax, visibleGridZone.nonPolarGridZone.utmZone);
+          var upperRightUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmax, visibleGridZone.nonPolarGridZone.utmZone);
+          var upperLeftUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmin, visibleGridZone.nonPolarGridZone.utmZone);
 
           // using the UTM coordinates, find the min/max values
           // (index 0 of a UTM point is easting, 1 is northing)
@@ -539,94 +492,23 @@ define([
           lowerRightUtm[1], upperRightUtm[1], upperLeftUtm[1]); // - 10000;
           var maxNorthing = Math.max(lowerLeftUtm[1],
             lowerRightUtm[1], upperRightUtm[1], upperLeftUtm[1]);
-
-          // construct the arguments object for the handler methods
+          
           var handlerArgs = {
             "minE": minEasting,
             "maxE": maxEasting,
             "minN": minNorthing,
             "maxN": maxNorthing,
-            "utmZone": utmZone,
-            "polygon": utmZonePolygon,
-            "offset": offset,
-            "fullZoneGeometry": fullZoneGeometry
+            "utmZone": visibleGridZone.nonPolarGridZone.utmZone,
+            "latitudeZone": latitudeZone,
+            "polygon": visibleGridZone.polygon,
+            "offset": visibleGridZone.offset,
+            "fullZoneGeometry": gridGeomUtils.extentToPolygon(visibleGridZone.nonPolarGridZone.extent)
           };
-          
           polys = polys.concat(this.handle100kGrids(handlerArgs, map));
         }
-      }      
-      return polys;        
-      
-      
+      }
+      return polys;
     },
-
-    /** Handler methods for processing grid info, drawing lines, and labeling accordingly
-     * @ignore
-     */
-
-    /**
-     * Creates graphics and labels for a visible grid zone
-     * @param  {module:mgrs-utils~VisibleGridZone} visibleGridZone A VisibleGridZone object
-     * @param  {object} grid The grid overlay object that is calling this method
-     *
-     * @todo Implement configurable parameter for when to label (center and corners), based on zoom
-     */
-    handleZonePolygon: function(visibleGridZone, grid) {
-      var polyline, color, lineWidth, labelElements, labels, i;
-
-      // Creates graphics for the zone outline
-      polyline = visibleGridZone.polyline;
-      color = grid.getColor(0);
-      lineWidth = grid.getLineWidth(0);
-      grid._lineGraphics0.push(
-        new Graphic(
-          polyline,
-          new SimpleLineSymbol(
-            SimpleLineSymbol.STYLE_SOLID,
-            new Color(color),
-            lineWidth
-          )
-        )
-      );
-
-      // Creates labels for the zone
-
-      // depending on the map zoom, labels may not be drawn
-      if (grid.map.getZoom() < 4) {
-        // TODO: 4 should be turned into a configurable number
-        return;
-      }
-
-      // depending on the map zoom, only center labels may be drawn
-      if (grid.map.getZoom() <= 5) {
-        // TODO: 5 should be turned into a configurable number
-        grid._labelGraphics.push(visibleGridZone.getCenterLabel());
-        return;
-      }
-
-      labelElements = visibleGridZone.getLabels();
-      labels = [];
-
-      for (i = 0; i < labelElements.length; i++) {
-        grid._labelGraphics.push(labelElements[i]);
-      }
-      return;
-    },
-
-    /**
-     * An object that contains arguments used during 100K and interval handler methods,
-     * allowing objects to be passed by reference
-     * @typedef {Object} module:mgrs-utils~MgrsGridHandlerArguments
-     * @property {external:Polygon} polygon
-     * A geometry Polygon object that represents the visible grid zone
-     * @property {Number} utmZone             The UTM zone number
-     * @property {Number} offset              The non-normalized x-offset of the grid
-     * @property {Number} minE                The minimum UTM easting of the visible zone
-     * @property {Number} maxE                The maximum UTM easting of the visible zone
-     * @property {Number} minN                The minimum UTM northing of the visible zone
-     * @property {Number} maxN                The maximum UTM northing of the visible zone
-     * @property {Object} grid                The grid object that is being processed
-     */
 
     /**
      * Creates graphics and labels for the 100K meter grids
@@ -639,6 +521,7 @@ define([
       var zonePolygon = args.polygon;
       var offset = args.offset;
       var utmZone = args.utmZone;
+      var latitudeZone = args.latitudeZone;
       var fullZoneGeometry = args.fullZoneGeometry;
       var minE = args.minE;
       var maxE = args.maxE;
@@ -659,7 +542,7 @@ define([
           // used for labeling and border graphics
 
           // find the label of the 100K grid
-          text = mgrs.findGridLetters(utmZone,
+          text = utmZone + latitudeZone + mgrs.findGridLetters(utmZone,
             (n + 50000 < 0 ? 10000000 + (n + 50000) : n + 50000), e + 50000);
 
           // Build the 100k grid boundary
@@ -728,6 +611,7 @@ define([
             "ymax": (n + 100000),
             "minMaxType": "utm",
             "utmZone": utmZone,
+            "latitudeZone": latitudeZone,
             "utmZonePoly": zonePolygon,
             "fullZoneGeometry" : fullZoneGeometry,
             "GZD": text, 
@@ -747,15 +631,16 @@ define([
      * @param  {module:mgrs-utils~MgrsGridHandlerArguments} poly
      * An object holding the arguments for the various handlers
      */
-    handleGridSquares: function(poly, map, interval) {
-      // This method is similar in nature tot he 'handle100kGrids' method,
+    handleGridSquares: function(poly, map, interval, extent) {
+      // This method is similar in nature to the 'handle100kGrids' method,
       // but in the case of intervals,
       // there are no polygons to create, only horizontal and vertical lines.
       // Thus, much of this code is similar
       // to the 'handle100kGrids' method, without the need for a GridPolygon
       // class object (and less complex labeling logic)
-      var polyTest = [];
+      var polyOut = [];
       var zonePolygon = poly.utmZonePoly;
+      var latitudeZone = poly.latitudeZone;
       var utmZone = poly.utmZone;
       var fullZoneGeometry = poly.fullZoneGeometry;
       var GZD = poly.GZD;
@@ -763,93 +648,82 @@ define([
       var minE = poly.xmin;
       var maxE = poly.xmax;
       var minN = poly.ymin;
-      var maxN = poly.ymax;
+      var maxN = poly.ymax;      
+      var n, e, text, polygon, gridPolygonArgs, extentRotated;
+      var firstRow = true; 
+      var firstColumn = true;
       
-      //var grid = args.grid;
-      //var fontFamily = grid.getFontFamily();
-      //var xOffset = grid.getIntervalLabelXOffset();
-      //var yOffset = grid.getIntervalLabelYOffset();
-      //var interval = grid.getInterval();
-      //var verticalLabels = grid.getVerticalLabels();
-      var n, e, i, symbologyLevel, lineGraphics, color,
-          lineWidth, fontSize, font, leftPt, rightPt,
-          bottomPt, topPt, path, pt, horizontal,
-          horizontalGraphic, vertical, verticalGraphic,
-          text, labelSymbol, label, screenDistanceBetweenPoints,
-          distanceFromMapEdge, polygon, gridPolygonArgs;
-
-      // Horizontal lines
-      for (e = Math.floor(minE / interval) * interval; e < maxE; e += interval) {
-        for (n = Math.floor(minN / interval) * interval; n < maxN; n += interval) {
-        
+      for (n = Math.floor(minN / interval) * interval; n < maxN; n += interval) {
+        for (e = Math.floor(minE / interval) * interval; e < maxE; e += interval) {
             ring = [];
-            pt = mgrs.UTMtoLL(n, e, utmZone);
-            ring.push([pt.lon, pt.lat]);
-            pt = mgrs.UTMtoLL(n + interval, e, utmZone);
-            ring.push([pt.lon, pt.lat]);
-            pt = mgrs.UTMtoLL(n + interval, e + interval, utmZone);
-            ring.push([pt.lon, pt.lat]);
-            pt = mgrs.UTMtoLL(n, e + interval, utmZone);
-            ring.push([pt.lon, pt.lat]);
-            pt = mgrs.UTMtoLL(n, e, utmZone);
-            ring.push([pt.lon, pt.lat]);
-            
-            
-            // now that the polygon ring is built, shift it left/right to match the x-offset
-            // (i.e. how many increments left or right of the dateline, to support wraparound maps)
-            //for (i = 0; i < ring.length; i++) {
-             //ring[i][0] += offset * constants.GEOGRAPHIC_360;
-            //}
+            ptBL = mgrs.UTMtoLL(n, e, utmZone);
+            ring.push([ptBL.lon, ptBL.lat]);
+            ptTL = mgrs.UTMtoLL(n + interval, e, utmZone);
+            ring.push([ptTL.lon, ptTL.lat]);
+            ptTR = mgrs.UTMtoLL(n + interval, e + interval, utmZone);
+            ring.push([ptTR.lon, ptTR.lat]);
+            ptBR = mgrs.UTMtoLL(n, e + interval, utmZone);
+            ring.push([ptBR.lon, ptBR.lat]);
+            //close off poly
+            ring.push([ptBL.lon, ptBL.lat]);
             
             polygon = new Polygon([ring]);
+            
+            if (firstRow && firstColumn) {
+              //we only need to calculate the angle for the first polygon in the group
+              var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
+              extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
+            }
             
             var clippedPolygon = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
               zonePolygon);
+            
+            var clippedPolygonRotated = geometryEngine.intersects(
+              extentRotated,
+              gridGeomUtils.toWebMercator(polygon));            
+            
+            if (clippedPolygon || clippedPolygonRotated) {
               
+              if(clippedPolygonRotated) {
+                var clippedPolyToUTMZone = geometryEngine.intersect(
+                gridGeomUtils.toWebMercator(polygon),
+                gridGeomUtils.toWebMercator(fullZoneGeometry));
+              }
             
-            if (!clippedPolygon) {
-              continue;
+              text = GZD + (gridLabelUtils.padZero(e % 100000 / interval,  5 - Math.log10(interval))).toString() 
+                + (gridLabelUtils.padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
+                5 - Math.log10(interval))).toString();
+              
+              gridPolygonArgs = {
+                "clippedPolygon": clippedPolygon,
+                "unclippedPolygon": polygon,
+                "fullZoneGeometry": fullZoneGeometry,
+                "clippedPolyToUTMZone": clippedPolyToUTMZone,
+                "map": map,
+                "xmin": e,
+                "ymin": n,
+                "xmax": e + interval,
+                "ymax": n + interval,
+                "minMaxType": "utm",
+                "utmZone": utmZone,
+                "latitudeZone": latitudeZone,
+                "GZD": GZD,
+                "utmZonePoly": zonePolygon,
+                "text": text            
+              };
+              
+              if(!clippedPolyToUTMZone){
+                continue;
+              }
+              gridPolygon = new GridPolygon(gridPolygonArgs);
+              polyOut.push(gridPolygon);
             }
-            
-            var clippedPolyToUTMZone = geometryEngine.intersect(
-              gridGeomUtils.toWebMercator(polygon),
-              gridGeomUtils.toWebMercator(fullZoneGeometry));
-            
-            // find the label text of the interval line
-            text = utmZone + GZD + (gridLabelUtils.padZero(e % 100000 / interval,  5 - Math.log10(interval))).toString() 
-              + (gridLabelUtils.padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
-              5 - Math.log10(interval))).toString();
-
-            
-            
-            
-            gridPolygonArgs = {
-            "clippedPolygon": clippedPolygon,
-            "unclippedPolygon": polygon,
-            "clippedPolyToUTMZone": clippedPolyToUTMZone,
-            "fullZoneGeometry": fullZoneGeometry,
-            "map": map,
-            "xmin": e,
-            "ymin": n,
-            "xmax": e + interval,
-            "ymax": n + interval,
-            "minMaxType": "utm",
-            "utmZone": utmZone,
-            "GZD": GZD,
-            "utmZonePoly": zonePolygon,
-            "text": text
-            
-            };
-            
-            gridPolygon = new GridPolygon(gridPolygonArgs);
-            polyTest.push(gridPolygon);
-        
-        } 
-        
+        firstRow = false;
+        firstColumn = false;
+        }
       }
-      return polyTest;
-      
+      return polyOut;
     }
 
   };

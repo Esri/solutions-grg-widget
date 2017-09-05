@@ -345,7 +345,7 @@ define([
     if(totalNumber > 2000) {
       // Invalid entry
       var alertMessage = new Message({
-        message: 'You are attempting to create a grid comprising of ' + totalNumber + ' cells. It is advisable to reduce the number of cells being created by changing the grid size or grid area.'
+        message: 'You are attempting to create a grid comprising of ' + parseInt(totalNumber) + ' cells. It is advisable to reduce the number of cells being created by changing the grid size or grid area.'
       });
       return false;
     } else {
