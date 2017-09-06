@@ -458,7 +458,7 @@ define([
               this._grgAreaBySizeDeleteClicked)));
               
             //Handle click event of publish GRG to portal button
-            this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
+            this.own(on(this.grgAreaBySizePublishContainer, 'click', lang.hitch(this, function () {
               if(this.addGRGNameArea.isValid()) {
                 this._initSaveToPortal(this.addGRGNameArea.value)
               } else {
@@ -755,7 +755,7 @@ define([
           dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
           dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
           dojo.removeClass(this.addPointBtn, 'jimu-edit-active');
-          dojo.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+          dojo.addClass(this.grgAreaBySizePublishContainer, 'controlGroupHidden');
           dojo.addClass(this.saveGRGPointButton, 'controlGroupHidden');
         },
 
@@ -842,7 +842,7 @@ define([
           this.dt_AreaBySize.deactivate();
           this.map.enableMapNavigation();
         } else {
-          html.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+          html.addClass(this.grgAreaBySizePublishContainer, 'controlGroupHidden');
           this._graphicsLayerGRGExtent.clear();          
           this.map.disableMapNavigation();          
           this.dt_AreaBySize.activate('polygon');
@@ -871,7 +871,7 @@ define([
           this.dt_AreaBySize.deactivate();
           this.map.enableMapNavigation();
         } else {
-          html.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+          html.addClass(this.grgAreaBySizePublishContainer, 'controlGroupHidden');
           this._graphicsLayerGRGExtent.clear();          
           this.map.disableMapNavigation();          
           this.dt_AreaBySize.activate('extent');
@@ -1166,7 +1166,7 @@ define([
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
             this._grgAreaBySizeDeleteClicked();              
-            html.removeClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+            html.removeClass(this.grgAreaBySizePublishContainer, 'controlGroupHidden');
           }
         }
       },

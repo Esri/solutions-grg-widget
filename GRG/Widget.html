@@ -108,13 +108,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgAreaBySizeSettingsButton"></div>
                 <!-- GRG Area Form -->
-                <div class="GRGDrafterMainPageRow">
-                  <!-- GRG Layer Name -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.GRGLayerName}">${nls.GRGLayerName}</div>
-                      <input class="jimu-input textInput" style="width: 100%" data-dojo-type="dijit/form/ValidationTextBox" data-dojo-attach-point="addGRGNameArea"
-                        data-dojo-props="regExp:'[a-zA-Z0-9_]*', invalidMessage:'${nls.invalidGRGLayerName}', missingMessage:'${nls.missingGRGLayerName}'" required="true"></input>
-                  </div>
+                <div class="GRGDrafterMainPageRow">                  
                   <!-- Draw GRG Area Tool -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterFullWidth" data-dojo-attach-point="addGRGArea">
@@ -173,13 +167,23 @@
                         rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="cellHeight" value="1000"></input>
                     </div>
                   </div>
-                  <!-- Create and Publish Buttons -->
+                  <!-- Create GRG Button -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterBtnContainer">
                       <div class='jimu-btn' data-dojo-attach-point='createGRGButton'>${nls.createGRGBtn}</div>
-                      <div class='jimu-btn controlGroupHidden' data-dojo-attach-point='grgAreaBySizePublishGRGButton'>${nls.publishGRGBtn}</div>
                     </div>
                   </div>
+                  <!-- GRG Layer Name -->
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow controlGroupHidden" data-dojo-attach-point="grgAreaBySizePublishContainer" >
+                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.GRGLayerName}">${nls.GRGLayerName}</div>
+                      <input class="jimu-input textInput" style="width: 100%" data-dojo-type="dijit/form/ValidationTextBox" data-dojo-attach-point="addGRGNameArea"
+                        data-dojo-props="regExp:'[a-zA-Z0-9_]*', invalidMessage:'${nls.invalidGRGLayerName}', missingMessage:'${nls.missingGRGLayerName}'" required="true"></input>
+                    <!-- Publish GRG Button -->                  
+                    <div class="GRGDrafterBtnContainer">
+                      <div class='jimu-btn' data-dojo-attach-point='grgAreaBySizePublishGRGButton'>${nls.publishGRGBtn}</div>
+                    </div>
+                  </div>
+                  
                </div>
             </div>
         </div>
