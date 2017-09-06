@@ -1087,13 +1087,15 @@ define([
       
       _setNumberRowsColumnsCheckBoxChanged: function () {
         if(this.setNumberRowsColumns.checked) {
-          html.removeClass(this.numberOfCellsContainer, 'controlGroupHidden');
           this.cellWidth.set('disabled', true);
           this.cellHeight.set('disabled', true);
+          this.cellHorizontal.set('disabled', false);
+          this.cellVertical.set('disabled', false);
         } else {
-          html.addClass(this.numberOfCellsContainer, 'controlGroupHidden');
           this.cellWidth.set('disabled', false);
           this.cellHeight.set('disabled', false);
+          this.cellHorizontal.set('disabled', true);
+          this.cellVertical.set('disabled', true);
           this.cellHorizontal.set('value', 10);
           this.cellVertical.set('value', 10);
         }
