@@ -72,7 +72,9 @@ define({
       "showLabels": 'Show Labels', // Shown as label for show labels toggle switch    
     },
     
-
+    //Publish Panel
+    "publishTitle": "Publish GRG to Portal", // Shown as Title for Grid Settings page and label on settings buttons
+    "publishGRGBtn": 'Publish',
     
     "GRGLayerName": 'Published GRG Layer Name', // Shown as label for layer name box
     "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
@@ -86,7 +88,7 @@ define({
     "invalidRangeMessage": 'Value must be greater than 0',
     "gridAngleInvalidRangeMessage": 'Value must be between -89 and 89',
     "createGRGBtn": 'Create GRG',
-    "publishGRGBtn": 'Publish GRG to Portal',
+    
     "removeGRGLabel": 'Remove GRG Area',
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
     "coordInputLabel": 'GRG Center Point', // Shown as label for coordinate input
