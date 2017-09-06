@@ -15,6 +15,9 @@ define({
     
     //Area GRG By Size Panel    
     "newGRGAreaBySizeTitle": "New GRG From Area", // Shown as title for new GRG from area panel
+    "newGRGAreaBySizeDefineAreaLabel": 'Define GRG Area', // Shown as text for new GRG from area toolbar 
+    "addGRGAreaPolygonToolTip": "Draw GRG Area using polygon", // Shown as tooltip on draw rectangle icon
+    "addGRGAreaExtentToolTip": "Draw GRG Area using extent", // Shown as tooltip on draw extent icon
     
     //Area GRG By Reference System Panel    
     "newGRGAreaByRefSystemTitle": 'New GRG From Reference System', // Shown as title for new GRG from reference system panel
@@ -74,7 +77,7 @@ define({
     "GRGLayerName": 'Published GRG Layer Name', // Shown as label for layer name box
     "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
     "missingGRGLayerName": 'You must enter a name for the GRG',
-    "polygonDrawLabel": 'GRG Area',
+    
     "addPointToolTip": 'Add GRG Center Point',
     "numberRowsColumnsLabel": 'Use set number of rows and columns',
     "cellWidth": 'Cell Width',

@@ -48,6 +48,7 @@ define([
   'esri/symbols/SimpleFillSymbol',
   'esri/symbols/TextSymbol',
   'esri/toolbars/draw',
+  'esri/toolbars/edit',
   'esri/renderers/SimpleRenderer',
   'esri/tasks/query',
   'esri/request',
@@ -55,9 +56,9 @@ define([
   './js/GridSettings',
   './js/CoordinateInput',
   './js/drawGRG',
-  './js/PolygonFeedback',
   './js/DrawFeedBack',
   './js/EditOutputCoordinate',
+  './js/geometry-utils',
   './js/geometryUtils',
   './js/mgrs-utils',
   'dijit/form/NumberTextBox',
@@ -110,15 +111,16 @@ define([
     SimpleFillSymbol,
     TextSymbol,
     Draw,
+    Edit,
     SimpleRenderer,
     Query,
     esriRequest,
     GridSettings,
     coordInput,
     drawGRG,
-    drawFeedBackArea,
     drawFeedBackPoint,
     editOutputCoordinate,
+    gridGeomUtils,
     geometryUtils,
     mgrsUtils
   ) {
@@ -310,14 +312,18 @@ define([
           domClass.add(this.coordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
         }        
         
-        // add extended toolbar for drawing GRG Area
-        this.dtArea = new drawFeedBackArea(this.map,{nls: this.nls});
+        
+        // add toolbar for drawing GRG Area by Extent
+        this.dt_AreaBySize  = new Draw(this.map);
         
         // add extended toolbar for drawing GRG Point
         this.dtPoint = new drawFeedBackPoint(this.map,this.coordTool.inputCoordinate.util);
         
         // add toolbar for drawing GRG MGRS
         this.dt_AreaByRefSystem = new Draw(this.map);
+        
+        // add edit toolbar that will be used for rotating grid 
+        this.editToolbar = new Edit(this.map,{uniformScaling:true,allowAddVertices:true,allowDeleteVertices:true});
                               
         this._initLoading();
         
@@ -347,18 +353,7 @@ define([
       */
       onClose: function () {
         console.log('widget closed');
-      },
-      
-      midPointDidChange: function (r) {
-        this.centerPoint = r;
-      },
-      
-      /*
-       * angle value change
-       */
-      lineAngleDidChange: function (r) {
-        this.angle = r;
-      },           
+      },        
 
       /**
       * This function used for loading indicator
@@ -376,164 +371,236 @@ define([
       * Handle click events for different controls
       * @memberOf widgets/GRG/Widget
       **/
-      _handleClickEvents: function () {
-        topic.subscribe(drawFeedBackArea.midPointDidChange, lang.hitch(this, this.midPointDidChange));          
-        topic.subscribe(drawFeedBackArea.drawnLineAngleDidChange,lang.hitch(this, this.lineAngleDidChange));        
-        
+      _handleClickEvents: function () {        
         /**
         * Main menu panel buttons
         **/
         
-        //handle start new GRG Area button click
-        this.own(on(this.newGRGAreaButton, "click", lang.hitch(this, function () {
-          this._showPanel("fromAreaMenu");
-        })));
-        
-        //handle start new GRG Point button click
-        this.own(on(this.newGRGPointButton, "click", lang.hitch(this, function () {
-          this._showPanel("fromPointMenu");
-        })));
+            //handle start new GRG Area button click
+            this.own(on(this.newGRGAreaButton, "click", lang.hitch(this, function () {
+              this._showPanel("fromAreaMenu");
+            })));
+            
+            //handle start new GRG Point button click
+            this.own(on(this.newGRGPointButton, "click", lang.hitch(this, function () {
+              this._showPanel("fromPointMenu");
+            })));
         
         /**
         * GRG from area menu buttons
         **/
         
-        //Handle click event of back button 
-        this.own(on(this.grgFromAreaBackButton, 'click', lang.hitch(this,
-          this._resetOnBackToMainPage)));       
+            //Handle click event of back button 
+            this.own(on(this.grgFromAreaBackButton, 'click', lang.hitch(this,
+              this._resetOnBackToMainPage)));       
 
-        //Handle click event new GRG by size button
-        this.own(on(this.newAreaGRGBySizeButton, 'click', lang.hitch(this, function () {
-          this._showPanel("grgAreaBySize");
-        })));
-        
-        //Handle click event new GRG by reference system button
-        this.own(on(this.newAreaGRGFromRefSystemButton, 'click', lang.hitch(this, function () {
-          this._showPanel("grgAreaByRefSystem");
-        })));
-        
-        //Handle click event new GRG from non standard grid button
-        this.own(on(this.newAreaGRGFromNonStandardButton, 'click', lang.hitch(this, function () {
-          this._showPanel("grgAreaFromNonStandard");
-        })));
+            //Handle click event new GRG by size button
+            this.own(on(this.newAreaGRGBySizeButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgAreaBySize");
+            })));
+            
+            //Handle click event new GRG by reference system button
+            this.own(on(this.newAreaGRGFromRefSystemButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgAreaByRefSystem");
+            })));
+            
+            //Handle click event new GRG from non standard grid button
+            this.own(on(this.newAreaGRGFromNonStandardButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgAreaFromNonStandard");
+            })));
         
         /**
         * GRG from point menu buttons
         **/
         
-        //Handle click event of back button 
-        this.own(on(this.grgFromPointBackButton, 'click', lang.hitch(this,
-          this._resetOnBackToMainPage)));        
-        
-        //Handle click event new GRG by size button
-        this.own(on(this.newPointGRGBySizeButton, 'click', lang.hitch(this, function () {
-          this._showPanel("grgPointBySize");
-        })));
-        
-        //Handle click event new GRG by reference system button
-        this.own(on(this.newPointGRGFromRefSystemButton, 'click', lang.hitch(this, function () {
-          this._showPanel("grgPointByRefSystem");
-        })));
+            //Handle click event of back button 
+            this.own(on(this.grgFromPointBackButton, 'click', lang.hitch(this,
+              this._resetOnBackToMainPage)));        
+            
+            //Handle click event new GRG by size button
+            this.own(on(this.newPointGRGBySizeButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgPointBySize");
+            })));
+            
+            //Handle click event new GRG by reference system button
+            this.own(on(this.newPointGRGFromRefSystemButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgPointByRefSystem");
+            })));
         
         /**
         * GRG from Area by Size panel
         **/
         
-        //Handle click event of back button
-        this.own(on(this.grgAreaBySizePanelBackButton, 'click', lang.hitch(this, function () {
-          this._showPanel("fromAreaMenu");
-        })));
-        
-        //handle Grid Settings button
-        this.own(on(this.grgAreaBySizeSettingsButton, "click", lang.hitch(this, function () {
-          this._showPanel("settingsPage");
-        })));
+            //Handle click event of back button
+            this.own(on(this.grgAreaBySizePanelBackButton, 'click', lang.hitch(this, function () {
+              this._showPanel("fromAreaMenu");
+            })));
+            
+            //handle Grid Settings button
+            this.own(on(this.grgAreaBySizeSettingsButton, "click", lang.hitch(this, function () {
+              this._showPanel("settingsPage");
+            })));
+            
+            //Handle click event of Add GRG Area by Polygon button
+            this.own(on(this.grgAreaBySizeDrawPolygonIcon, 'click', lang.hitch(this, 
+              this._grgAreaBySizeDrawPolygonIconClicked)));
+              
+            //Handle click event of Add GRG Area by Extent button
+            this.own(on(this.grgAreaBySizeDrawExtentIcon, 'click', lang.hitch(this, 
+              this._grgAreaBySizeDrawExtentIconClicked)));
+              
+            //Handle completion of GRG rectangle area drawing        
+            this.own(on(this.dt_AreaBySize, 'draw-complete', lang.hitch(this, 
+              this._dt_AreaBySizeComplete)));
+              
+            //Handle click event of delete drawn extent icon        
+            this.own(on(this.grgAreaBySizeDeleteIcon, 'click', lang.hitch(this, 
+              this._grgAreaBySizeDeleteClicked)));
+              
+            //Handle click event of publish GRG to portal button
+            this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
+              if(this.addGRGNameArea.isValid()) {
+                this._initSaveToPortal(this.addGRGNameArea.value)
+              } else {
+                // Invalid entry
+                var alertMessage = new Message({
+                  message: this.nls.missingLayerNameMessage
+                });
+              }
+            })));
+            
+            this.own(on(this.cellHorizontal, 'blur', lang.hitch(this, function () {
+              if(this.cellHorizontal.isValid()) {
+                if(this._graphicsLayerGRGExtent.graphics[0]) {                  
+                  if(this.angle == 0) {
+                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                  } else {   
+                    this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
+                  }
+                }
+              }
+            })));
+            
+            this.own(on(this.cellVertical, 'blur', lang.hitch(this, function () {
+              if(this.cellVertical.isValid()) {
+                if(this._graphicsLayerGRGExtent.graphics[0]) {                  
+                  if(this.angle == 0) {
+                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                  } else {   
+                    this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
+                  }
+                }
+              }
+            })));
         
         /**
         * GRG from Area by Reference System panel
         **/
         
-        //Handle click event of back button
-        this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
-          this._showPanel("fromAreaMenu");
-        })));
+          //Handle click event of back button
+          this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
+            this._showPanel("fromAreaMenu");
+          })));
 
-        //handle Grid Settings button
-        this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-          this._showPanel("settingsPage");
-        })));
-        
-        //Handle click event of draw extent icon
-        this.own(on(this.grgAreaByRefSystemDrawIcon, 'click', lang.hitch(this, 
-          this._grgAreaByRefSystemDrawIconClicked)));
+          //handle Grid Settings button
+          this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+            this._showPanel("settingsPage");
+          })));
           
-        //Handle click event of delete drawn extent icon       
-        this.own(on(this.grgAreaByRefSystemDeleteIcon, 'click', lang.hitch(this, 
-          this._grgAreaByRefSystemDeleteIconClicked)));
-        
-        //Handle click event of create GRG button        
-        this.own(on(this.grgAreaByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
-          this._grgAreaByRefSystemCreateGRGButtonClicked)));
+          //Handle click event of draw extent icon
+          this.own(on(this.grgAreaByRefSystemDrawIcon, 'click', lang.hitch(this, 
+            this._grgAreaByRefSystemDrawIconClicked)));
+            
+          //Handle click event of delete drawn extent icon       
+          this.own(on(this.grgAreaByRefSystemDeleteIcon, 'click', lang.hitch(this, 
+            this._grgAreaByRefSystemDeleteIconClicked)));
           
-        
-        //Handle completion of extent drawing
-        this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
-          this._dt_AreaByRefSystemComplete)));
+          //Handle click event of create GRG button        
+          this.own(on(this.grgAreaByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
+            this._grgAreaByRefSystemCreateGRGButtonClicked)));          
+          
+          //Handle completion of extent drawing
+          this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
+            this._dt_AreaByRefSystemComplete)));
         
         /**
         * GRG from Area by Non Standard Grid panel
         **/
         
-        //Handle click event of back button
-        this.own(on(this.grgAreaByNonStandardPanelBackButton, 'click', lang.hitch(this, function () {
-          this._showPanel("fromAreaMenu");
-        })));
+            //Handle click event of back button
+            this.own(on(this.grgAreaByNonStandardPanelBackButton, 'click', lang.hitch(this, function () {
+              this._showPanel("fromAreaMenu");
+            })));
 
-        //handle Grid Settings button
-        this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
-          this._showPanel("settingsPage");
-        })));        
+            //handle Grid Settings button
+            this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
+              this._showPanel("settingsPage");
+            })));        
         
         /**
         * GRG from Point by Size panel
         **/
         
-        //Handle click event of back button
-        this.own(on(this.grgPointBySizePanelBackButton, 'click', lang.hitch(this, function () {
-          this._showPanel("fromPointMenu");
-        })));
+            //Handle click event of back button
+            this.own(on(this.grgPointBySizePanelBackButton, 'click', lang.hitch(this, function () {
+              this._showPanel("fromPointMenu");
+            })));
 
-        //handle Grid Settings button
-        this.own(on(this.grgPointBySizeSettingsButton, "click", lang.hitch(this, function () {
-          this._showPanel("settingsPage");
-        })));
+            //handle Grid Settings button
+            this.own(on(this.grgPointBySizeSettingsButton, "click", lang.hitch(this, function () {
+              this._showPanel("settingsPage");
+            })));
         
         /**
         * GRG from Point by Reference System panel
         **/
         
-        //Handle click event of back button
-        this.own(on(this.grgPointByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
-          this._showPanel("fromPointMenu");
-        })));
+            //Handle click event of back button
+            this.own(on(this.grgPointByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
+              this._showPanel("fromPointMenu");
+            })));
 
-        //handle Grid Settings button
-        this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-          this._showPanel("settingsPage");
-        })));        
+            //handle Grid Settings button
+            this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+              this._showPanel("settingsPage");
+            })));        
         
         /**
         * Settings panel
         **/
         
-        //Handle click event of Grid settings back button
-        this.own(on(this.gridSettingsPanelBackButton, "click", lang.hitch(this, function () {
-          this._gridSettingsInstance.onClose();          
-          this._showPanel(this._lastOpenPanel);
-        })));
+            //Handle click event of Grid settings back button
+            this.own(on(this.gridSettingsPanelBackButton, "click", lang.hitch(this, function () {
+              this._gridSettingsInstance.onClose();          
+              this._showPanel(this._lastOpenPanel);
+            })));
         
+        /**
+        * Toolbar events
+        **/
         
+            
+            //Handle graphic moved
+            this.own(on(this.editToolbar, "graphic-move-stop", lang.hitch(this,function(evt){
+                this.centerPoint = evt.graphic.geometry.getCentroid();
+            })));
+             
+            //Handle graphic rotated  
+            this.own(on(this.editToolbar, "rotate-stop", lang.hitch(this,function(evt){
+                this.angle = this.angle + evt.info.angle;
+            })));
+            
+            //Handle graphic vertices changed 
+            this.own(on(this.editToolbar, "vertex-move-stop", lang.hitch(this,function(evt){
+                this.centerPoint = evt.graphic.geometry.getCentroid();
+                this._calculateCellWidthAndHeight(evt.graphic.geometry);
+            })));
 
+            //Handle graphic scaled 
+            this.own(on(this.editToolbar, "scale-stop", lang.hitch(this,function(evt){
+                this.centerPoint = evt.graphic.geometry.getCentroid();
+                this._calculateCellWidthAndHeight(evt.graphic.geometry);
+            })));
         
         
         
@@ -542,20 +609,13 @@ define([
         
         
         
-          
-        //Handle click event of Add GRG Area draw button
-        this.own(on(this.addGRGAreaBtn, 'click', lang.hitch(this, 
-          this._addGRGAreaButtonClicked)));
+        
+        
         
         //Handle click event of Add GRG Point draw button
         this.own(on(this.addPointBtn, 'click', lang.hitch(this, 
-          this._addGRGPointButtonClicked)));  
-
-                  
+          this._addGRGPointButtonClicked)));
         
-        //Handle completion of GRG area drawing        
-        this.own(on(this.dtArea, 'draw-complete', lang.hitch(this, 
-          this._drawGRGAreaComplete)));
           
         //Handle completion of GRG point drawing
         this.own(on(this.dtPoint, 'draw-complete', lang.hitch(this,
@@ -563,9 +623,7 @@ define([
 
                   
         
-        //Handle click event of delete GRG Area button        
-        this.own(on(this.deleteGRGAreaBtn, 'click', lang.hitch(this, 
-          this.deleteGRGAreaButtonClicked)));
+        
           
         
           
@@ -618,17 +676,7 @@ define([
           }
         )));
         
-        //Handle click event of save GRG Area to portal button
-        this.own(on(this.saveGRGButton, 'click', lang.hitch(this, function () {
-          if(this.addGRGNameArea.isValid()) {
-            this._initSaveToPortal(this.addGRGNameArea.value)
-          } else {
-            // Invalid entry
-            var alertMessage = new Message({
-              message: this.nls.missingLayerNameMessage
-            });
-          }
-        })));
+        
         
         //Handle click event of save GRG Point to portal button
         this.own(on(this.saveGRGPointButton, 'click', lang.hitch(this, function () {
@@ -694,21 +742,23 @@ define([
       },
 
       _reset: function () {
-          this.GRGArea.clear();
-          //refresh each of the feature/graphic layers to enusre labels are removed
-          for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
-            this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
-          }
-          this.dtArea.deactivate();
+          this._clearGRGLayer();          
+          this.dt_AreaBySize.deactivate();
           this.dtPoint.deactivate();
           this.map.enableMapNavigation();
-          this.deleteGRGAreaButtonClicked();
+          this._grgAreaBySizeDeleteClicked();
           this._grgAreaByRefSystemDeleteIconClicked();
-          dojo.removeClass(this.addGRGAreaBtn, 'jimu-state-active');
-          dojo.removeClass(this.addPointBtn, 'jimu-state-active');
-          dojo.addClass(this.saveGRGButton, 'controlGroupHidden');
+          dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+          dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
+          dojo.removeClass(this.addPointBtn, 'jimu-edit-active');
+          dojo.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
           dojo.addClass(this.saveGRGPointButton, 'controlGroupHidden');
-        },      
+        },
+
+      _clearGRGLayer: function () {
+          this.GRGArea.clear();
+          this.GRGArea.refresh();          
+      },
 
       /**
       * Creates grid settings
@@ -771,28 +821,68 @@ define([
         this._currentOpenPanel = currentPanel;
       },
       
-      _addGRGAreaButtonClicked: function () {
-        this.GRGArea.clear();
-        
-        //refresh each of the feature/graphic layers to enusre labels are removed
-        for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
-          this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
+      _grgAreaBySizeDrawPolygonIconClicked: function () {
+        this._clearGRGLayer(); 
+        // deactive the other tool if active
+        var node = dijitRegistry.byId(this.grgAreaBySizeDrawExtentIcon);
+        if(dojo.hasClass(node,'jimu-extent-active')) {
+          //this tool is already selected so deactivate
+          this.dt_AreaBySize.deactivate();
+          domClass.toggle(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
+          //clear any partial drawings
+          this._graphicsLayerGRGExtent.clear();
+        }        
+        var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
+        if(dojo.hasClass(node,'jimu-edit-active')) {
+          //already selected so deactivate draw tool
+          this.dt_AreaBySize.deactivate();
+          this.map.enableMapNavigation();
+        } else {
+          html.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+          this._graphicsLayerGRGExtent.clear();          
+          this.map.disableMapNavigation();          
+          this.dt_AreaBySize.activate('polygon');
+          //depending on what draw option is used we want different edit functionality
+          this.own(on(this._graphicsLayerGRGExtent, "click", lang.hitch(this, function(evt) {
+            this.editToolbar.activate(Edit.MOVE|Edit.EDIT_VERTICES, evt.graphic); 
+          })));          
         }
-        
-        this.map.disableMapNavigation();
-        this.dtArea.activate('polyline');
-        domClass.toggle(this.addGRGAreaBtn, 'jimu-state-active');
-        html.addClass(this.saveGRGButton, 'controlGroupHidden');
+        domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+      },
+      
+      _grgAreaBySizeDrawExtentIconClicked: function () {
+        this._clearGRGLayer(); 
+        // deactive the other tool if active
+        var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
+        if(dojo.hasClass(node,'jimu-edit-active')) {
+          //this tool is already selected so deactivate
+          this.dt_AreaBySize.deactivate();
+          domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+          //clear any partial drawings
+          this._graphicsLayerGRGExtent.clear();
+        }        
+        var node = dijitRegistry.byId(this.grgAreaBySizeDrawExtentIcon);
+        if(dojo.hasClass(node,'jimu-extent-active')) {
+          //already selected so deactivate draw tool
+          this.dt_AreaBySize.deactivate();
+          this.map.enableMapNavigation();
+        } else {
+          html.addClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
+          this._graphicsLayerGRGExtent.clear();          
+          this.map.disableMapNavigation();          
+          this.dt_AreaBySize.activate('extent');
+          //depending on what draw option is used we want different edit functionality
+          this.own(on(this._graphicsLayerGRGExtent, "click", lang.hitch(this, function(evt) {
+            this.editToolbar.activate(Edit.MOVE|Edit.ROTATE|Edit.SCALE, evt.graphic); 
+          })));
+        }
+        domClass.toggle(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
       },
       
       _addGRGPointButtonClicked: function () {
         html.addClass(this.saveGRGPointButton, 'controlGroupHidden');
         this.dtPoint.removeStartGraphic();
-        this.GRGArea.clear();
-        //refresh each of the feature/graphic layers to enusre labels are removed
-        for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
-          this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
-        }
+        this._clearGRGLayer(); 
         this.coordTool.manualInput = false;
         
         this.dtPoint._setTooltipMessage(0);
@@ -803,12 +893,12 @@ define([
         if (tooltip) {
           tooltip.innerHTML = 'Click to add GRG center point';
         }
-        domClass.toggle(this.addPointBtn, 'jimu-state-active');
+        domClass.toggle(this.addPointBtn, 'jimu-edit-active');
       },
       
       _grgAreaByRefSystemDrawIconClicked: function () {
         var node = dijitRegistry.byId(this.grgAreaByRefSystemDrawIcon);
-        if(dojo.hasClass(node,'jimu-state-active')) {
+        if(dojo.hasClass(node,'jimu-edit-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaByRefSystem.deactivate();
           this.map.enableMapNavigation();
@@ -819,31 +909,51 @@ define([
           this.map.disableMapNavigation();          
           this.dt_AreaByRefSystem.activate('extent');        
         }
-        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-state-active');
+        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');
         
       },
       
-      _drawGRGAreaComplete: function (evt) {          
-        var graphic = new Graphic(evt.geometry, this._extentSym);
-        this._graphicsLayerGRGExtent.add(graphic);
-        this.map.enableMapNavigation();
-        this.dtArea.deactivate();
+      _dt_AreaBySizeComplete: function (evt) {          
         
+        this.map.enableMapNavigation();
+        this.dt_AreaBySize.deactivate();
+        
+        if(evt.geometry.type == 'extent'){
+          evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry);
+          var graphic = new Graphic(evt.geometry, this._extentSym);
+        
+        } else {
+          var graphic = new Graphic(evt.geometry, this._extentSym);
+          evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry.getExtent());
+        }
+        
+        this._graphicsLayerGRGExtent.add(graphic);
+        this.centerPoint = evt.geometry.getCentroid();
+        
+        
+        
+        this._calculateCellWidthAndHeight(evt.geometry);
+        
+        domClass.toggle(this.addGRGArea, "controlGroupHidden");
+        domClass.toggle(this.grgAreaBySizeDeleteContainer, "controlGroupHidden");
+      },
+      
+      _calculateCellWidthAndHeight: function (geometry) {
         //if the input id geographics project the geometry to WMAS
-        if (evt.geometry.spatialReference.wkid == 4326) {
+        if (geometry.spatialReference.wkid == 4326) {
           // if the geographic point can be projected the map spatial reference do so
-          evt.geometry = WebMercatorUtils.geographicToWebMercator(evt.geometry);
+          geometry = WebMercatorUtils.geographicToWebMercator(geometry);
         }
        
         //calculate the geodesic width and height of the required grid cells
         var calculatedCellWidth = ((GeometryEngine.geodesicLength(new Polyline({
-            paths: [[[evt.geometry.getPoint(0,0).x, evt.geometry.getPoint(0,0).y], [evt.geometry.getPoint(0,1).x, evt.geometry.getPoint(0,1).y]]],
-            spatialReference: evt.geometry.spatialReference
+            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y], [geometry.getPoint(0,1).x, geometry.getPoint(0,1).y]]],
+            spatialReference: geometry.spatialReference
           }), this._cellUnits))/this.cellHorizontal.value);
           
         var calculatedCellHeight = ((GeometryEngine.geodesicLength(new Polyline({
-            paths: [[[evt.geometry.getPoint(0,0).x, evt.geometry.getPoint(0,0).y], [evt.geometry.getPoint(0,3).x, evt.geometry.getPoint(0,3).y]]],
-            spatialReference: evt.geometry.spatialReference
+            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y], [geometry.getPoint(0,3).x, geometry.getPoint(0,3).y]]],
+            spatialReference: geometry.spatialReference
           }), this._cellUnits))/this.cellVertical.value);
           
         //convert the width and height into meters
@@ -860,22 +970,19 @@ define([
           this._cellShape == "default"?this.cellHeight.setValue(calculatedCellHeight):this.cellHeight.setValue(0);
         } else {
           this.geodesicGrid = false;
-          this.cellWidth.setValue(((GeometryEngine.distance(evt.geometry.getPoint(0,0), evt.geometry.getPoint(0,1), this._cellUnits))/this.cellHorizontal.value)); 
-          this._cellShape == "default"?this.cellHeight.setValue(((GeometryEngine.distance(evt.geometry.getPoint(0,0), evt.geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value)):this.cellHeight.setValue(0);
-        }
-        
-        domClass.toggle(this.addGRGArea, "controlGroupHidden");
-        domClass.toggle(this.deleteGRGArea, "controlGroupHidden");
+          this.cellWidth.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,1), this._cellUnits))/this.cellHorizontal.value)); 
+          this._cellShape == "default"?this.cellHeight.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value)):this.cellHeight.setValue(0);
+        }        
       },
       
       _drawGRGPointComplete: function () {          
-        domClass.remove(this.addPointBtn, 'jimu-state-active');
+        domClass.remove(this.addPointBtn, 'jimu-edit-active');
         this.dtPoint.deactivate();
         this.map.enableMapNavigation();
       },
       
       _dt_AreaByRefSystemComplete: function (evt) {       
-        domClass.remove(this.grgAreaByRefSystemDrawIcon, 'jimu-state-active');
+        domClass.remove(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');
         var graphic = new Graphic(evt.geometry, this._extentSym);
         this._graphicsLayerGRGExtent.add(graphic);
         this.dt_AreaByRefSystem.deactivate();
@@ -955,22 +1062,23 @@ define([
       }, 
       
       
-      deleteGRGAreaButtonClicked: function () {
+      _grgAreaBySizeDeleteClicked: function () {
         this._graphicsLayerGRGExtent.clear();
         
         //reset the angle
         this.angle = 0;
         
-        html.removeClass(this.addGRGAreaBtn, 'jimu-state-active');          
+        html.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+        html.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');   
         html.removeClass(this.addGRGArea, 'controlGroupHidden');
         html.addClass(this.addGRGArea, 'controlGroup');
-        html.removeClass(this.deleteGRGArea, 'controlGroup');
-        html.addClass(this.deleteGRGArea, 'controlGroupHidden');          
+        html.removeClass(this.grgAreaBySizeDeleteContainer, 'controlGroup');
+        html.addClass(this.grgAreaBySizeDeleteContainer, 'controlGroupHidden');          
       },
       
       _grgAreaByRefSystemDeleteIconClicked: function () {
         this._graphicsLayerGRGExtent.clear();
-        html.removeClass(this.grgAreaByRefSystemDrawIcon, 'jimu-state-active');          
+        html.removeClass(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');          
         html.removeClass(this.grgAreaByRefSystemDrawContainer, 'controlGroupHidden');
         html.addClass(this.grgAreaByRefSystemDrawContainer, 'controlGroup');
         html.removeClass(this.grgAreaByRefSystemDeleteContainer, 'controlGroup');
@@ -994,8 +1102,14 @@ define([
       _createAreaGRG: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0] && this.cellWidth.isValid() && this.cellHeight.isValid()) {
-          var geom = this._graphicsLayerGRGExtent.graphics[0].geometry;
-
+          
+          this.editToolbar.deactivate();
+          if(this.angle == 0) {
+            var geom = gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
+          } else {          
+            var geom = this._graphicsLayerGRGExtent.graphics[0].geometry;
+          }
+          
           //if the input is geographics project the geometry to WMAS
           if (geom.spatialReference.wkid == 4326) {
             // if the geographic point can be projected the map spatial reference do so
@@ -1045,8 +1159,8 @@ define([
               esriConfig.defaults.geometryService); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            this.deleteGRGAreaButtonClicked();              
-            html.removeClass(this.saveGRGButton, 'controlGroupHidden');
+            this._grgAreaBySizeDeleteClicked();              
+            html.removeClass(this.grgAreaBySizePublishGRGButton, 'controlGroupHidden');
           }
         }
       },
@@ -1055,11 +1169,7 @@ define([
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
           var TRString, BRString;          
-          this.GRGArea.clear();
-          //refresh each of the feature/graphic layers to enusre labels are removed
-          for(var j = 0; j < this.map.graphicsLayerIds.length; j++) {
-            this.map.getLayer(this.map.graphicsLayerIds[j]).refresh();
-          }          
+          this._clearGRGLayer();           
           // determine which UTM grid zones and bands fall within the extent
           zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0],this.map);
           var features = [];
@@ -1080,7 +1190,7 @@ define([
               var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
               var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
               if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
-                var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000);
+                var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000,this._graphicsLayerGRGExtent.graphics[0]);
                 var currentValue = 10000;              
                 while (currentValue >= this.grgAreaByRefSystemGridSize.getValue()) {
                   var polys = [];
@@ -1125,16 +1235,6 @@ define([
                   }
                 }                
                 **/
-               
-                
-                
-                
-                
-                
-                
-                
-                
-                
                 
                 var count = 1;
                 for (i = 0; i < polysToLoop.length; i++) {

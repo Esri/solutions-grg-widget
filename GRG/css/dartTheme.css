@@ -100,8 +100,30 @@
     background-repeat: no-repeat;
 }
 
-.jimu-widget-GRGDrafter .jimu-state-active {
+.jimu-widget-GRGDrafter .jimu-edit-active {
     background: url('./images/edit_white_hover.png');
+    background-repeat: no-repeat;
+    border: none;
+}
+
+.jimu-widget-GRGDrafter .extentBtn {
+    display: inline-block;
+    background: url(./images/extent_white.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 16px;
+    height: 16px;
+    margin-bottom: 4px;
+    margin-left: 5px;
+}
+
+.jimu-widget-GRGDrafter .extentBtn:hover {
+    background: url('./images/extent_white_hover.png');
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .jimu-extent-active {
+    background: url('./images/extent_white_hover.png');
     background-repeat: no-repeat;
     border: none;
 }

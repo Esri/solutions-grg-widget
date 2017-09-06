@@ -462,7 +462,7 @@ define([
      * @param  {module:mgrs-utils~VisibleGridZone[]} visibleGridZone A VisibleGridZone object
      * @param  {object} grid The grid overlay object that is calling this method
      */
-    processZonePolygons: function(visibleGridZones, map, interval) {
+    processZonePolygons: function(visibleGridZones, map, interval, extent) {
      
       var utmZonePolygons = {};
       var intervalSpacing = interval;
@@ -504,7 +504,7 @@ define([
             "offset": visibleGridZone.offset,
             "fullZoneGeometry": gridGeomUtils.extentToPolygon(visibleGridZone.nonPolarGridZone.extent)
           };
-          polys = polys.concat(this.handle100kGrids(handlerArgs, map));
+          polys = polys.concat(this.handle100kGrids(handlerArgs, map, extent));
         }
       }
       return polys;
@@ -517,7 +517,7 @@ define([
      *
      * @todo Implement configurable parameter for when to label (center and corners), based on zoom
      */
-    handle100kGrids: function(args, map) {
+    handle100kGrids: function(args, map, extent) {
       var zonePolygon = args.polygon;
       var offset = args.offset;
       var utmZone = args.utmZone;
@@ -580,46 +580,57 @@ define([
           // create the polygon, from the ring created above
           polygon = new Polygon([ring]);
           
+          //we need to rotate the drawn extent to match the angle of the grid
+          var angle = geomUtils.getAngleBetweenPoints(polygon.getPoint(0, polygon.rings[0].length - 1),polygon.getPoint(0, polygon.rings[0].length - 2));
+          extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
+          
           // now that the 100k grid polygon exists, clip it by the grid zone polygon
           var clippedPolygon = geometryEngine.intersect(
             gridGeomUtils.toWebMercator(polygon),
             gridGeomUtils.toWebMercator(zonePolygon));
+            
+          var clippedPolygonRotated = geometryEngine.intersects(
+              extentRotated,
+              gridGeomUtils.toWebMercator(polygon));
           
           // after being clipped above, they may no longer exist
           // (i.e. they were not within the bounds of the zone)
           // if this is the case, skip the rest and move on to the next increment of n or e
-          if (!clippedPolygon) {
-            continue;
-          }
-          
-          // now we now the polygon is still present clip to the full UTM zone
-          var clippedPolyToUTMZone = geometryEngine.intersect(
-            gridGeomUtils.toWebMercator(polygon),
-            gridGeomUtils.toWebMercator(fullZoneGeometry));
-          
+          if (clippedPolygon || clippedPolygonRotated) {
+           
+            if(clippedPolygonRotated) {
+                var clippedPolyToUTMZone = geometryEngine.intersect(
+                gridGeomUtils.toWebMercator(polygon),
+                gridGeomUtils.toWebMercator(fullZoneGeometry));
+              }            
 
-          // The GridPolygon class is primarily meant to handle labeling.
-          // The following code is all about building the GridPolygon in order to get the labels.
-          gridPolygonArgs = {
-            "clippedPolygon": clippedPolygon,
-            "unclippedPolygon": polygon,
-            "clippedPolyToUTMZone": clippedPolyToUTMZone,
-            "map": map,
-            "xmin": e,
-            "ymin": n,
-            "xmax": (e + 100000),
-            "ymax": (n + 100000),
-            "minMaxType": "utm",
-            "utmZone": utmZone,
-            "latitudeZone": latitudeZone,
-            "utmZonePoly": zonePolygon,
-            "fullZoneGeometry" : fullZoneGeometry,
-            "GZD": text, 
-            "text": text            
-          };
-          gridPolygon = new GridPolygon(gridPolygonArgs);
-          poly100k.push(gridPolygon);
-          
+            // The GridPolygon class is primarily meant to handle labeling.
+            // The following code is all about building the GridPolygon in order to get the labels.
+            gridPolygonArgs = {
+              "clippedPolygon": clippedPolygon,
+              "unclippedPolygon": polygon,
+              "clippedPolyToUTMZone": clippedPolyToUTMZone,
+              "map": map,
+              "xmin": e,
+              "ymin": n,
+              "xmax": (e + 100000),
+              "ymax": (n + 100000),
+              "minMaxType": "utm",
+              "utmZone": utmZone,
+              "latitudeZone": latitudeZone,
+              "utmZonePoly": zonePolygon,
+              "fullZoneGeometry" : fullZoneGeometry,
+              "GZD": text, 
+              "text": text            
+            };
+            
+            if(!clippedPolyToUTMZone){
+                continue;
+            }
+              
+            gridPolygon = new GridPolygon(gridPolygonArgs);
+            poly100k.push(gridPolygon);
+          }
         }
       }
       return poly100k;

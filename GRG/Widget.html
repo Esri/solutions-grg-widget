@@ -119,22 +119,23 @@
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterFullWidth" data-dojo-attach-point="addGRGArea">
                       <div>
-                      <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.polygonDrawLabel}">${nls.polygonDrawLabel}</div>
-                      <div title="${nls.addPointToolTip}" class="jimu-icon jimu-icon-edit" data-dojo-attach-point="addGRGAreaBtn"></div>
+                        <div class="GRGDrafterDoubleButtonLabel GRGDrafterEllipsis" title="${nls.newGRGAreaBySizeDefineAreaLabel}">${nls.newGRGAreaBySizeDefineAreaLabel}</div>                        
+                        <div title="${nls.addGRGAreaPolygonToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgAreaBySizeDrawPolygonIcon"></div>
+                        <div title="${nls.addGRGAreaExtentToolTip}" class="jimu-icon extentBtn" data-dojo-attach-point="grgAreaBySizeDrawExtentIcon"></div>                        
                       </div>
                     </div>
                   </div>
                   <!-- Delete GRG Area -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow controlGroupHidden" data-dojo-attach-point="deleteGRGArea">
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow controlGroupHidden" data-dojo-attach-point="grgAreaBySizeDeleteContainer">
                     <div>
                       <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.removeGRGLabel}">${nls.removeGRGLabel}</div>
-                      <div title="${nls.removeGRGLabel}" class="jimu-icon jimu-icon-delete" data-dojo-attach-point="deleteGRGAreaBtn"></div>
+                      <div title="${nls.removeGRGLabel}" class="jimu-icon jimu-icon-delete" data-dojo-attach-point="grgAreaBySizeDeleteIcon"></div>
                     </div>                   
                   </div>
                   
                   <!-- Set number of cells checkbox -->
                   <div class="GRGDrafterFullWidthAndPadding">
-                    <input class="interactive-checkbox" type="checkbox" data-dojo-attach-point="setNumberRowsColumns" />
+                    <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="setNumberRowsColumns" checked="false" />
                     <label data-dojo-attach-point="interactiveLabel">${nls.numberRowsColumnsLabel}</label>                
                   </div>
                   
@@ -176,7 +177,7 @@
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterBtnContainer">
                       <div class='jimu-btn' data-dojo-attach-point='createGRGButton'>${nls.createGRGBtn}</div>
-                      <div class='jimu-btn controlGroupHidden' data-dojo-attach-point='saveGRGButton'>${nls.publishGRGBtn}</div>
+                      <div class='jimu-btn controlGroupHidden' data-dojo-attach-point='grgAreaBySizePublishGRGButton'>${nls.publishGRGBtn}</div>
                     </div>
                   </div>
                </div>
@@ -205,7 +206,7 @@
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterFullWidth" data-dojo-attach-point="grgAreaByRefSystemDrawContainer">
                       <div>
-                      <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.polygonDrawLabel}">${nls.polygonDrawLabel}</div>
+                      <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.newGRGAreaBySizeDefineAreaLabel}">${nls.newGRGAreaBySizeDefineAreaLabel}</div>
                       <div title="${nls.addPointToolTip}" class="jimu-icon jimu-icon-edit" data-dojo-attach-point="grgAreaByRefSystemDrawIcon"></div>
                       </div>
                     </div>
@@ -235,7 +236,7 @@
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow" >
                     <div>
                       <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.clipGrid}">${nls.clipGrid}</div>
-                      <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="grgAreaByRefSystemClipToggle" checked="true" />
+                      <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="grgAreaByRefSystemClipToggle" checked="false" />
                     </div>
                   </div>
                   
