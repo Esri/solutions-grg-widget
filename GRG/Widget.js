@@ -469,6 +469,11 @@ define([
               }
             })));
             
+            //Handle click event of number of row / columns checkbox        
+            this.own(on(this.setNumberRowsColumns, 'click', lang.hitch(this, 
+            this._setNumberRowsColumnsCheckBoxChanged)));
+            
+            //Handle number of horizontal cells change
             this.own(on(this.cellHorizontal, 'blur', lang.hitch(this, function () {
               if(this.cellHorizontal.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
@@ -481,6 +486,7 @@ define([
               }
             })));
             
+            //Handle number of vertical cells change
             this.own(on(this.cellVertical, 'blur', lang.hitch(this, function () {
               if(this.cellVertical.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
@@ -593,7 +599,7 @@ define([
             //Handle graphic vertices changed 
             this.own(on(this.editToolbar, "vertex-move-stop", lang.hitch(this,function(evt){
                 this.centerPoint = evt.graphic.geometry.getCentroid();
-                this._calculateCellWidthAndHeight(evt.graphic.geometry);
+                this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
             })));
 
             //Handle graphic scaled 
@@ -627,9 +633,7 @@ define([
           
         
           
-        //Handle click event of number of row / columns checkbox        
-        this.own(on(this.setNumberRowsColumns, 'click', lang.hitch(this, 
-          this._setNumberRowsColumnsCheckBoxChanged)));
+        
         
         //Handle click event of create GRG Area button        
         this.own(on(this.createGRGButton, 'click', lang.hitch(this, 
