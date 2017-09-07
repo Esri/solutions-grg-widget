@@ -18,6 +18,7 @@ define({
     "newGRGAreaBySizeDefineAreaLabel": 'Define GRG Area', // Shown as text for new GRG from area toolbar 
     "addGRGAreaPolygonToolTip": "Draw GRG Area using polygon", // Shown as tooltip on draw rectangle icon
     "addGRGAreaExtentToolTip": "Draw GRG Area using extent", // Shown as tooltip on draw extent icon
+    "rotation": 'Rotation', // Shown as label above rotation input box
     
     //Area GRG By Reference System Panel    
     "newGRGAreaByRefSystemTitle": 'New GRG From Reference System', // Shown as title for new GRG from reference system panel
@@ -41,9 +42,17 @@ define({
 
     //Settings Panel
     "settingsTitle": "Settings", // Shown as Title for Grid Settings page and label on settings buttons
+    "labelSettingsLabel": 'Label Settings', // Shown as Title for Label Settings dropdown
+    "labelSettingsButtonLabel": 'Configure Label Settings', // Shown as tooltip for Label Settings dropdown
+    "gridSettingsLabel": 'Grid Settings', // Shown as Title for Label Settings dropdown
+    "gridSettingsButtonLabel": 'Configure Grid Settings', // Shown as tooltip for Label Settings dropdown
+    "transparency": 'Transparency', // Shown as label on transparency sliders
+    
     "gridSettings": {
       "cellShape": "Cell Shape", // Shown as label to set Cell Shape Type
       "cellUnits": "Cell Units", // Shown as label to set Cell Units      
+      "cellOutline": 'Cell Outline Settings', // Shown as label to set cell Outline Settings
+      "cellFill": 'Cell Fill Settings', // Shown as label to set cell fill Settings
       "labelStartPosition": "Label Start Position",  // Shown as label to set label start position      
       "labelType": "Label Type", // Shown as label to set label type
       "gridOrigin": "Grid Origin", // Shown as label to set grid origin
@@ -74,11 +83,12 @@ define({
     
     //Publish Panel
     "publishTitle": "Publish GRG to Portal", // Shown as Title for Grid Settings page and label on settings buttons
-    "publishGRGBtn": 'Publish',
-    
+    "publishGRGBtn": 'Publish',    
     "GRGLayerName": 'Published GRG Layer Name', // Shown as label for layer name box
     "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
     "missingGRGLayerName": 'You must enter a name for the GRG',
+    
+    
     
     "addPointToolTip": 'Add GRG Center Point',
     "numberRowsColumnsLabel": 'Use set number of rows and columns',
@@ -86,7 +96,7 @@ define({
     "cellHeight": 'Cell Height',
     "invalidNumberMessage": 'The value entered is not valid',
     "invalidRangeMessage": 'Value must be greater than 0',
-    "gridAngleInvalidRangeMessage": 'Value must be between -89 and 89',
+    "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',
     "createGRGBtn": 'Create GRG',
     
     "removeGRGLabel": 'Remove GRG Area',

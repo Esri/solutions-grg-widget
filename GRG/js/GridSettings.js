@@ -1,6 +1,9 @@
 ﻿define([
   'dojo/_base/declare',
   'dojo/_base/array',
+  'dojo/_base/html',
+  'dojo/on',
+  './ColorPickerEditor',
   'jimu/BaseWidget',
   'dijit/_WidgetsInTemplateMixin',
   'dojo/text!../templates/GridSettings.html',
@@ -8,23 +11,46 @@
   'dojo/Evented',
   'dojo/dom-class',
   'dojo/query',
-  'dijit/form/Select'
+  'dijit/registry',
+  'dijit/form/Select',
+  'dojo/NodeList-manipulate',
+    "jimu/dijit/RadioBtn",
+    'dijit/_editor/plugins/LinkDialog',
+    'dijit/_editor/plugins/ViewSource',
+    'dijit/_editor/plugins/FontChoice',
+    'dojox/editor/plugins/Preview',
+    'dijit/_editor/plugins/TextColor',
+    'dojox/editor/plugins/ToolbarLineBreak',
+    'dijit/ToolbarSeparator',
+    'dojox/editor/plugins/FindReplace',
+    'dojox/editor/plugins/PasteFromWord',
+    'dojox/editor/plugins/InsertAnchor',
+    'dojox/editor/plugins/Blockquote',
+    'jimu/dijit/EditorTextColor',
+    'jimu/dijit/EditorBackgroundColor'
+  
 ],
   function (
     declare,
     array,
+    html,
+    on,
+    ColorPickerEditor,
     BaseWidget,
     _WidgetsInTemplateMixin,
     GridSettingsTemplate,
     lang,
     Evented,
     domClass,
-    query
+    query,
+    dijitRegistry
   ) {
     return declare([BaseWidget, _WidgetsInTemplateMixin, Evented], {
       baseClass: 'jimu-widget-GRGDrafter-Settings',
       templateString: GridSettingsTemplate,
       selectedGridSettings: {}, //Holds selected Settings
+      _defaultColor: '#1a299c',
+      _defaultTransparency: 0,
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
@@ -39,24 +65,88 @@
 
       //Load all the options on startup
       startup: function () {
+        
+        this.gridOutlineColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
+        this.gridOutlineColorPicker.startup();
+        this.gridOutlineColorPicker.setValues({
+            "color": this.config.grg.gridOutlineColor || this._defaultColor,
+            "transparency": this.config.grg.gridOutlineTransparency || this._defaultTransparency
+          });
+          
+        this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
+        this.gridFillColorPicker.startup();
+        this.gridFillColorPicker.setValues({
+            "color": this.config.grg.gridFillColor || this._defaultColor,
+            "transparency": this.config.grg.gridFillTransparency || this._defaultTransparency
+          });
+          
         //load options for all drop downs
         this._loadOptionsForDropDown(this.cellShape, this.gridSettingsOptions.cellShape);
         this._loadOptionsForDropDown(this.labelStartPosition, this.gridSettingsOptions.labelStartPosition);
         this._loadOptionsForDropDown(this.cellUnits, this.gridSettingsOptions.cellUnits);
         this._loadOptionsForDropDown(this.labelType, this.gridSettingsOptions.labelType);
         this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
+        
         //send by default updated parameters
-        this.onGridsettingsChanged();
+        this.onGridsettingsChanged();        
       },
 
       postCreate: function () {
         this.inherited(arguments);
         //set widget variables
         this.selectedGridSettings = {};
+        this.gridSettingsOptions = this.gridSettingsOptions;
         //set class to main container
         domClass.add(this.domNode, "GRGDrafterSettingsContainer GRGDrafterFullWidth");
         //TODO: try to remove the timeout
         setTimeout(lang.hitch(this, this._setBackgroundColorForDartTheme), 500);
+        this._handleClickEvents();
+      },
+      
+      /**
+      * Handle click events for different controls
+      * @memberOf widgets/GRG/Widget
+      **/
+      _handleClickEvents: function () {        
+        //handle grid settings button clicked
+        this.own(on(this.gridSettingsButton, "click", lang.hitch(this, function () {
+          var node = dijitRegistry.byId(this.gridSettingsButton);
+          if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+            //in closed state - so open and change arrow to up
+            html.removeClass(this.gridSettingsContainer, 'controlGroupHidden');
+            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            //close label settings if open
+            html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
+            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+          } else {
+            //in open state - so close and change arrow to down
+            html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
+            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+          }
+        })));
+        
+        //handle label settings button clicked
+        this.own(on(this.labelSettingsButton, "click", lang.hitch(this, function () {
+          var node = dijitRegistry.byId(this.labelSettingsButton);
+          if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+            //in closed state - so open and change arrow to up
+            html.removeClass(this.labelSettingsContainer, 'controlGroupHidden');
+            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            //close label settings if open
+            html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
+            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+          } else {
+            //in open state - so close and change arrow to down
+            html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
+            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+          }
+        })));
       },
 
       /**
@@ -139,6 +229,12 @@
         if (this._isSettingsChanged()) {
           this.onGridsettingsChanged();
         }
+        html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
+        html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+        html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+        html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
+        html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+        html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
       },
 
       /**

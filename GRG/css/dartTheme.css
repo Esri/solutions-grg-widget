@@ -45,12 +45,13 @@
     background-color: #222;
     background-image: none;    
 }
-.claro .dijitTooltipContainer,
+
 .claro .dijitDialogPaneContent {
     background-color: #4c4c4c;
     border: 0px solid #222;
     color: #fff;
 }
+
 .claro .dijitDialogPaneContent  {
   float: right;
 }

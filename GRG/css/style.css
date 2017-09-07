@@ -1,3 +1,5 @@
+@import url('style_color.css');
+
 /*------------------------- Styles for widget panel -----------------------*/
 .GRGDrafterMainContainer
 {
@@ -56,7 +58,13 @@
 .jimu-widget-GRGDrafter .GRGDrafterMainPageRow
 {
     width: calc(100% - 20px);
-    margin: 10px 50px 10px 20px;
+    margin: 10px 10px 10px 10px;
+    display: inline-block;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterMainPageRowItem {
+    width: calc(100% - 40px);
+    margin: 5px 25px 5px 25px;
     display: inline-block;
 }
 
@@ -90,13 +98,40 @@
 
 .jimu-widget-GRGDrafter .GRGDrafterNewGRGPointButton
 {
-    background: url("../images/new-grgPoint.png") no-repeat;
+    background: url("../images/down-arrow.png") no-repeat;
 }
 
 .jimu-widget-GRGDrafter .GRGDrafterNewGRGAreaButton
 {
-    background: url("../images/new-grgArea.png") no-repeat;
+    background: url("../images/down-arrow.png") no-repeat;
 }
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGAreaBySizeButton
+{
+    background: url("../images/bySize.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGPointBySizeButton
+{
+    background: url("../images/bySize.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGAreaByRefSystemButton
+{
+    background: url("../images/globe.png") no-repeat;
+}
+
+
+.jimu-widget-GRGDrafter .GRGDrafterMainMenuDropDownIcon
+{
+    margin-top: 10px;
+    height: 20px;
+    width: 20px;
+    background-size: 20px;
+    float: right;
+    background-repeat: no-repeat;
+}
+
 
 .jimu-widget-GRGDrafter .GRGDrafterButtonIcon
 {
@@ -114,7 +149,7 @@
 /*------------------------- Styles for Main Page End-----------------------*/
 
 /*------------------------- Styles for GRG Pages-----------------------*/
-.jimu-widget-GRGDrafter .claro .dijitSelect, .claro .dijitSelect .dijitButtonContents, .claro .dijitTextBox, .claro .dijitTextBox .dijitButtonNode {
+.jimu-widget-GRGDrafter .claro .dijitSelect, .claro .dijitSelect .dijitButtonContents, .claro .dijitTextBox, {
     width: calc(100% - 60px);
 }
 
@@ -155,6 +190,30 @@
 /*------------------------- Styles for GRG Pages End-----------------------*/
 
 /*------------------------- Styles for GRG Settings-----------------------*/
+.jimu-widget-GRGDrafter .GRGDrafterSettingsRow {
+    width: 100%;
+    display: inline-block;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterSettingsButtonIcon {
+    margin-top: 10px;
+    height: 20px;
+    width: 25px;
+    float: right;
+    background-size: 45px;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterLabelSettingsDownButton
+{
+    background: url("../images/down-arrow.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterLabelSettingsUpButton
+{
+    background: url("../images/up-arrow.png") no-repeat;
+}
+
+
 .jimu-widget-GRGDrafter .GRGDrafterSettingsNode
 {
     width: 100%;
@@ -408,7 +467,7 @@
 }
 
 .jimu-widget-GRGDrafter .extentBtn:hover {
-    background: url('./images/extent_hover.png');
+    background: url('./images/extent_gray_hover.png');
     background-repeat: no-repeat;
 }
 
