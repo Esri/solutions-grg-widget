@@ -1,6 +1,6 @@
 define({
   root: ({
-    _widgetLabel: "GRG Creator", // Label of widget
+    _widgetLabel: "Gridded Reference Graphic", // Label of widget
     
     //main page
     "newGRGFromAreaButtonLabel": 'Create GRG From Area', // Shown as label to start new GRG from Area button on main page
