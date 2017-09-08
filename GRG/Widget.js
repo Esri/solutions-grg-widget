@@ -167,7 +167,16 @@ define([
             type: 'esriSLS',
             style: 'esriSLSSolid'
           }};
-        
+        this.GRGAreaFillSymbol = this.config.grg.gridSymbol || {
+            type: 'esriSFS',
+            style: 'esriSFSNull',
+            color: [0,0,255,0],
+            outline: {
+              color: [0, 0, 255, 255],
+              width: 1.25,
+              type: 'esriSLS',
+              style: 'esriSLSSolid'
+            }};
         this.pointSymbol = {
             'color': [255, 0, 0, 255],
             'size': 8,
