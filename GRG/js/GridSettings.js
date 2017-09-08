@@ -12,23 +12,7 @@
   'dojo/dom-class',
   'dojo/query',
   'dijit/registry',
-  'dijit/form/Select',
-  'dojo/NodeList-manipulate',
-    "jimu/dijit/RadioBtn",
-    'dijit/_editor/plugins/LinkDialog',
-    'dijit/_editor/plugins/ViewSource',
-    'dijit/_editor/plugins/FontChoice',
-    'dojox/editor/plugins/Preview',
-    'dijit/_editor/plugins/TextColor',
-    'dojox/editor/plugins/ToolbarLineBreak',
-    'dijit/ToolbarSeparator',
-    'dojox/editor/plugins/FindReplace',
-    'dojox/editor/plugins/PasteFromWord',
-    'dojox/editor/plugins/InsertAnchor',
-    'dojox/editor/plugins/Blockquote',
-    'jimu/dijit/EditorTextColor',
-    'jimu/dijit/EditorBackgroundColor'
-  
+  'dijit/form/Select'  
 ],
   function (
     declare,
@@ -50,12 +34,13 @@
       templateString: GridSettingsTemplate,
       selectedGridSettings: {}, //Holds selected Settings
       _defaultColor: '#1a299c',
-      _defaultTransparency: 0,
+      _defaultTransparency: 1,
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
           "labelStartPosition": ["lowerLeft", "lowerRight", "upperLeft", "upperRight"],      
           "labelType": ["alphaNumeric", "alphaAlpha", "numeric"],
+          "labelDirection": ["horizontal", "vertical"],
           "gridOrigin": ["center", "lowerLeft", "lowerRight", "upperLeft", "upperRight"]
         }, //Object that holds all the options and their keys
 
@@ -73,11 +58,13 @@
             "transparency": this.config.grg.gridOutlineTransparency || this._defaultTransparency
           });
           
+         
+          
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
         this.gridFillColorPicker.startup();
         this.gridFillColorPicker.setValues({
             "color": this.config.grg.gridFillColor || this._defaultColor,
-            "transparency": this.config.grg.gridFillTransparency || this._defaultTransparency
+            "transparency": this.config.grg.gridFillTransparency || 0
           });
           
         //load options for all drop downs
@@ -85,6 +72,7 @@
         this._loadOptionsForDropDown(this.labelStartPosition, this.gridSettingsOptions.labelStartPosition);
         this._loadOptionsForDropDown(this.cellUnits, this.gridSettingsOptions.cellUnits);
         this._loadOptionsForDropDown(this.labelType, this.gridSettingsOptions.labelType);
+        this._loadOptionsForDropDown(this.labelDirection, this.gridSettingsOptions.labelDirection);
         this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
         
         //send by default updated parameters
@@ -145,6 +133,15 @@
             html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
             html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
             html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+          }
+        })));
+        
+        this.own(on(this.cellShape, 'change', lang.hitch(this, function () {
+          if(this.cellShape.get('value') == 'hexagon') {
+            this.labelDirection.disabled = true;
+            this.labelDirection.set('value') == 'horizontal';
+          } else {
+            this.labelDirection.disabled = false;
           }
         })));
       },
@@ -209,6 +206,10 @@
           this.labelType.get('value')) {
           //check if labelType is changed
           isDataChanged = true;
+        } else if (this.selectedGridSettings.labelDirection !==
+          this.labelDirection.get('value')) {
+          //check if labelDirection is changed
+          isDataChanged = true;
         } else if (this.selectedGridSettings.gridOrigin !==
           this.gridOrigin.get('value')) {
           //check if gridOrigin is changed
@@ -216,6 +217,22 @@
         } else if (this.selectedGridSettings.showLabels !==
           this.settingsShowLabelsToggle.checked) {
           //check if gridOrigin is changed
+          isDataChanged = true;
+        } else if (this.selectedGridSettings.gridOutlineColor !==
+          this.gridOutlineColorPicker.getValues().color) {
+          //check if grid Outline Color is changed
+          isDataChanged = true;
+        } else if (this.selectedGridSettings.gridOutlineTransparency !==
+          this.gridOutlineColorPicker.getValues().transparency) {
+          //check if grid Outline transparency is changed
+          isDataChanged = true;
+        } else if (this.selectedGridSettings.gridFillColor !==
+          this.gridFillColorPicker.getValues().color) {
+          //check if grid Fill Color is changed
+          isDataChanged = true;
+        } else if (this.selectedGridSettings.gridFillTransparency !==
+          this.gridFillColorPicker.getValues().transparency) {
+          //check if grid Fill transparency is changed
           isDataChanged = true;
         }
         return isDataChanged;
@@ -247,8 +264,13 @@
           "labelStartPosition": this.labelStartPosition.get('value'),
           "cellUnits": this.cellUnits.get('value'),
           "labelType": this.labelType.get('value'),
+          "labelDirection": this.labelDirection.get('value'),
           "gridOrigin": this.gridOrigin.get('value'),
           "showLabels": this.settingsShowLabelsToggle.checked,
+          "gridOutlineColor": this.gridOutlineColorPicker.getValues().color,
+          "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,
+          "gridFillColor": this.gridFillColorPicker.getValues().color,
+          "gridFillTransparency": this.gridFillColorPicker.getValues().transparency,
         };
         this.emit("gridSettingsChanged", this.selectedGridSettings);
       }

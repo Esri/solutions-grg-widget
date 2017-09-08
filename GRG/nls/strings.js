@@ -55,9 +55,10 @@ define({
       "cellFill": 'Cell Fill Settings', // Shown as label to set cell fill Settings
       "labelStartPosition": "Label Start Position",  // Shown as label to set label start position      
       "labelType": "Label Type", // Shown as label to set label type
+      "labelDirection": "Label Direction", // Shown as label to set label direction
       "gridOrigin": "Grid Origin", // Shown as label to set grid origin
       
-      "default": "Default", // Shown as label for default in cell shape dropdown
+      "default": "Rectangle", // Shown as label for default in cell shape dropdown
       "hexagon": "Hexagon", // Shown as label for hexagon in cell shape  dropdown
       
       
@@ -77,6 +78,10 @@ define({
       "alphaNumeric": 'Alpha-Numeric', // Shown as label for Alpha-Numeric in label type dropdown
       "alphaAlpha": 'Alpha-Alpha', // Shown as label for Alpha-Alpha in label type dropdown
       "numeric": 'Numeric', // Shown as label for Numeric in label type dropdown
+      
+      "horizontal": 'Horizontal', // Shown as label for Horizontal in label direction dropdown
+      "vertical": 'Vertical', // Shown as label for Vertical in label direction dropdown
+      
       
       "showLabels": 'Show Labels', // Shown as label for show labels toggle switch    
     },

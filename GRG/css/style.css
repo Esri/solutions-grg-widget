@@ -3,8 +3,8 @@
 {
     min-width: 222px;
     height: 100%;
-    -webkit-overflow-scrolling: touch;
-    overflow: hidden;
+    /**-webkit-overflow-scrolling: touch;
+    overflow: hidden;**/
 }
 
 .jimu-widget-GRGDrafter .GRGDrafterFullHeight

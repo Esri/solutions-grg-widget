@@ -9,7 +9,7 @@
     
     <div class="controlGroupHidden" data-dojo-attach-point="gridSettingsContainer">
         <!-- Grid Shape -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="gridShapeContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.cellShape}">
                 ${nls.gridSettings.cellShape}</div>
             <select data-dojo-attach-point="cellShape" style="width: 100%" data-dojo-type="dijit/form/Select">
@@ -17,7 +17,7 @@
         </div>
         
         <!-- Units -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="gridUnitsContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.cellUnits}">
                 ${nls.gridSettings.cellUnits}</div>
             <select data-dojo-attach-point="cellUnits" style="width: 100%" data-dojo-type="dijit/form/Select">
@@ -25,7 +25,7 @@
         </div>
         
         <!-- Grid Origin -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="gridOriginContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.gridOrigin}">
                 ${nls.gridSettings.gridOrigin}</div>
             <select data-dojo-attach-point="gridOrigin" style="width: 100%" data-dojo-type="dijit/form/Select">
@@ -57,7 +57,7 @@
     
     <div class="controlGroupHidden" data-dojo-attach-point="labelSettingsContainer">
         <!-- Label Start Position Selector -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="labelStartPositionContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelStartPosition}">
                 ${nls.gridSettings.labelStartPosition}</div>
             <select data-dojo-attach-point="labelStartPosition" style="width: 100%" data-dojo-type="dijit/form/Select">
@@ -65,12 +65,20 @@
         </div>
         
         <!-- Labelling Style -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="labelStyleContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelType}">
                 ${nls.gridSettings.labelType}</div>
             <select data-dojo-attach-point="labelType" style="width: 100%" data-dojo-type="dijit/form/Select">
             </select>
-        </div>  
+        </div>
+        
+        <!-- Labelling direction -->
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="labelDirectionContainer">
+            <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelDirection}">
+                ${nls.gridSettings.labelDirection}</div>
+            <select data-dojo-attach-point="labelDirection" style="width: 100%" data-dojo-type="dijit/form/Select">
+            </select>
+        </div>
         
         <!-- Show Labels Toggle -->
         <div class="GRGDrafterFullWidth GRGDrafterSettingRow" >

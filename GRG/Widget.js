@@ -135,6 +135,7 @@ define([
       _labelStartPosition: "lowerLeft",
       _cellUnits: "meters",
       _labelType: "alphaNumeric",
+      _labelDirection: "horizontal",
       _gridOrigin: "center",
       _showLabels: {'value': true},
       angle: 0,
@@ -166,16 +167,7 @@ define([
             type: 'esriSLS',
             style: 'esriSLSSolid'
           }};
-        this.GRGAreaFillSymbol = this.config.grg.gridSymbol || {
-            type: 'esriSFS',
-            style: 'esriSFSNull',
-            color: [0,0,255,0],
-            outline: {
-              color: [0, 0, 255, 255],
-              width: 1.25,
-              type: 'esriSLS',
-              style: 'esriSLSSolid'
-            }};
+        
         this.pointSymbol = {
             'color': [255, 0, 0, 255],
             'size': 8,
@@ -216,9 +208,6 @@ define([
         this._graphicsLayerGRGExtent = new GraphicsLayer();
         this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);
         
-        // create a renderer for the grg layer to override default symbology
-        var gridSymbol = new SimpleFillSymbol(this.GRGAreaFillSymbol); 
-        var gridRenderer = new SimpleRenderer(gridSymbol);
         
         //set up symbology for point input
         this._ptSym = new SimpleMarkerSymbol(this.pointSymbol);
@@ -275,8 +264,6 @@ define([
             outFields: ["*"],
             showLabels: true
           });
-          
-        this.GRGArea.setRenderer(gridRenderer);
                   
         var json = {
           "labelExpressionInfo": {"value" : "{grid}"}
@@ -455,8 +442,7 @@ define([
             
             //handle Grid Settings button
             this.own(on(this.grgAreaBySizeSettingsButton, "click", lang.hitch(this, function () {
-              this._gridSettingsInstance.gridOrigin.disabled = true;
-              this._gridSettingsInstance._loadOptionsForDropDown(this._gridSettingsInstance.gridOrigin, this._gridSettingsInstance.gridSettingsOptions.gridOrigin);
+              this._updateSettingsPage(this._currentOpenPanel);
               this._showPanel("settingsPage");
             })));
             
@@ -546,6 +532,7 @@ define([
 
           //handle Grid Settings button
           this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+            this._updateSettingsPage(this._currentOpenPanel);
             this._showPanel("settingsPage");
           })));
           
@@ -576,6 +563,7 @@ define([
 
             //handle Grid Settings button
             this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
+              this._updateSettingsPage(this._currentOpenPanel);
               this._showPanel("settingsPage");
             })));
         **/
@@ -591,6 +579,7 @@ define([
 
             //handle Grid Settings button
             this.own(on(this.grgPointBySizeSettingsButton, "click", lang.hitch(this, function () {
+              this._updateSettingsPage(this._currentOpenPanel);
               this._showPanel("settingsPage");
             })));
         
@@ -605,6 +594,7 @@ define([
 
             //handle Grid Settings button
             this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+              this._updateSettingsPage(this._currentOpenPanel);
               this._showPanel("settingsPage");
             })));        
         
@@ -741,6 +731,40 @@ define([
       * @param {string} panel name
       * @memberOf widgets/GRG/Widget
       **/
+      _updateSettingsPage: function (panelName) {
+        //reset the grid settings to show all
+        html.removeClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
+        
+        html.addClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
+                        
+        
+        
+        switch (panelName) {         
+          case "grgAreaBySize":
+            break;          
+          case "grgAreaFromNonStandard":
+            break;
+          case "grgPointBySize":
+            html.removeClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
+            break;
+          case "grgAreaByRefSystem":
+          case "grgPointByRefSystem":
+            html.addClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
+            
+            break;
+        }
+      },
+      
+      /**
+      * Get panel node from panel name
+      * @param {string} panel name
+      * @memberOf widgets/GRG/Widget
+      **/
       _getNodeByName: function (panelName) {
         var node;
         switch (panelName) {
@@ -823,14 +847,17 @@ define([
             this._labelStartPosition = updatedSettings.labelStartPosition;
             this._cellUnits = updatedSettings.cellUnits;
             this._labelType = updatedSettings.labelType;
+            this._labelDirection = updatedSettings.labelDirection;
             this._gridOrigin = updatedSettings.gridOrigin;
             this._showLabels.value = updatedSettings.showLabels;
+            
             // show or hide labels
             if(this._showLabels.value) {
               featureLayerInfo.showLabels();
             } else {
               featureLayerInfo.hideLabels();
             }
+            
             if(this._cellShape == "default") {
               this.grgAreaBySizeCellHeight.set('disabled', false);
               this.grgAreaBySizeCellHeight.setValue(this.grgAreaBySizeCellWidth.value);
@@ -841,7 +868,32 @@ define([
               this.grgAreaBySizeCellHeight.setValue(0);
               this.pointCellHeight.set('disabled', true);
               this.pointCellHeight.setValue(0);
-            }            
+            }
+
+            //set grid colours
+            var fillColor = Color.fromHex(updatedSettings.gridFillColor);
+            fillColor.a = updatedSettings.gridFillTransparency;
+            
+            var outlineColor = Color.fromHex(updatedSettings.gridOutlineColor);
+            outlineColor.a = updatedSettings.gridOutlineTransparency;
+            
+            
+            var newGRGRenderer = new SimpleRenderer(new SimpleFillSymbol({
+              type: 'esriSFS',
+              style: 'esriSFSSolid',
+              color: fillColor,
+              outline: {
+                color: outlineColor,
+                width: 2,
+                type: 'esriSLS',
+                style: 'esriSLSSolid'
+            }}));
+            
+            
+            this.GRGArea.setRenderer(newGRGRenderer);
+            
+            this.GRGArea.refresh();
+              
           })));
         this._gridSettingsInstance.startup();
       },
@@ -1198,6 +1250,7 @@ define([
               this.angle,
               this._labelStartPosition,
               this._labelType,
+              this._labelDirection,
               this._cellShape,
               'center',
               this.geodesicGrid,
@@ -1246,98 +1299,19 @@ define([
                   polysToLoop = [];
                   polysToLoop = polys;
                   currentValue = currentValue / 10;                
-                }
-                
-                
-                
-                /**
-                var sortedArray = [];
-                var compareFeature = polysToLoop[0];
-                var nextCompareFeature = [];
-                sortedArray.push(polysToLoop[0])
-                polysToLoop.splice(0, 1);
-                
-                
-                while (polysToLoop.length > 0){
-                  var rowComplete = true;                  
-                  for(i = 0; i < polysToLoop.length; i++) {                    
-                    if (GeometryEngine.touches(compareFeature.clippedPolyToUTMZone, polysToLoop[i].clippedPolyToUTMZone)){
-                        var angle = geometryUtils.getAngleBetweenPoints(WebMercatorUtils.webMercatorToGeographic(compareFeature.clippedPolyToUTMZone.getCentroid()), 
-                          WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone.getCentroid()));
-                        if (angle > 75 && angle < 105) {
-                          sortedArray.push(polysToLoop[i]);
-                          polysToLoop.splice(i, 1);
-                          rowComplete = false;
-                        } else if ((angle >= 335 || angle <= 25) && nextCompareFeature.length < 1) {
-                          nextCompareFeature.push(polysToLoop[i]);
-                        }
-                    }                    
-                  }
-                  if(rowComplete) {
-                    compareFeature = nextCompareFeature[0];
-                    nextCompareFeature = [];
-                  } else {
-                    compareFeature = sortedArray[sortedArray.length -1]; //grab the last feature
-                  }
                 }                
-                **/
                 
                 var count = 1;
                 for (i = 0; i < polysToLoop.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);
-                    /**var symbol = new SimpleMarkerSymbol({
-                        "color": [255,255,255,64],
-                        "size": 12,
-                        "type": "esriSMS",
-                        "style": "esriSMSCircle",
-                        "outline": {
-                          "color": [0,0,0,255],
-                          "width": 1,
-                          "type": "esriSLS",
-                          "style": "esriSLSSolid"
-                        }
-                      });
-                      var symbol2 = new SimpleMarkerSymbol({
-                        "color": [255,0,0,64],
-                        "size": 12,
-                        "type": "esriSMS",
-                        "style": "esriSMSCircle",
-                        "outline": {
-                          "color": [255,0,0,255],
-                          "width": 1,
-                          "type": "esriSLS",
-                          "style": "esriSLSSolid"
-                        }
-                      });
-                    var pointGraphic = new Graphic(polysToLoop[i].clippedPolygon.getPoint(0, 0),symbol);
-                    var pointGraphic2 = new Graphic(polysToLoop[i].clippedPolygon.getPoint(0, polysToLoop[i].clippedPolygon.rings[0].length - 2),symbol2);
-                    this.map.graphics.add(pointGraphic);
-                    this.map.graphics.add(pointGraphic2);**/
+                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);                    
                   } else {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
-                    /**var symbol = new SimpleMarkerSymbol({
-                        "color": [255,255,255,64],
-                        "size": 12,
-                        "type": "esriSMS",
-                        "style": "esriSMSCircle",
-                        "outline": {
-                          "color": [0,0,0,255],
-                          "width": 1,
-                          "type": "esriSLS",
-                          "style": "esriSLSSolid"
-                        }
-                      });
-                    var pointGraphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone.getPoint(0, 0),symbol);
-                    this.map.graphics.add(pointGraphic);**/
+                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);                   
                   }                
-                  //graphic.setAttributes({'grid': polysToLoop[i].text});
-                  graphic.setAttributes({'grid': count});
+                  graphic.setAttributes({'grid': polysToLoop[i].text});                  
                   features.push(graphic);
                   count++;
                 }
-                
-                
               }
               break;            
           }
@@ -1404,6 +1378,7 @@ define([
               this.gridAnglePoint.value,
               this._labelStartPosition,
               this._labelType,
+              this._labelDirection,
               this._cellShape,
               this._gridOrigin,
               this.geodesicGrid,
