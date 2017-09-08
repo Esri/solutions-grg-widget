@@ -1,5 +1,3 @@
-@import url('style_color.css');
-
 /*------------------------- Styles for widget panel -----------------------*/
 .GRGDrafterMainContainer
 {
@@ -185,6 +183,10 @@
 .jimu-widget-GRGDrafter .GRGDrafterHidden
 {
     display: none;
+}
+
+.claro .dijitTextBox  {
+    width: calc(100% - 60px);
 }
 
 /*------------------------- Styles for GRG Pages End-----------------------*/
@@ -508,6 +510,60 @@
 
 .jimu-widget-GRGDrafter .jimu-btn {
     margin-bottom: 6px;
+}
+
+/*------------------------- Styles for colorPickerEditor  -----------------------*/
+
+.jimu-widget-GRGDrafter .dijitSlider {
+    width: calc(100% - 205px);
+}
+
+.jimu-widget-GRGDrafter  .colorPickerEditor .jimu-color-picker{
+	display: inline-block;
+	width: 25px;
+	height: 25px;
+}
+.jimu-widget-GRGDrafter  .colorPickerEditor .dijitSpinner.dijitNumberTextBox.dijitValidationTextBox{
+	width:65px;
+	height:30px;
+}
+
+.jimu-widget-GRGDrafter .dijitSliderImageHandleH{
+  top: -7px;
+}
+.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH{
+  background-image: url("../images/sliderball.png");
+  background-position: 0 0;
+}
+.jimu-widget-GRGDrafter  .dijitSliderThumbHover{
+  background-image: url("../images/sliderball_hover.png");
+  background-position: 0 0;
+}
+
+/*left*/
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderProgressBarH,
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderLeftBumper{
+  border-color: #24b5cc;
+  background-color: #24b5cc;
+  background-image: -webkit-linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: -o-linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
+}
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderRemainingBarH,
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderRightBumper{
+  border-color: #d7d7d7;
+  background-color: #d7d7d7;
+}
+
+.jimu-widget-GRGDrafter  .colorPickerEditor .trans{
+	font-family: "Avenir Light";
+	font-size: 12px;
+  padding: 0 5px 0 5px;
+  letter-spacing: 0.33px;
+}
+
+.jimu-widget-GRGDrafter  .sliderbar {
+	width: 60px;
 }
 
 /****** Dart Theme Overrides ******/

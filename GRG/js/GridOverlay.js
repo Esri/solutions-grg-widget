@@ -30,7 +30,6 @@ define([
   "esri/layers/GraphicsLayer",
   "esri/Color",
 
-  "xstyle/css!./GridOverlay.css"
 ], function (
   declare,
   lang,

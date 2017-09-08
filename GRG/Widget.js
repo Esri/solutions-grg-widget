@@ -302,7 +302,7 @@ define([
         }
         
         //set up coordinate input dijit
-        this.coordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.observerCoords);      
+        this.coordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
         this.coordTool.inputCoordinate.formatType = 'DD';
         this.coordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),

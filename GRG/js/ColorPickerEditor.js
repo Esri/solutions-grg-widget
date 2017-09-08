@@ -24,7 +24,7 @@ define([
     'dijit/_WidgetBase',
     'dijit/_TemplatedMixin',
     'dijit/_WidgetsInTemplateMixin',
-    'dojo/text!./ColorPickerEditor.html',
+    'dojo/text!../templates/ColorPickerEditor.html',
     "dijit/form/HorizontalSlider",
     'jimu/dijit/ColorPickerPopup',
     "dijit/form/NumberSpinner"
