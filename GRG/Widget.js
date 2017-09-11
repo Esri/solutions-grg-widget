@@ -509,7 +509,11 @@ define([
           
           //Handle click event of create GRG button        
           this.own(on(this.grgAreaByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
-            this._grgAreaByRefSystemCreateGRGButtonClicked)));          
+            this._grgAreaByRefSystemCreateGRGButtonClicked)));
+
+          //Handle click event of clear GRG button        
+            this.own(on(this.grgAreaByRefSystemClearGRGButton, 'click', lang.hitch(this,
+              this._clearGRGLayer)));            
           
           //Handle completion of extent drawing
           this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
@@ -970,7 +974,6 @@ define([
           this.dt_AreaByRefSystem.deactivate();
           this.map.enableMapNavigation();
         } else {
-          html.addClass(this.grgAreaByRefSystemSaveGRGButton, 'controlGroupHidden');
           this._graphicsLayerGRGExtent.clear();          
           this.grgPointBySizeCoordTool.manualInput = false;        
           this.map.disableMapNavigation();          
@@ -1292,6 +1295,7 @@ define([
           //apply the edits to the feature layer
           this.GRGArea.applyEdits(features, null, null);
           this.createGraphicDeleteMenu();
+          this._showPanel("publishPage");
         }
       },
       
