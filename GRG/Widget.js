@@ -138,6 +138,8 @@ define([
       _labelDirection: "horizontal",
       _gridOrigin: "center",
       _showLabels: {'value': true},
+      _GRGAreaFillSymbol: null,
+      _cellTextSymbol: null,
       angle: 0,
       GRG: null,
       featureLayerInfo: null,
@@ -167,16 +169,7 @@ define([
             type: 'esriSLS',
             style: 'esriSLSSolid'
           }};
-        this.GRGAreaFillSymbol = this.config.grg.gridSymbol || {
-            type: 'esriSFS',
-            style: 'esriSFSNull',
-            color: [0,0,255,0],
-            outline: {
-              color: [0, 0, 255, 255],
-              width: 1.25,
-              type: 'esriSLS',
-              style: 'esriSLSSolid'
-            }};
+          
         this.pointSymbol = {
             'color': [255, 0, 0, 255],
             'size': 8,
@@ -187,119 +180,75 @@ define([
                 'width': 1,
                 'type': 'esriSLS',
                 'style': 'esriSLSSolid'
-            }};
-        this.cellTextSymbol = this.config.grg.textSymbol || {
-            "color": {
-              "r": 102,
-              "g": 102,
-              "b": 51,
-              "a": 1
-            },
-            "type": "textsymbol",
-            "horizontalAlignment": "center",
-            "rotated": false,
-            "kerning": true,
-            "font": {
-              "size": 11,
-              "style": "normal",
-              "variant": "normal",
-              "weight": "normal",
-              "family": "Helvetica"
-            },
-            "x": 0,
-            "y": 0,
-            "xoffset": 0,
-            "yoffset": 0,
-            "align": "middle"
-          };
+            }};        
         
         // create graphics layer for grid extent and add to map
         this._graphicsLayerGRGExtent = new GraphicsLayer();
-        this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);
-        
+        this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);        
         
         //set up symbology for point input
         this._ptSym = new SimpleMarkerSymbol(this.pointSymbol);
         
         var featureCollection = {
-            "layerDefinition": {
-              "geometryType": "esriGeometryPolygon",
-              "objectIdField": "ObjectID",
-              "fields": [{
-                "name": "ObjectID",
-                "alias": "ObjectID",
-                "type": "esriFieldTypeOID"
-                }, {
-                "name": "grid",
-                "alias": "grid",
-                "type": "esriFieldTypeString"
-              }],
-              "drawingInfo": {
-                "renderer": {
-                 "type": "simple",
-                 "symbol": this.gridSymbol
-                },
-                "transparency": 0,
-                "labelingInfo": [
-                   {
-                    "labelExpression": "[grid]",
-                    "labelExpressionInfo": {"value": "{grid}"},
-                    "format": null,
-                    "fieldInfos": null,
-                    "useCodedValues": false,
-                    "maxScale": 0,
-                    "minScale": 0,
-                    "where": null,
-                    "sizeInfo": null,
-                    "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
-                    "symbol": this.cellTextSymbol
-                  }
-                ]
+          "layerDefinition": {
+            "geometryType": "esriGeometryPolygon",
+            "objectIdField": "ObjectID",
+            "fields": [{
+              "name": "ObjectID",
+              "alias": "ObjectID",
+              "type": "esriFieldTypeOID"
+              }, {
+              "name": "grid",
+              "alias": "grid",
+              "type": "esriFieldTypeString"
+            }],
+            "drawingInfo": {
+              "renderer": {
+               "type": "simple",
+               "symbol": this.gridSymbol
               },
-              "extent": {
-            "xmin":-18746028.312877923,
-            "ymin":-6027547.894280539,
-            "xmax":18824299.82984192,
-            "ymax":12561937.384669386,
-            "spatialReference":{
-              "wkid":102100
-            }
-          },
-            }
+              "transparency": 0,
+              "labelingInfo": [
+                {
+                  "labelExpression": "[grid]",
+                  "labelExpressionInfo": {"value": "{grid}"},
+                  "format": null,
+                  "fieldInfos": null,
+                  "useCodedValues": false,
+                  "maxScale": 0,
+                  "minScale": 0,
+                  "where": null,
+                  "sizeInfo": null,
+                  "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+                  "symbol": this._cellTextSymbol
+                }
+              ]
+            },
+            "extent": {
+              "xmin":-18746028.312877923,
+              "ymin":-6027547.894280539,
+              "xmax":18824299.82984192,
+              "ymax":12561937.384669386,
+              "spatialReference":{
+                "wkid":102100
+              }
+            },
+          }
         };
         
         this.GRGArea = new FeatureLayer(featureCollection,{
-            id: "Area GRG",
-            outFields: ["*"],
-            showLabels: true
-          });
-                  
-        var json = {
-          "labelExpressionInfo": {"value" : "{grid}"}
-        };
-
-        // create a text symbol to define the style of labels
-        var labelClass = new LabelClass(json);
-        this.textSymParams = this.cellTextSymbol || {
-          font: new Font("11", Font.STYLE_NORMAL, Font.VARIANT_NORMAL, Font.WEIGHT_BOLD, "Helvetica"),
-          color: new Color("#000")
-        }
-        labelClass.symbol = new TextSymbol(this.textSymParams);
-        this.GRGArea.setLabelingInfo([labelClass]);
+          id: "Area GRG",
+          outFields: ["*"],
+          showLabels: true
+        });   
         
         this.map.addLayers([this.GRGArea,this._graphicsLayerGRGExtent]);
         
-        featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Area GRG");
-
-        // show labels
-        if(this._showLabels.value) {
-          featureLayerInfo.showLabels();
-          featureLayerInfo.enablePopup();
-        }
+        
         
         //set up coordinate input dijit
-        this.coordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
-        this.coordTool.inputCoordinate.formatType = 'DD';
+        this.grgPointBySizeCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
+        this.grgPointBySizeCoordTool.inputCoordinate.formatType = 'DD';
         this.coordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
           style: 'width: 400px'
@@ -308,14 +257,13 @@ define([
         if(this.appConfig.theme.name === 'DartTheme')
         {
           domClass.add(this.coordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
-        }        
-        
+        }
         
         // add toolbar for drawing GRG Area by Extent
         this.dt_AreaBySize  = new Draw(this.map);
         
         // add extended toolbar for drawing GRG Point
-        this.dtPoint = new drawFeedBackPoint(this.map,this.coordTool.inputCoordinate.util);
+        this.dt_PointBySize = new drawFeedBackPoint(this.map,this.grgPointBySizeCoordTool.inputCoordinate.util);
         
         // add toolbar for drawing GRG MGRS
         this.dt_AreaByRefSystem = new Draw(this.map);
@@ -327,8 +275,7 @@ define([
         
         this._handleClickEvents();
         
-        this._createGridSettings();  
-        
+        this._createGridSettings();
       },
 
       startup: function () {
@@ -373,7 +320,6 @@ define([
         /**
         * Main menu panel buttons
         **/
-        
             //handle new GRG Area button click
             this.own(on(this.newGRGAreaButton, "click", lang.hitch(this, function () {
               var node = dijitRegistry.byId(this.newGRGAreaButton);
@@ -470,6 +416,14 @@ define([
             //Handle click event of delete drawn extent icon        
             this.own(on(this.grgAreaBySizeDeleteIcon, 'click', lang.hitch(this, 
               this._grgAreaBySizeDeleteClicked)));
+              
+            //Handle click event of create GRG Area button        
+            this.own(on(this.grgAreaBySizeCreateGRGButton, 'click', lang.hitch(this, 
+              this._grgAreaBySizeCreateGRGButtonClicked)));
+            
+            //Handle click event of clear GRG Area button        
+            this.own(on(this.grgAreaBySizeClearGRGButton, 'click', lang.hitch(this,
+              this._clearGRGLayer)));
               
             //Handle click event of publish GRG to portal button
             this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
@@ -591,6 +545,59 @@ define([
               this._updateSettingsPage(this._currentOpenPanel);
               this._showPanel("settingsPage");
             })));
+            
+            //Handle click event of create GRG point button        
+            this.own(on(this.grgPointBySizeCreateGRGButton, 'click', lang.hitch(this, 
+              this._grgPointBySizeCreateGRGButtonClicked)));
+              
+            //Handle click event of clear GRG Point button        
+            this.own(on(this.grgPointBySizeClearGRGButton, 'click', lang.hitch(this,
+              this._clearGRGLayer)));
+            
+            //Handle click event of Add GRG Point draw button
+            this.own(on(this.grgPointBySizeAddPointBtn, 'click', lang.hitch(this, 
+              this._addGRGPointButtonClicked)));
+            
+              
+            //Handle completion of GRG point drawing
+            this.own(on(this.dt_PointBySize, 'draw-complete', lang.hitch(this,
+              this._drawGRGPointComplete)));
+              
+            //Handle change in coord input      
+            this.own(this.grgPointBySizeCoordTool.inputCoordinate.watch('outputString', lang.hitch(this,
+              function (r, ov, nv) {
+                if(!this.grgPointBySizeCoordTool.manualInput){
+                  this.grgPointBySizeCoordTool.set('value', nv);
+                }
+              }
+            )));
+
+            //Handle change in start point and update coord input
+            this.own(this.dt_PointBySize.watch('startPoint', lang.hitch(this, 
+              function (r, ov, nv) {
+                this.grgPointBySizeCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
+                this.dt_PointBySize.addStartGraphic(nv, this._ptSym);
+              }
+            )));
+            
+            //Handle key up events in coord input
+            this.own(on(this.grgPointBySizeCoordTool, 'keyup', lang.hitch(this, 
+              this._coordToolKeyWasPressed)));
+            
+            //Handle click event on coord format button
+            this.own(on(this.coordinateFormatButton, 'click', lang.hitch(this, 
+              this._coordinateFormatButtonClicked)));
+            
+            //Handle click event on apply button of the coord format popup        
+            this.own(on(this.coordinateFormat.content.applyButton, 'click', lang.hitch(this,
+              this._coordinateFormatPopupApplyButtonClicked)));
+            
+            //Handle click event on cacncel button of the coord format popup         
+            this.own(on(this.coordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
+              function () {
+                dijitPopup.close(this.coordinateFormat);
+              }
+            )));
         
         /**
         * GRG from Point by Reference System panel
@@ -631,8 +638,6 @@ define([
         /**
         * Toolbar events
         **/
-        
-            
             //Handle graphic moved
             this.own(on(this.editToolbar, "graphic-move-stop", lang.hitch(this,function(evt){
                 this.centerPoint = evt.graphic.geometry.getCentroid();
@@ -656,83 +661,6 @@ define([
                 this.centerPoint = evt.graphic.geometry.getCentroid();
                 this._calculateCellWidthAndHeight(evt.graphic.geometry);
             })));
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        //Handle click event of Add GRG Point draw button
-        this.own(on(this.addPointBtn, 'click', lang.hitch(this, 
-          this._addGRGPointButtonClicked)));
-        
-          
-        //Handle completion of GRG point drawing
-        this.own(on(this.dtPoint, 'draw-complete', lang.hitch(this,
-          this._drawGRGPointComplete)));
-
-                  
-        
-        
-          
-        
-          
-        
-        
-        //Handle click event of create GRG Area button        
-        this.own(on(this.createGRGButton, 'click', lang.hitch(this, 
-          this._createAreaGRG)));
-        
-        //Handle click event of create GRG point button        
-        this.own(on(this.createPointGRGButton, 'click', lang.hitch(this, 
-          this._createPointGRG)));
-        
-          
-        //Handle change in coord input      
-        this.own(this.coordTool.inputCoordinate.watch('outputString', lang.hitch(this,
-          function (r, ov, nv) {
-            if(!this.coordTool.manualInput){
-              this.coordTool.set('value', nv);
-            }
-          }
-        )));
-
-        //Handle change in start point and update coord input
-        this.own(this.dtPoint.watch('startPoint', lang.hitch(this, 
-          function (r, ov, nv) {
-            this.coordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
-            this.dtPoint.addStartGraphic(nv, this._ptSym);
-          }
-        )));
-        
-        //Handle key up events in coord input
-        this.own(on(this.coordTool, 'keyup', lang.hitch(this, 
-          this._coordToolKeyWasPressed)));
-        
-        //Handle click event on coord format button
-        this.own(on(this.coordinateFormatButton, 'click', lang.hitch(this, 
-          this._coordinateFormatButtonClicked)));
-        
-        //Handle click event on apply button of the coord format popup        
-        this.own(on(this.coordinateFormat.content.applyButton, 'click', lang.hitch(this,
-          this._coordinateFormatPopupApplyButtonClicked)));
-        
-        //Handle click event on cacncel button of the coord format popup         
-        this.own(on(this.coordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
-          function () {
-            dijitPopup.close(this.coordinateFormat);
-          }
-        )));
-        
-        
-        
-        
-        
       },
       
       /**
@@ -744,11 +672,11 @@ define([
         //reset the grid settings to show all
         html.removeClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
         html.removeClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
         html.removeClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
         
         html.addClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
-                        
-        
         
         switch (panelName) {         
           case "grgAreaBySize":
@@ -762,9 +690,10 @@ define([
           case "grgPointByRefSystem":
             html.addClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
-            
+            html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');            
             break;
         }
       },
@@ -818,13 +747,13 @@ define([
       _reset: function () {
           this._clearGRGLayer();          
           this.dt_AreaBySize.deactivate();
-          this.dtPoint.deactivate();
+          this.dt_PointBySize.deactivate();
           this.map.enableMapNavigation();
           this._grgAreaBySizeDeleteClicked();
           this._grgAreaByRefSystemDeleteIconClicked();
           dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
           dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
-          dojo.removeClass(this.addPointBtn, 'jimu-edit-active');
+          dojo.removeClass(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
           html.addClass(this.fromAreaContainer, 'controlGroupHidden');
           html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
           html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
@@ -861,6 +790,7 @@ define([
             this._showLabels.value = updatedSettings.showLabels;
             
             // show or hide labels
+            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Area GRG");
             if(this._showLabels.value) {
               featureLayerInfo.showLabels();
             } else {
@@ -880,14 +810,13 @@ define([
             }
 
             //set grid colours
-            var fillColor = Color.fromHex(updatedSettings.gridFillColor);
+            var fillColor = new Color(updatedSettings.gridFillColor);
             fillColor.a = updatedSettings.gridFillTransparency;
             
-            var outlineColor = Color.fromHex(updatedSettings.gridOutlineColor);
+            var outlineColor = new Color(updatedSettings.gridOutlineColor);
             outlineColor.a = updatedSettings.gridOutlineTransparency;
-            
-            
-            var newGRGRenderer = new SimpleRenderer(new SimpleFillSymbol({
+                        
+            this._GRGAreaFillSymbol = {
               type: 'esriSFS',
               style: 'esriSFSSolid',
               color: fillColor,
@@ -896,10 +825,45 @@ define([
                 width: 2,
                 type: 'esriSLS',
                 style: 'esriSLSSolid'
-            }}));
+            }};
             
+            // create a renderer for the grg layer to override default symbology
+            var gridSymbol = new SimpleFillSymbol(this._GRGAreaFillSymbol); 
+            var gridRenderer = new SimpleRenderer(gridSymbol);
+            this.GRGArea.setRenderer(gridRenderer);
             
-            this.GRGArea.setRenderer(newGRGRenderer);
+            var textColor = new Color(updatedSettings.fontSettings.textColor);
+            
+            this._cellTextSymbol = {
+              "color": [
+                textColor.r,
+                textColor.g,
+                textColor.b,
+                255
+              ],
+              "type": "textsymbol",
+              "horizontalAlignment": "center",
+              "rotated": false,
+              "kerning": true,
+              "font": {
+                "size": parseInt(updatedSettings.fontSettings.fontSize),
+                "style": updatedSettings.fontSettings.font.italic?"italic":"normal",
+                "variant": "normal",
+                "weight": updatedSettings.fontSettings.font.bold?"bold":"normal",
+                "family": updatedSettings.fontSettings.font.fontFamily
+              },
+              "x": 0,
+              "y": 0,
+              "xoffset": 0,
+              "yoffset": 0,
+              "align": "middle"
+            };
+                        
+            // create a text symbol to define the style of labels
+            var json = {"labelExpressionInfo": {"value" : "{grid}"}};
+            var labelClass = new LabelClass(json);
+            labelClass.symbol = new TextSymbol(this._cellTextSymbol);
+            this.GRGArea.setLabelingInfo([labelClass]);
             
             this.GRGArea.refresh();
               
@@ -984,19 +948,19 @@ define([
       },
       
       _addGRGPointButtonClicked: function () {
-        this.dtPoint.removeStartGraphic();
+        this.dt_PointBySize.removeStartGraphic();
         this._clearGRGLayer(); 
-        this.coordTool.manualInput = false;
+        this.grgPointBySizeCoordTool.manualInput = false;
         
-        this.dtPoint._setTooltipMessage(0);
+        this.dt_PointBySize._setTooltipMessage(0);
         
         this.map.disableMapNavigation();          
-        this.dtPoint.activate('point');
-        var tooltip = this.dtPoint._tooltip;
+        this.dt_PointBySize.activate('point');
+        var tooltip = this.dt_PointBySize._tooltip;
         if (tooltip) {
           tooltip.innerHTML = 'Click to add GRG center point';
         }
-        domClass.toggle(this.addPointBtn, 'jimu-edit-active');
+        domClass.toggle(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
       },
       
       _grgAreaByRefSystemDrawIconClicked: function () {
@@ -1008,7 +972,7 @@ define([
         } else {
           html.addClass(this.grgAreaByRefSystemSaveGRGButton, 'controlGroupHidden');
           this._graphicsLayerGRGExtent.clear();          
-          this.coordTool.manualInput = false;        
+          this.grgPointBySizeCoordTool.manualInput = false;        
           this.map.disableMapNavigation();          
           this.dt_AreaByRefSystem.activate('extent');        
         }
@@ -1037,7 +1001,7 @@ define([
         
         this._calculateCellWidthAndHeight(evt.geometry);
         
-        domClass.toggle(this.addGRGArea, "controlGroupHidden");
+        domClass.toggle(this.grgAreaBySizeDrawContainer, "controlGroupHidden");
         domClass.toggle(this.grgAreaBySizeDeleteContainer, "controlGroupHidden");
       },
       
@@ -1060,8 +1024,8 @@ define([
           }), this._cellUnits))/this.cellVertical.value);
           
         //convert the width and height into meters
-        var cellWidthMeters = this.coordTool.inputCoordinate.util.convertToMeters(calculatedCellWidth, this._cellUnits);
-        var cellHeightMeters = this.coordTool.inputCoordinate.util.convertToMeters(calculatedCellHeight, this._cellUnits);
+        var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellWidth, this._cellUnits);
+        var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellHeight, this._cellUnits);
 
         /**
         * if the width or height of a grid cell is over 20000m we need to use a planar grid
@@ -1079,8 +1043,8 @@ define([
       },
       
       _drawGRGPointComplete: function () {          
-        domClass.remove(this.addPointBtn, 'jimu-edit-active');
-        this.dtPoint.deactivate();
+        domClass.remove(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
+        this.dt_PointBySize.deactivate();
         this.map.enableMapNavigation();
       },
       
@@ -1098,9 +1062,9 @@ define([
        * catch key press in start point
        */
       _coordToolKeyWasPressed: function (evt) {
-        this.coordTool.manualInput = true;
+        this.grgPointBySizeCoordTool.manualInput = true;
         if (evt.keyCode === keys.ENTER) {
-          this.coordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
+          this.grgPointBySizeCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
               if(r.inputType == "UNKNOWN"){
                 var alertMessage = new Message({
@@ -1110,13 +1074,13 @@ define([
                 this._reset();
                 topic.publish(
                   'grg-center-point-input',
-                  this.coordTool.inputCoordinate.coordinateEsriGeometry
+                  this.grgPointBySizeCoordTool.inputCoordinate.coordinateEsriGeometry
                 );
                 this._setCoordLabel(r.inputType);
                 var fs = this.coordinateFormat.content.formats[r.inputType];
-                this.coordTool.inputCoordinate.set('formatString', fs.defaultFormat);
-                this.coordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dtPoint.addStartGraphic(r.coordinateEsriGeometry, this._ptSym);
+                this.grgPointBySizeCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
+                this.grgPointBySizeCoordTool.inputCoordinate.set('formatType', r.inputType);
+                this.dt_PointBySize.addStartGraphic(r.coordinateEsriGeometry, this._ptSym);
               }
             }
           ));
@@ -1137,7 +1101,7 @@ define([
        *
        */
       _coordinateFormatButtonClicked: function () {
-        this.coordinateFormat.content.set('ct', this.coordTool.inputCoordinate.formatType);
+        this.coordinateFormat.content.set('ct', this.grgPointBySizeCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
             popup: this.coordinateFormat,
             around: this.coordinateFormatButton
@@ -1154,12 +1118,12 @@ define([
         if (fs.useCustom) {
             cfs = fs.customFormat;
         }
-        this.coordTool.inputCoordinate.set(
+        this.grgPointBySizeCoordTool.inputCoordinate.set(
           'formatPrefix',
           this.coordinateFormat.content.addSignChkBox.checked
         );
-        this.coordTool.inputCoordinate.set('formatString', cfs);
-        this.coordTool.inputCoordinate.set('formatType', fv);
+        this.grgPointBySizeCoordTool.inputCoordinate.set('formatString', cfs);
+        this.grgPointBySizeCoordTool.inputCoordinate.set('formatType', fv);
         this._setCoordLabel(fv);
         dijitPopup.close(this.coordinateFormat);        
       }, 
@@ -1175,8 +1139,8 @@ define([
         
         html.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
         html.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');   
-        html.removeClass(this.addGRGArea, 'controlGroupHidden');
-        html.addClass(this.addGRGArea, 'controlGroup');
+        html.removeClass(this.grgAreaBySizeDrawContainer, 'controlGroupHidden');
+        html.addClass(this.grgAreaBySizeDrawContainer, 'controlGroup');
         html.removeClass(this.grgAreaBySizeDeleteContainer, 'controlGroup');
         html.addClass(this.grgAreaBySizeDeleteContainer, 'controlGroupHidden');          
       },
@@ -1206,7 +1170,7 @@ define([
         }
       },
       
-      _createAreaGRG: function () {                 
+      _grgAreaBySizeCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
           
@@ -1239,8 +1203,8 @@ define([
             GRGAreaHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,3), 'meters');
           }
           
-          var cellWidth = this.coordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellWidth.value, this._cellUnits);
-          var cellHeight = this.coordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellHeight.value,this._cellUnits);
+          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellWidth.value, this._cellUnits);
+          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellHeight.value,this._cellUnits);
           
           //work out how many cells are needed horizontally & Vertically to cover the whole canvas area
           var numCellsHorizontal = Math.round(GRGAreaWidth/cellWidth);
@@ -1359,15 +1323,15 @@ define([
       /*
        *
        */
-      _createPointGRG: function () {
+      _grgPointBySizeCreateGRGButtonClicked: function () {
         //check form inouts for validity
-        if (this.dtPoint.startGraphic && this.pointCellWidth.isValid() && this.pointCellHeight.isValid() && this.gridAnglePoint.isValid()) {
+        if (this.dt_PointBySize.startGraphic && this.pointCellWidth.isValid() && this.pointCellHeight.isValid() && this.gridAnglePoint.isValid()) {
           
           //get center point of AOI
-          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.coordTool.inputCoordinate.coordinateEsriGeometry);
+          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointBySizeCoordTool.inputCoordinate.coordinateEsriGeometry);
           
-          var cellWidth = this.coordTool.inputCoordinate.util.convertToMeters(this.pointCellWidth.value,this._cellUnits);
-          var cellHeight = this.coordTool.inputCoordinate.util.convertToMeters(this.pointCellHeight.value,this._cellUnits);          
+          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.pointCellWidth.value,this._cellUnits);
+          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.pointCellHeight.value,this._cellUnits);          
 
           // if the width or height of a grid cell is over 20000m we need to use a planar grid
           if((cellWidth < 20000) && ((cellHeight < 20000 && this._cellShape != "hexagon") || this._cellShape == "hexagon")) {
@@ -1395,7 +1359,7 @@ define([
               esriConfig.defaults.geometryService); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            this.dtPoint.removeStartGraphic();
+            this.dt_PointBySize.removeStartGraphic();
             this._showPanel("publishPage");            
           }
           
@@ -1482,7 +1446,7 @@ define([
                   drawGRG.createFeatureService(createServiceUrl, token, drawGRG.getFeatureServiceParams(featureServiceName, this.map)).then(lang.hitch(this, function(response1) {
                     if (response1.success) {
                       var addToDefinitionUrl = response1.serviceurl.replace(new RegExp('rest', 'g'), "rest/admin") + "/addToDefinition";
-                      drawGRG.addDefinitionToService(addToDefinitionUrl, token, drawGRG.getLayerParams(featureServiceName, this.map, this.cellTextSymbol, this.GRGAreaFillSymbol)).then(lang.hitch(this, function(response2) {
+                      drawGRG.addDefinitionToService(addToDefinitionUrl, token, drawGRG.getLayerParams(featureServiceName, this.map, this._cellTextSymbol, this._GRGAreaFillSymbol)).then(lang.hitch(this, function(response2) {
                         if (response2.success) {
                           //Push features to new layer
                           var newFeatureLayer = new FeatureLayer(response1.serviceurl + "/0?token=" + token, {

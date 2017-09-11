@@ -1,3 +1,5 @@
+
+
 /*------------------------- Styles for widget panel -----------------------*/
 .GRGDrafterMainContainer
 {
@@ -20,7 +22,7 @@
 .jimu-widget-GRGDrafter .GRGDrafterFullWidthAndPadding
 {
     width: 100%;
-    padding-top: 8px;
+    padding-top: 12px;
     padding-bottom: 8px;
 }
 
@@ -237,6 +239,12 @@
     padding-top: 6px;
 }
 
+.jimu-widget-GRGDrafter .GRGDrafterSettingRowPaddingTop20
+{
+    padding-bottom: 6px;
+    padding-top: 20px;
+}
+
 .jimu-widget-GRGDrafter .GRGDrafterSettingRowDouble
 {
     padding-bottom: 12px;
@@ -376,7 +384,7 @@
 
 /* overriding CSS for the dijitSelect box starts */
 
-/*------------------------- Styles for Plan Settings-----------------------*/
+/*------------------------- Styles for Settings Panel-----------------------*/
 
 .jimu-widget-GRGDrafter .dijitTextBox .dijitPlaceHolder{
     font-size: 12px;
@@ -416,6 +424,16 @@
     margin-left: 8px;
     margin-right: 0;
 }
+
+.SettingsLastRow {
+    border-bottom: 1px solid #464646;
+    padding-bottom: 15px !important;
+}
+
+.SubTitle {
+  font-weight: bold;
+}
+
 /* CSS for RTL Mode Ends */
 
 /*------------------------- Styles for widget panel -----------------------*/
@@ -515,7 +533,24 @@
 /*------------------------- Styles for colorPickerEditor  -----------------------*/
 
 .jimu-widget-GRGDrafter .dijitSlider {
-    width: calc(100% - 205px);
+    width: calc(100% - 212px);
+}
+
+.jimu-widget-GRGDrafter .dijitSlider {
+  margin-left: 10px;
+  margin-right: auto;
+  margin-top: 14px;
+}
+
+.jimu-rtl .jimu-widget-GRGDrafter .dijitSlider {
+  margin-left: auto;
+  margin-right: 10px;
+}
+
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderImageHandleH {
+  top: -10px;
+  width: 20px;
+  height: 20px;
 }
 
 .jimu-widget-GRGDrafter  .colorPickerEditor .jimu-color-picker{
@@ -531,12 +566,19 @@
 .jimu-widget-GRGDrafter .dijitSliderImageHandleH{
   top: -7px;
 }
-.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH{
-  background-image: url("../images/sliderball.png");
-  background-position: 0 0;
-}
+
 .jimu-widget-GRGDrafter  .dijitSliderThumbHover{
   background-image: url("../images/sliderball_hover.png");
+  background-position: 0 0;
+}
+
+.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH {
+  background-image: url("../images/sliderball.svg");
+  background-position: 0 0;
+}
+
+.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH.dojoMoveItem {
+  background-image: url("../images/sliderball_hold.svg");
   background-position: 0 0;
 }
 
@@ -566,6 +608,212 @@
 	width: 60px;
 }
 
+/*------------------------- Styles for Settings Font Styles  -----------------------*/
+
+.jimu-widget-GRGDrafter .style-selector .clearFix {
+  *overflow: hidden;
+  *zoom: 1
+}
+
+.jimu-widget-GRGDrafter .style-selector .clearFix:after {
+  display: table;
+  content: "";
+  width: 0;
+  clear: both
+}
+
+.jimu-widget-GRGDrafter .style-selector .hide {
+  display: none
+}
+
+.jimu-widget-GRGDrafter .settings-container {
+}
+
+.jimu-widget-GRGDrafter .settings-container .title {
+  font-size: 14px;
+  color: #000000;
+  letter-spacing: 0.39px;
+  margin-bottom: 20px;
+}
+
+.jimu-widget-GRGDrafter .settings-container .label {
+  font-size: 12px;
+  color: #282828;
+  letter-spacing: 0.33px;
+  line-height: 30px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .label {
+  margin: 0 0;
+  max-width: 160px;
+  line-height: 30px;
+  font-size: 12px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitTextBox,
+.jimu-widget-GRGDrafter .style-selector .dijitSelect {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #D7D7D7;
+}
+
+.jimu-widget-GRGDrafter .style-selector .jimu-color-picker {
+  width: 40px !important;
+  height: 30px !important;
+  border: 1px solid #D7D7D7 !important;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitSelect .dijitArrowButtonContainer {
+  border: none;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitDownArrowButton .dijitButtonContents,
+.jimu-widget-GRGDrafter .style-selector .dijitComboBox .dijitDownArrowButton {
+  border: none;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitTextBox .dijitInputInner {
+  padding: 1px 0 0 0 !important;
+  font-size: 12px;
+  font-style: normal !important;
+  height: 28px;
+  line-height: 28px !important;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitSelectLabel {
+  font-size: 12px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitSelect,
+.jimu-widget-GRGDrafter .style-selector .dijitSelect .dijitButtonContents,
+.jimu-widget-GRGDrafter .style-selector .dijitTextBox,
+.jimu-widget-GRGDrafter .style-selector .dijitTextBox .dijitButtonNode {
+  background-color: transparent;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitSelect .dijitArrowButton {
+  background-color: transparent;
+}
+
+.jimu-widget-GRGDrafter .style-selector .dijitSelect .dijitInputField {
+  padding: 0px 10px;
+}
+
+.jimu-widget-GRGDrafter .jimu-image-chooser .display-text {
+  width: 100%;
+  font-size: 12px;
+  color: #4A4A4A;
+  letter-spacing: 0.33px;
+  background-color: #FFF;
+  text-align: center;
+}
+
+.jimu-image-chooser:hover .hint .display-text {
+  color: #FFF;
+}
+
+.jimu-widget-GRGDrafter .dijitTextBoxFocused {
+  border: 1px solid #D7D7D7 !important;
+  box-shadow: 0 0 0 0 !important;
+}
+
+.jimu-widget-GRGDrafter .dijitTextBox .dijitInputField {
+  padding: 0px 10px;
+}
+
+.jimu-widget-GRGDrafter .dijitSelectFocused .dijitArrowButton .dijitArrowButtonInner {
+  background-position: -35px 53%;
+}
+
+.jimu-widget-GRGDrafter .text-size .text-size-group>.dijitComboBox.dijitValidationTextBox {
+  width: 80px;
+}
+
+.jimu-widget-GRGDrafter .text-size .text-size-group>table {
+  width: 140px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .setting-items {
+  height: 30px;
+  width: 100%;
+  margin: 10px 0;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.jimu-widget-GRGDrafter .style-selector .setting-wapper {
+  width: 230px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .background-btn,
+.jimu-widget-GRGDrafter .style-selector .text-color-btn {
+  width: 40px;
+  height: 30px;
+  overflow: hidden;
+}
+
+.jimu-widget-GRGDrafter .style-selector .align-group {
+  margin-right: 8px;
+  margin-left: -3px;
+}
+
+.jimu-rtl .jimu-widget-GRGDrafter .style-selector .align-group {
+  margin-right: -3px;
+  margin-left: 8px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .font-group-btns {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .align-btn,
+.jimu-widget-GRGDrafter .style-selector .font-btn {
+  height: 30px;
+  margin: 0 3px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .font-btn {
+  width: 30px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .align-btn {
+  width: 30px;
+}
+
+.jimu-widget-GRGDrafter .style-selector .image-btn {
+  width: 120px;
+  height: 30px;
+  border: 1px solid #D7D7D7;
+}
+
+.jimu-widget-GRGDrafter .style-selector .bold {
+  background: url("../images/B.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .bold.selected {
+  background: url("../images/B_selected.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .italic {
+  background: url("../images/I.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .italic.selected {
+  background: url("../images/I_selected.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .underline {
+  background: url("../images/U.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .underline.selected {
+  background: url("../images/U_selected.svg") no-repeat;
+}
+
 /****** Dart Theme Overrides ******/
 
 .DartTheme .jimu-widget-GRGDrafter  .dijitSelectDisabled,
@@ -574,8 +822,6 @@
 .DartTheme .jimu-widget-GRGDrafter .dijitTextBoxDisabled {
      background-color: #4c4c4c; 
 }
-
-
 
 .claro .dartThemeClaroDijitTooltipContainerOverride .dijitTooltipContainer {
     background-color: #4c4c4c;
@@ -591,3 +837,7 @@
 .claro .dartThemeClaroDijitTooltipContainerOverride .dijitTooltipConnector {    
     background-image: url(images/tooltip.png);    
 }
+
+
+
+

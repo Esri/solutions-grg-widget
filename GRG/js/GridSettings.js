@@ -4,6 +4,7 @@
   'dojo/_base/html',
   'dojo/on',
   './ColorPickerEditor',
+  "./FontSetting",
   'jimu/BaseWidget',
   'dijit/_WidgetsInTemplateMixin',
   'dojo/text!../templates/GridSettings.html',
@@ -20,6 +21,7 @@
     html,
     on,
     ColorPickerEditor,
+    FontSetting,
     BaseWidget,
     _WidgetsInTemplateMixin,
     GridSettingsTemplate,
@@ -35,6 +37,7 @@
       selectedGridSettings: {}, //Holds selected Settings
       _defaultColor: '#1a299c',
       _defaultTransparency: 1,
+      _defaultTextSize: 12,
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
@@ -58,14 +61,23 @@
             "transparency": this.config.grg.gridOutlineTransparency || this._defaultTransparency
           });
           
-         
-          
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
         this.gridFillColorPicker.startup();
         this.gridFillColorPicker.setValues({
             "color": this.config.grg.gridFillColor || this._defaultColor,
             "transparency": this.config.grg.gridFillTransparency || 0
           });
+          
+        this.fontSetting = new FontSetting({
+            config: this.config.font,
+            nls: this.nls
+          }, this.fontSettingNode);
+        // remove this once config settings have been implemented
+        this.fontSetting.config.fontSize = this._defaultTextSize;
+        
+        this.fontSetting.startup();
+        
+        
           
         //load options for all drop downs
         this._loadOptionsForDropDown(this.cellShape, this.gridSettingsOptions.cellShape);
@@ -81,9 +93,6 @@
 
       postCreate: function () {
         this.inherited(arguments);
-        //set widget variables
-        this.selectedGridSettings = {};
-        this.gridSettingsOptions = this.gridSettingsOptions;
         //set class to main container
         domClass.add(this.domNode, "GRGDrafterSettingsContainer GRGDrafterFullWidth");
         //TODO: try to remove the timeout
@@ -234,6 +243,10 @@
           this.gridFillColorPicker.getValues().transparency) {
           //check if grid Fill transparency is changed
           isDataChanged = true;
+        } else if (this.selectedGridSettings.fontSettings !==
+          this.fontSetting.getConfig()) {
+          //check if font settings is changed
+          isDataChanged = true;
         }
         return isDataChanged;
       },
@@ -271,6 +284,7 @@
           "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,
           "gridFillColor": this.gridFillColorPicker.getValues().color,
           "gridFillTransparency": this.gridFillColorPicker.getValues().transparency,
+          "fontSettings": JSON.parse(JSON.stringify(this.fontSetting.getConfig())),
         };
         this.emit("gridSettingsChanged", this.selectedGridSettings);
       }

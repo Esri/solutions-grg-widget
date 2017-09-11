@@ -1,7 +1,7 @@
 ﻿<div>
     <!-- Grid Settings DropDown -->
     <div class="GRGDrafterSettingsRow">
-        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.gridSettingsLabel}">
+        <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.gridSettingsLabel}">
             ${nls.gridSettingsLabel}</div>
         <div class="GRGDrafterLabelSettingsDownButton GRGDrafterSettingsButtonIcon GRGDrafterPointer" title="${nls.gridSettingsButtonLabel}" data-dojo-attach-point="gridSettingsButton">
         </div>
@@ -40,7 +40,7 @@
         </div>
         
         <!-- Cell fill Color -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow">
           <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.cellFill}">
                 ${nls.gridSettings.cellFill}</div>
           <div class="colorPicker" data-dojo-attach-point="cellFillColorPicker"></div>
@@ -49,7 +49,7 @@
     
     <!-- Label Settings DropDown -->
     <div class="GRGDrafterSettingsRow">
-        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.labelSettingsLabel}">
+        <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.labelSettingsLabel}">
             ${nls.labelSettingsLabel}</div>
         <div class="GRGDrafterLabelSettingsDownButton GRGDrafterSettingsButtonIcon GRGDrafterPointer" title="${nls.labelSettingsButtonLabel}" data-dojo-attach-point="labelSettingsButton">
         </div>
@@ -80,8 +80,15 @@
             </select>
         </div>
         
+        <!-- Font Settings -->
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="fontSettingsContainer">
+          <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.labelFormat}">
+                ${nls.labelFormat}</div>
+          <div data-dojo-attach-point="fontSettingNode"></div>
+        </div>
+        
         <!-- Show Labels Toggle -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" >
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow" >
           <div>
             <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.gridSettings.showLabels}">${nls.gridSettings.showLabels}</div>
             <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="settingsShowLabelsToggle" checked="true" />

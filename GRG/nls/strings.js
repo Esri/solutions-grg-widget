@@ -47,6 +47,11 @@ define({
     "gridSettingsLabel": 'Grid Settings', // Shown as Title for Label Settings dropdown
     "gridSettingsButtonLabel": 'Configure Grid Settings', // Shown as tooltip for Label Settings dropdown
     "transparency": 'Transparency', // Shown as label on transparency sliders
+    "labelFormat": 'Label Format', // Shown as label on label settings
+    "font": 'Font', // Shown as label for font type
+    "textSize": 'Text Size', // Shown as label for font size
+    "textColor": 'Text Color', // Shown as label for font colour
+    
     
     "gridSettings": {
       "cellShape": "Cell Shape", // Shown as label to set Cell Shape Type
@@ -93,6 +98,9 @@ define({
     "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
     "missingGRGLayerName": 'You must enter a name for the GRG',
     
+    //common
+    "createGRGBtn": 'Create GRG', // Shown as label on create button
+    "clearGRGBtn": 'Clear GRG', // Shown as label on clear button
     
     
     "addPointToolTip": 'Add GRG Center Point',
@@ -102,8 +110,8 @@ define({
     "invalidNumberMessage": 'The value entered is not valid',
     "invalidRangeMessage": 'Value must be greater than 0',
     "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',
-    "createGRGBtn": 'Create GRG',
     
+     
     "removeGRGLabel": 'Remove GRG Area',
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
     "coordInputLabel": 'GRG Center Point', // Shown as label for coordinate input

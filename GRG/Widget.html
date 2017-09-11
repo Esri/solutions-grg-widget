@@ -8,7 +8,7 @@
         <div class="esirCTMainPage" data-dojo-attach-point="mainPageNode">
             <!-- Create From Area -->
             <div class="GRGDrafterMainPageRow">
-                <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromAreaButtonLabel}">
+                <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromAreaButtonLabel}">
                     ${nls.newGRGFromAreaButtonLabel}</div>
                 <div class="GRGDrafterNewGRGAreaButton GRGDrafterMainMenuDropDownIcon GRGDrafterPointer" title="${nls.newGRGFromAreaButtonLabel}" data-dojo-attach-point="newGRGAreaButton">
                 </div>
@@ -41,7 +41,7 @@
             
             <!-- Create From Point -->
             <div class="GRGDrafterMainPageRow">
-                <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromPointButtonLabel}">
+                <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromPointButtonLabel}">
                     ${nls.newGRGFromPointButtonLabel}</div>
                 <div class="GRGDrafterNewGRGPointButton GRGDrafterMainMenuDropDownIcon GRGDrafterPointer" title="${nls.newGRGFromPointButtonLabel}" data-dojo-attach-point="newGRGPointButton">
                 </div>
@@ -85,8 +85,8 @@
                 <!-- GRG Area Form -->
                 <div class="GRGDrafterMainPageRow">                  
                   <!-- Draw GRG Area Tool -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
-                    <div class="GRGDrafterFullWidth" data-dojo-attach-point="addGRGArea">
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRowPaddingTop20" data-dojo-attach-point="grgAreaBySizeDrawContainer">
+                    <div class="GRGDrafterFullWidth">
                       <div>
                         <div class="GRGDrafterDoubleButtonLabel GRGDrafterEllipsis" title="${nls.newGRGAreaBySizeDefineAreaLabel}">${nls.newGRGAreaBySizeDefineAreaLabel}</div>                        
                         <div title="${nls.addGRGAreaPolygonToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgAreaBySizeDrawPolygonIcon"></div>
@@ -95,7 +95,7 @@
                     </div>
                   </div>
                   <!-- Delete GRG Area -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow controlGroupHidden" data-dojo-attach-point="grgAreaBySizeDeleteContainer">
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRowPaddingTop20 controlGroupHidden" data-dojo-attach-point="grgAreaBySizeDeleteContainer">
                     <div>
                       <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.removeGRGLabel}">${nls.removeGRGLabel}</div>
                       <div title="${nls.removeGRGLabel}" class="jimu-icon jimu-icon-delete" data-dojo-attach-point="grgAreaBySizeDeleteIcon"></div>
@@ -152,10 +152,13 @@
                           rangeMessage:"${nls.gridAngleInvalidRangeMessage}"' data-dojo-attach-point="grgAreaBySizeRotation" value="0" disabled='true'></input>  
                     </div> 
                   </div>   
-                  <!-- Create GRG Button -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
-                    <div class="GRGDrafterBtnContainer">
-                      <div class='jimu-btn' data-dojo-attach-point='createGRGButton'>${nls.createGRGBtn}</div>
+                  <!-- Create & Clear GRG Buttons -->
+                  <div class="GRGDrafterHalfWidthContainer">
+                    <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthLeft">
+                      <div class='jimu-btn' data-dojo-attach-point='grgAreaBySizeCreateGRGButton'>${nls.createGRGBtn}</div>
+                    </div>
+                    <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthRight">
+                      <div class='jimu-btn' data-dojo-attach-point='grgAreaBySizeClearGRGButton'>${nls.clearGRGBtn}</div>
                     </div>
                   </div> 
                </div>
@@ -279,7 +282,7 @@
                         <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointBySizeOriginCoords" />
                         <div class='add-with-icon'>
                           <div  title="${nls.formatIconTooltip}" class="jimu-icon settingBtn" data-dojo-attach-point="coordinateFormatButton"></div>
-                          <div title="${nls.addPointToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="addPointBtn"></div>
+                          <div title="${nls.addPointToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgPointBySizeAddPointBtn"></div>
                         </div>  
                   </div>                        
                   <!-- Nummber of Cells Horizontal and Vertical -->
@@ -323,11 +326,14 @@
                         invalidMessage:"${nls.invalidNumberMessage}",
                         required: true,
                         rangeMessage:"${nls.gridAngleInvalidRangeMessage}"' data-dojo-attach-point="gridAnglePoint" value="0"></input>  
-                  </div>                  
-                  <!-- Create and Publish Buttons -->
-                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
-                    <div class="GRGDrafterBtnContainer">
-                        <div class='jimu-btn' data-dojo-attach-point='createPointGRGButton'>${nls.createGRGBtn}</div> 
+                  </div>
+                  <!-- Create & Clear GRG Buttons -->
+                  <div class="GRGDrafterHalfWidthContainer">
+                    <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthLeft">
+                      <div class='jimu-btn' data-dojo-attach-point='grgPointBySizeCreateGRGButton'>${nls.createGRGBtn}</div>
+                    </div>
+                    <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthRight">
+                      <div class='jimu-btn' data-dojo-attach-point='grgPointBySizeClearGRGButton'>${nls.clearGRGBtn}</div>
                     </div>
                   </div>
                 </div>
