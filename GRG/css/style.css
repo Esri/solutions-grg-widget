@@ -49,6 +49,18 @@
     white-space: nowrap;
 }
 
+.jimu-widget-GRGDrafter .labelLeft
+{
+    display: inline-flex;
+    float: left;
+}
+
+.jimu-widget-GRGDrafter .labelRight
+{
+    display: inline-flex;
+    float: right;
+}
+
 .jimu-widget-GRGDrafter .GRGDrafterPointer
 {
     cursor: pointer;

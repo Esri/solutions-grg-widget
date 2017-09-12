@@ -44,7 +44,8 @@
           "labelStartPosition": ["lowerLeft", "lowerRight", "upperLeft", "upperRight"],      
           "labelType": ["alphaNumeric", "alphaAlpha", "numeric"],
           "labelDirection": ["horizontal", "vertical"],
-          "gridOrigin": ["center", "lowerLeft", "lowerRight", "upperLeft", "upperRight"]
+          "gridOrigin": ["center", "lowerLeft", "lowerRight", "upperLeft", "upperRight"],
+          "referenceSystem": ["MGRS", "USNG"]
         }, //Object that holds all the options and their keys
 
       constructor: function (options) {
@@ -86,6 +87,7 @@
         this._loadOptionsForDropDown(this.labelType, this.gridSettingsOptions.labelType);
         this._loadOptionsForDropDown(this.labelDirection, this.gridSettingsOptions.labelDirection);
         this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
+        this._loadOptionsForDropDown(this.referenceSystem, this.gridSettingsOptions.referenceSystem);
         
         //send by default updated parameters
         this.onGridsettingsChanged();        
@@ -223,9 +225,13 @@
           this.gridOrigin.get('value')) {
           //check if gridOrigin is changed
           isDataChanged = true;
-        } else if (this.selectedGridSettings.showLabels !==
+        } else if (this.selectedGridSettings.referenceSystem !==
+          this.referenceSystem.get('value')) {
+          //check if reference system is changed
+          isDataChanged = true;
+        }else if (this.selectedGridSettings.showLabels !==
           this.settingsShowLabelsToggle.checked) {
-          //check if gridOrigin is changed
+          //check if show labels toggle is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.gridOutlineColor !==
           this.gridOutlineColorPicker.getValues().color) {
@@ -279,6 +285,7 @@
           "labelType": this.labelType.get('value'),
           "labelDirection": this.labelDirection.get('value'),
           "gridOrigin": this.gridOrigin.get('value'),
+          "referenceSystem": this.referenceSystem.get('value'),
           "showLabels": this.settingsShowLabelsToggle.checked,
           "gridOutlineColor": this.gridOutlineColorPicker.getValues().color,
           "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,

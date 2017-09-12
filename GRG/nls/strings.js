@@ -3,26 +3,26 @@ define({
     _widgetLabel: "Gridded Reference Graphic", // Label of widget
     
     //main page
-    "newGRGFromAreaButtonLabel": 'Create GRG From Area', // Shown as label to start new GRG from Area button on main page
-    "newGRGFromPointButtonLabel": 'Create GRG From Point', // Shown as label to new GRG from point button on main page
+    "newGRGFromAreaButtonLabel": 'Define a Grid from an Area', // Shown as label to start new GRG from Area button on main page
+    "newGRGFromPointButtonLabel": 'Define a Grid from a Point', // Shown as label to new GRG from point button on main page
     
     //GRG from Area and Point Menus
-    "newGRGFromAreaTitle": 'GRG From Area', // Shown as Title on Area Menu
-    "newGRGFromPointTitle": 'GRG From Point', // Shown as Title on Area Menu
-    "newGRGBySizeButtonLabel": 'Define Grid by Size', // Shown as label to start new GRG by size button on Area Menu or Point Menu
-    "newGRGFromRefSystemButtonLabel": 'Define Grid by Reference System', // Shown as label to start new from reference system button on Area Menu or Point Menu
+    "newGRGFromAreaTitle": 'Define a Grid from an Area', // Shown as Title on Area Menu
+    "newGRGFromPointTitle": 'Define a Grid from a Point', // Shown as Title on Area Menu
+    "newGRGBySizeButtonLabel": 'By Dimension', // Shown as label to start new GRG by size button on Area Menu or Point Menu
+    "newGRGFromRefSystemButtonLabel": 'By Reference System', // Shown as label to start new from reference system button on Area Menu or Point Menu
     "newGRGFromNonStandardButtonLabel": 'Define Non-Standard Grid', // Shown as label to start new GRG from non standard button on Area Menu or Point Menu
     
     //Area GRG By Size Panel    
-    "newGRGAreaBySizeTitle": "New GRG From Area", // Shown as title for new GRG from area panel
-    "newGRGAreaBySizeDefineAreaLabel": 'Define GRG Area', // Shown as text for new GRG from area toolbar 
+    "newGRGAreaBySizeTitle": "GRG from an Area by Dimension", // Shown as title for new GRG from area panel
+    "newGRGAreaBySizeDefineAreaLabel": 'GRG Area', // Shown as text for new GRG from area toolbar 
     "addGRGAreaPolygonToolTip": "Draw GRG Area using polygon", // Shown as tooltip on draw rectangle icon
     "addGRGAreaExtentToolTip": "Draw GRG Area using extent", // Shown as tooltip on draw extent icon
-    "rotation": 'Rotation', // Shown as label above rotation input box
+    "rotation": 'Grid Rotation', // Shown as label above rotation input box
     
     //Area GRG By Reference System Panel    
-    "newGRGAreaByRefSystemTitle": 'New GRG From Reference System', // Shown as title for new GRG from reference system panel
-    "gridSize": 'Select Grid Size', // Shown as title for new GRG from reference system panel
+    "newGRGAreaByRefSystemTitle": 'GRG from an Area by Reference System', // Shown as title for new GRG from reference system panel
+    "gridSize": 'Grid Size', // Shown as title for new GRG from reference system panel
     "UTMZoneandBand": 'UTM Zone and Band', // Shown as label for UTM Zone and Band in gridSize dropdown
     "100000m": '100000 meter', // Shown as label for 100000 meter in gridSize dropdown
     "10000m": '10000 meter', // Shown as label for 10000 meter in gridSize dropdown
@@ -35,10 +35,10 @@ define({
     "newGRGAreaFromNonStandardTitle": "New NRG", // Shown as title for new GRG from non standard grid Panel
 
     //Point GRG By Size Panel    
-    "newGRGPointBySizeTitle": "New GRG From Point", // Shown as title for new GRG from area panel
+    "newGRGPointBySizeTitle": "GRG from Point by Dimension", // Shown as title for new GRG from point panel
     
     //Point GRG By Reference System Panel    
-    "newGRGPointByRefSystemTitle": "New GRG From Reference System", // Shown as title for new GRG from reference system panel
+    "newGRGPointByRefSystemTitle": "GRG from Point by Reference System", // Shown as title for new GRG from reference system panel
 
     //Settings Panel
     "settingsTitle": "Settings", // Shown as Title for Grid Settings page and label on settings buttons
@@ -58,14 +58,15 @@ define({
       "cellUnits": "Cell Units", // Shown as label to set Cell Units      
       "cellOutline": 'Cell Outline Settings', // Shown as label to set cell Outline Settings
       "cellFill": 'Cell Fill Settings', // Shown as label to set cell fill Settings
+      "gridReferenceSystem": 'Reference System', // Shown as label to set Reference System
+      "gridDatum": 'Datum: WGS84', // Shown as label for datum
       "labelStartPosition": "Label Start Position",  // Shown as label to set label start position      
       "labelType": "Label Type", // Shown as label to set label type
       "labelDirection": "Label Direction", // Shown as label to set label direction
       "gridOrigin": "Grid Origin", // Shown as label to set grid origin
       
       "default": "Rectangle", // Shown as label for default in cell shape dropdown
-      "hexagon": "Hexagon", // Shown as label for hexagon in cell shape  dropdown
-      
+      "hexagon": "Hexagon", // Shown as label for hexagon in cell shape  dropdown      
       
       "miles": 'Miles', // Shown as label for miles in cell units dropdown
       "kilometers": 'Kilometers', // Shown as label for kilometers in cell units dropdown
@@ -87,6 +88,8 @@ define({
       "horizontal": 'Horizontal', // Shown as label for Horizontal in label direction dropdown
       "vertical": 'Vertical', // Shown as label for Vertical in label direction dropdown
       
+      "MGRS": 'MGRS', // Shown as label for MGRS in reference system dropdown
+      "USNG": 'USNG', // Shown as label for USNG in reference system dropdown
       
       "showLabels": 'Show Labels', // Shown as label for show labels toggle switch    
     },
@@ -103,10 +106,10 @@ define({
     "clearGRGBtn": 'Clear GRG', // Shown as label on clear button
     
     
-    "addPointToolTip": 'Add GRG Center Point',
-    "numberRowsColumnsLabel": 'Use set number of rows and columns',
-    "cellWidth": 'Cell Width',
-    "cellHeight": 'Cell Height',
+    "addPointToolTip": 'Add GRG Origin',
+    "numberRowsColumnsLabel": 'Define number of rows and columns',
+    "cellWidth": 'Cell Width (x)',
+    "cellHeight": 'Cell Height (y)',
     "invalidNumberMessage": 'The value entered is not valid',
     "invalidRangeMessage": 'Value must be greater than 0',
     "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',
@@ -114,7 +117,7 @@ define({
      
     "removeGRGLabel": 'Remove GRG Area',
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
-    "coordInputLabel": 'GRG Center Point', // Shown as label for coordinate input
+    "coordInputLabel": 'GRG Origin', // Shown as label for coordinate input
     "setCoordFormat": 'Set Coordinate Format String',
     "prefixNumbers": 'Add "+/-" prefix to positive and negative numbers',
     "cancelBtn": 'Cancel',
@@ -122,9 +125,9 @@ define({
     "notationsMatch": 'notations match your input please confirm which you would like to use:',
     "numberOfCellsHorizontal": '# Horizontal Cells', // Shown as label for number of Horizontal cells
     "numberOfCellsVertical": '# Vertical Cells', // Shown as label for number of Vertical cells
-    "gridAngle": 'Grid Angle', // Shown as label for grid angle
+    "gridAngle": 'Grid Rotation', // Shown as label for grid angle
     "missingParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG area has been drawn.</li><li>The cell width and height contain valid values.</li></ul>',
-    "drawToolTip1": 'Click to set GRG base angle',
+    "drawPointToolTip": 'Click to add GRG origin point',
     "drawToolTip2": 'Click to finish GRG Area',
     "missingLayerNameMessage": 'You must enter a GRG Layer Name before you can publish',
     "comfirmInputNotation": 'Confirm Input Notation',

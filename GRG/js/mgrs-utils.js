@@ -322,7 +322,7 @@ define([
       var xmin, ymin, xmax, ymax, minLtr, maxLtr, minNum, maxNum,
           ltr, idx, rings, polygon, polygon_i, polyline, polyline_i,
           minXOffset, maxXOffset;
-      var mapExtent = extent._extent;
+      var mapExtent = extent.geometry;
       var deg360 = mapExtent.spatialReference.isWebMercator() ?
         constants.WEBMERCATOR_360 :
         constants.GEOGRAPHIC_360;
@@ -680,11 +680,11 @@ define([
             
             polygon = new Polygon([ring]);
             
-            if (firstRow && firstColumn) {
+            //if (firstRow && firstColumn) {
               //we only need to calculate the angle for the first polygon in the group
               var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
               extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
-            }
+            //}
             
             var clippedPolygon = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
