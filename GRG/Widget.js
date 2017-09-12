@@ -1476,6 +1476,7 @@ define([
       
       _grgPointByRefSystemCreateGRGButtonClicked: function () {
         var width, height, cellBLPoint, extent, MGRS, offsets; 
+        this._clearGRGLayer();
         if(drawGRG.checkGridSize(this.grgPointByRefCellHorizontal.getValue(),this.grgPointByRefCellVertical.getValue())){        
           if (this.dt_PointByRefSystem.startGraphic && this.grgPointByRefCellHorizontal.isValid() && this.grgPointByRefCellVertical.isValid()) {
             var gridOrigin = this.grgPointByRefSystemCoordTool.inputCoordinate.coordinateEsriGeometry;
