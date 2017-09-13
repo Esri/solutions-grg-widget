@@ -51,7 +51,7 @@ define({
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
     "textColor": 'Text Color', // Shown as label for font colour
-    
+    "lockSettings": 'Settings have been locked by your administrator', // Shown as tooltip on settings button if locked
     
     "gridSettings": {
       "cellShape": "Cell Shape", // Shown as label to set Cell Shape Type
@@ -60,7 +60,7 @@ define({
       "cellFill": 'Cell Fill Settings', // Shown as label to set cell fill Settings
       "gridReferenceSystem": 'Reference System', // Shown as label to set Reference System
       "gridDatum": 'Datum: WGS84', // Shown as label for datum
-      "labelStartPosition": "Label Start Position",  // Shown as label to set label start position      
+      "labelStartPosition": "Label Origin",  // Shown as label to set label start position      
       "labelType": "Label Type", // Shown as label to set label type
       "labelDirection": "Label Direction", // Shown as label to set label direction
       "gridOrigin": "Grid Origin", // Shown as label to set grid origin

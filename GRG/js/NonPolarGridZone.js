@@ -14,7 +14,7 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 /**
- *  @fileOverview Contains the NonPolarGridZone class used by MGRS GridOverlay widgets.
+ *  @fileOverview Contains the NonPolarGridZone class used by GRG widget.
  *  @author Esri
  */
 

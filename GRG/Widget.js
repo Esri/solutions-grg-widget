@@ -416,11 +416,14 @@ define([
             })));
             
             //handle Grid Settings button
-            this.own(on(this.grgAreaBySizeSettingsButton, "click", lang.hitch(this, function () {
-              this._updateSettingsPage(this._currentOpenPanel);
-              this._showPanel("settingsPage");
-            })));
-            
+            if(!this.config.grg.lockSettings) {              
+              this.own(on(this.grgAreaBySizeSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgAreaBySizeSettingsButton.title = this.nls.lockSettings;
+            }
             //Handle click event of Add GRG Area by Polygon button
             this.own(on(this.grgAreaBySizeDrawPolygonIcon, 'click', lang.hitch(this, 
               this._grgAreaBySizeDrawPolygonIconClicked)));
@@ -510,12 +513,16 @@ define([
           this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
             this._resetOnBackToMainPage();
           })));
-
+          
           //handle Grid Settings button
-          this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-            this._updateSettingsPage(this._currentOpenPanel);
-            this._showPanel("settingsPage");
-          })));
+          if(!this.config.grg.lockSettings) {
+            this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+              this._updateSettingsPage(this._currentOpenPanel);
+              this._showPanel("settingsPage");
+            })));
+          } else {
+            this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
+          }          
           
           //Handle click event of draw extent icon
           this.own(on(this.grgAreaByRefSystemDrawIcon, 'click', lang.hitch(this, 
@@ -547,10 +554,17 @@ define([
             })));
 
             //handle Grid Settings button
-            this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
-              this._updateSettingsPage(this._currentOpenPanel);
-              this._showPanel("settingsPage");
-            })));
+            if(!this.config.grg.lockSettings) {
+              //handle Grid Settings button
+              this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgAreaByNonStandardSettingsButton.title = this.nls.lockSettings;
+            }
+            
+            
         **/
         
         /**
@@ -563,11 +577,16 @@ define([
             })));
 
             //handle Grid Settings button
-            this.own(on(this.grgPointBySizeSettingsButton, "click", lang.hitch(this, function () {
-              this._updateSettingsPage(this._currentOpenPanel);
-              this._showPanel("settingsPage");
-            })));
-            
+            if(!this.config.grg.lockSettings) {
+              //handle Grid Settings button
+              this.own(on(this.grgPointBySizeSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgPointBySizeSettingsButton.title = this.nls.lockSettings;
+            }
+                        
             //Handle click event of create GRG point button        
             this.own(on(this.grgPointBySizeCreateGRGButton, 'click', lang.hitch(this, 
               this._grgPointBySizeCreateGRGButtonClicked)));
@@ -631,10 +650,15 @@ define([
             })));
 
             //handle Grid Settings button
-            this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-              this._updateSettingsPage(this._currentOpenPanel);
-              this._showPanel("settingsPage");
-            })));            
+            if(!this.config.grg.lockSettings) {
+              //handle Grid Settings button
+              this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgPointByRefSystemSettingsButton.title = this.nls.lockSettings;
+            }          
             
             //Handle click event of create GRG point button        
             this.own(on(this.grgPointByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
@@ -1521,14 +1545,26 @@ define([
               });
               extent = WebMercatorUtils.geographicToWebMercator(extent);              
             } else {
-              cellBLPoint = WebMercatorUtils.geographicToWebMercator(mgrs.USNGtoPoint(MGRS));
-              width =  this.grgPointByRefSystemGridSize.getValue() * (this.grgPointByRefCellHorizontal.getValue());          
-              height = this.grgPointByRefSystemGridSize.getValue() * (this.grgPointByRefCellVertical.getValue());
-              offset = this.grgPointByRefSystemGridSize.getValue()/10;
+              cellBLPoint = mgrs.USNGtoPoint(MGRS);
+              
+              width =  this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellHorizontal.getValue());          
+              height = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellVertical.getValue());
+              
+              var cellTLPoint = geometryUtils.getDestinationPoint(cellBLPoint, 90, width);
+              cellTLPoint = geometryUtils.getDestinationPoint(cellTLPoint, 0, height);
+              
+              offset = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) / 5;
+              
+              //shrink the extent slightly so that we dont pick up extra cells around the edge
+              var cellBLPoint = geometryUtils.getDestinationPoint(cellBLPoint, 45, offset);
+              var cellTLPoint = geometryUtils.getDestinationPoint(cellTLPoint, 225, offset);
+              
               extent = new Extent({
-                "xmin":cellBLPoint.x + offset,"ymin":cellBLPoint.y + offset,"xmax":(cellBLPoint.x + width) - offset,"ymax":(cellBLPoint.y + height) - offset,
-                "spatialReference":{"wkid":102100}
+                "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellTLPoint.x,"ymax":cellTLPoint.y,
+                "spatialReference":{"wkid":4326}
               });
+              
+              extent = WebMercatorUtils.geographicToWebMercator(extent);
             }            
             
             var polygonExtent = new Graphic(extent);            

@@ -4,7 +4,7 @@
   'dojo/_base/html',
   'dojo/on',
   './ColorPickerEditor',
-  "./FontSetting",
+  './FontSetting',
   'jimu/BaseWidget',
   'dijit/_WidgetsInTemplateMixin',
   'dojo/text!../templates/GridSettings.html',
@@ -38,6 +38,7 @@
       _defaultColor: '#1a299c',
       _defaultTransparency: 1,
       _defaultTextSize: 12,
+      _defaultFont: {"font": {"fontFamily": "Arial","bold": false,"italic": false,"underline": false},"fontSize": 12,"textColor": "#2f4f4f"},
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
@@ -58,27 +59,23 @@
         this.gridOutlineColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
         this.gridOutlineColorPicker.startup();
         this.gridOutlineColorPicker.setValues({
-            "color": this.config.grg.gridOutlineColor || this._defaultColor,
-            "transparency": this.config.grg.gridOutlineTransparency || this._defaultTransparency
+            "color": this.config.grg.cellOutline.color || this._defaultColor,
+            "transparency": this.config.grg.cellOutline.transparency || this._defaultTransparency
           });
           
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
         this.gridFillColorPicker.startup();
         this.gridFillColorPicker.setValues({
-            "color": this.config.grg.gridFillColor || this._defaultColor,
-            "transparency": this.config.grg.gridFillTransparency || 0
+            "color": this.config.grg.cellFill.color || this._defaultColor,
+            "transparency": this.config.grg.cellFill.transparency || 0
           });
           
         this.fontSetting = new FontSetting({
-            config: this.config.font,
+            config: this.config.grg.font || this._defaultFont,
             nls: this.nls
           }, this.fontSettingNode);
-        // remove this once config settings have been implemented
-        this.fontSetting.config.fontSize = this._defaultTextSize;
         
         this.fontSetting.startup();
-        
-        
           
         //load options for all drop downs
         this._loadOptionsForDropDown(this.cellShape, this.gridSettingsOptions.cellShape);
@@ -89,8 +86,27 @@
         this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
         this._loadOptionsForDropDown(this.referenceSystem, this.gridSettingsOptions.referenceSystem);
         
+        if(this.config.grg) {          
+          this.cellShape.setValue(this.config.grg.cellShape);
+          this.cellUnits.setValue(this.config.grg.cellUnits);
+          this.gridOrigin.setValue(this.config.grg.gridOrigin);
+          this.labelType.setValue(this.config.grg.labelType);
+          this.labelDirection.setValue(this.config.grg.labelDirection);
+          this.labelStartPosition.setValue(this.config.grg.labelOrigin);
+          this.referenceSystem.setValue(this.config.grg.referenceSystem);
+
+          if(this.cellShape.get('value') == 'hexagon') {
+            this.labelDirection.set('disabled',true);
+            this.labelDirection.setValue('horizontal');
+          } else {
+            this.labelDirection.set('disabled',false);
+          }          
+        }
+        
         //send by default updated parameters
-        this.onGridsettingsChanged();        
+        this.onGridsettingsChanged();
+
+          
       },
 
       postCreate: function () {
@@ -149,10 +165,10 @@
         
         this.own(on(this.cellShape, 'change', lang.hitch(this, function () {
           if(this.cellShape.get('value') == 'hexagon') {
-            this.labelDirection.disabled = true;
-            this.labelDirection.set('value') == 'horizontal';
+            this.labelDirection.set('disabled',true);
+            this.labelDirection.setValue('horizontal');
           } else {
-            this.labelDirection.disabled = false;
+            this.labelDirection.set('disabled',false);
           }
         })));
       },

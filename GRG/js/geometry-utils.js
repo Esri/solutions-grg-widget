@@ -14,13 +14,13 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 /**
- *  @fileOverview Module containing geometry utilities used by GridOverlay widgets.
+ *  @fileOverview Module containing geometry utilities used by GRG widget.
  *  @author Esri
  */
 
 /**
  *  @module geometry-utils
- *  @description Module containing geometry utilities used by GridOverlay widgets.
+ *  @description Module containing geometry utilities used by GRG widget.
  */
 
 define([

@@ -14,13 +14,13 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 /**
- *  @fileOverview Module containing MGRS grid utilities used by GridOverlay widgets.
+ *  @fileOverview Module containing MGRS grid utilities used by GRG widget.
  *  @author Esri
  */
 
 /**
  *  @module mgrs-utils
- *  @description Module containing MGRS grid utilities used by GridOverlay widgets.
+ *  @description Module containing MGRS grid utilities used by GRG widget.
  */
 
 define([
@@ -28,7 +28,6 @@ define([
   "./constants",
   "./geometry-utils",
   "./geometryUtils",
-  "./labeling-utils",
   "./mgrs",
   "./NonPolarGridZone",
   "./VisibleGridZone",
@@ -37,18 +36,12 @@ define([
   "esri/graphic",
   "esri/geometry/Point",
   "esri/geometry/Polyline",
-  "esri/geometry/Polygon",
-  "esri/symbols/SimpleLineSymbol",
-  "esri/symbols/SimpleFillSymbol",
-  "esri/symbols/TextSymbol",
-  "esri/symbols/Font",
-  "esri/Color"
+  "esri/geometry/Polygon"
 ], function(
   JSON,
   constants,
   gridGeomUtils,
   geomUtils,
-  gridLabelUtils,
   mgrs,
   NonPolarGridZone,
   VisibleGridZone,
@@ -57,16 +50,9 @@ define([
   Graphic,
   Point,
   Polyline,
-  Polygon,
-  SimpleLineSymbol,
-  SimpleFillSymbol,
-  TextSymbol,
-  Font,
-  Color
+  Polygon
 ) {
-
   return {
-
     /**
      * The zonesDictionary object contains all 1197 unique keys
      * (one for each non-polar MGRS grid zone)
@@ -326,18 +312,7 @@ define([
       var deg360 = mapExtent.spatialReference.isWebMercator() ?
         constants.WEBMERCATOR_360 :
         constants.GEOGRAPHIC_360;
-      
-      /**
-      var labelParameters = {
-        xOffset: grid.getCornerLabelXOffset(),
-        yOffset: grid.getCornerLabelYOffset(),
-        rotation: 0,
-        color: grid.getColor(0),
-        fontFamily: grid.getFontFamily(),
-        fontSize: grid.getFontSize(0)
-      };
-      **/
-      
+            
       // per MGRS definition, these are the valid grid zone letters
       var zoneLetters = [
         'C','D','E','F','G','H','J','K','L','M',
@@ -680,11 +655,11 @@ define([
             
             polygon = new Polygon([ring]);
             
-            //if (firstRow && firstColumn) {
+            if (firstRow && firstColumn) {
               //we only need to calculate the angle for the first polygon in the group
               var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
               extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
-            //}
+            }
             
             var clippedPolygon = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
@@ -702,8 +677,8 @@ define([
                 gridGeomUtils.toWebMercator(fullZoneGeometry));
               }
             
-              text = GZD + (gridLabelUtils.padZero(e % 100000 / interval,  5 - Math.log10(interval))).toString() 
-                + (gridLabelUtils.padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
+              text = GZD + (this._padZero(e % 100000 / interval,  5 - Math.log10(interval))).toString() 
+                + (this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
                 5 - Math.log10(interval))).toString();
               
               gridPolygonArgs = {
@@ -735,7 +710,15 @@ define([
         }
       }
       return polyOut;
-    }
+    },
+    
+    _padZero: function(number, width) {
+      number = number.toString();
+      while (number.length < width) {
+        number = "0" + number;
+      }
+      return number;
+    },
 
   };
 });

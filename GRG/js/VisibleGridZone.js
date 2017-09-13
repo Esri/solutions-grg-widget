@@ -15,7 +15,7 @@
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- *  @fileOverview Contains the VisibleGridZone class used by MGRS GridOverlay widgets.
+ *  @fileOverview Contains the VisibleGridZone class used by MGRS GRG widget.
  *  @author Esri
  */
 
@@ -52,8 +52,6 @@ define([
    * @param {external:Map}
    * properties.map
    * The Map object that the grid overlay is associated with
-   * @param {module:labeling-utils~LabelParameters} properties.labelParameters
-   * An object holding all the label parameters
    *
    * @example
    * var offset = -1; // in this case, the current longitude is in the range -540 => -180
@@ -65,22 +63,12 @@ define([
    * zonePolygon = webMercatorUtils.geographicToWebMercator(zonePolygon);
    * var clippedPolygon = geometryEngine.intersect(zonePolygon, map.extent);
    *
-   * var labelParameters = {
-   *     "xOffset": 20,
-   *     "yOffset": 20,
-   *     "rotation": 0,
-   *     "color": new Color([0, 0, 255]),
-   *     "fontFamily": "Arial, Helvetica, sans-serif",
-   *     "fontSize": "18px"
-   * };
-   *
    * visibleGridZone = new VisibleGridZone({
    *     "map": map,
    *     "polyline": clippedPolygon,
    *     "polygon": zonePolygon,
    *     "offset": 0,
-   *     "nonPolarGridZone": nonPolarGridZone,
-   *     "labelParameters": labelParameters
+   *     "nonPolarGridZone": nonPolarGridZone
    * });
    */
   return declare(null, /** @lends module:mgrs-utils~VisibleGridZone# */ {
@@ -140,30 +128,9 @@ define([
         "ymax": this.nonPolarGridZone.extent.ymax,
         "minMaxType": "degrees",
         "utmZone": 0,
-        "text": this.nonPolarGridZone.id,
-        "labelParameters": args.labelParameters
+        "text": this.nonPolarGridZone.id
       };
       this.gridPolygon = new GridPolygon(gridPolygonArgs);
-    },
-
-    /**
-     * Returns an array of TextSymbol graphics that represent labels for the VisibleGridZone
-     * @return {external.TextSymbol[]} An array of TextSymbol objects used for labeling
-     * the VisibleGridZone
-     */
-    getLabels: function() {
-      return this.gridPolygon.getLabels(true);
-    },
-
-    /**
-     * Returns the TextSymbol graphic that represents the label
-     * at the center of the NonPolarGridZone.
-     * @return {external:TextSymbol} The TextSymbol object representing the
-     * center label of the VisibleGridZone
-     */
-    getCenterLabel: function() {
-      return this.gridPolygon.getCenterLabel();
     }
-
   });
 });

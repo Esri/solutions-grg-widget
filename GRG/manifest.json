@@ -1,14 +1,14 @@
 {
   "name": "GRG",
   "platform": "HTML",
-  "version": "2.2",
-  "wabVersion": "2.2",
+  "version": "2.5",
+  "wabVersion": "2.5",
   "author": "Esri",
   "description": "Grided Reference Graphic Widget",
   "copyright": "",
   "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "properties": {
-  	"keepConfigAfterMapSwithched": false,
+  	"keepConfigAfterMapSwithched": true,
     "supportMultiInstance": false,
     "hasVersionManager": false,
     "hasSettingPage": true,

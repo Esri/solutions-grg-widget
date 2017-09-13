@@ -14,13 +14,13 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 /**
- *  @fileOverview Contains constants used by GridOverlay widgets.
+ *  @fileOverview Contains constants used by GRG widget.
  *  @author Esri
  */
 
 /**
  *  @module constants
- *  @description Contains constants used by GridOverlay widgets.
+ *  @description Contains constants used by GRG widgets.
  *  @author Esri
  */
 
