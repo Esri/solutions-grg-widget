@@ -900,6 +900,7 @@ define([
             
             // show or hide labels
             featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Area GRG");
+            featureLayerInfo.enablePopup();
             if(this._showLabels.value) {
               featureLayerInfo.showLabels();
             } else {
