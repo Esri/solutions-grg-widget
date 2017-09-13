@@ -113,7 +113,7 @@ define([
           } else {
             var dialog = new dialogConfirm({
                nls: this.nls,
-               title: this.nls.confirmNotationTitle,
+               title: this.nls.comfirmInputNotation,
                content: new ConfirmNotation(itm,{nls: this.nls}),
                style: "width: 400px",
                hasSkipCheckBox: false

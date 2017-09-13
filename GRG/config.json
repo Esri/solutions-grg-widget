@@ -1,48 +1,29 @@
 {
   "grg": {
-    "gridSymbol": {
-      "color": [
-        155,
-        187,
-        89,
-        128
-      ],
-      "outline": {
-        "color": [
-          115,
-          140,
-          61,
-          255
-        ],
-        "width": 1.5,
-        "type": "esriSLS",
-        "style": "esriSLSSolid"
-      },
-      "type": "esriSFS",
-      "style": "esriSFSSolid"
+    "cellFill": {
+      "color": "#ffffff",
+      "transparency": 0
     },
-    "textSymbol": {
-      "color": [
-        0,
-        0,
-        0,
-        255
-      ],
-      "type": "esriTS",
-      "horizontalAlignment": "center",
-      "angle": 0,
-      "xoffset": 0,
-      "yoffset": 0,
-      "text": "",
-      "rotated": false,
-      "kerning": true,
+    "cellOutline": {
+      "color": "#000080",
+      "transparency": 1
+    },
+    "cellShape": "default",
+    "cellUnits": "meters",
+    "gridOrigin": "center",
+    "font": {
       "font": {
-        "size": 15,
-        "style": "normal",
-        "variant": "normal",
-        "weight": "normal",
-        "family": "serif"
-      }
-    }
+        "fontFamily": "Arial",
+        "bold": false,
+        "italic": false,
+        "underline": false
+      },
+      "fontSize": 12,
+      "textColor": "#2f4f4f"
+    },
+    "labelType": "alphaNumeric",
+    "labelDirection": "horizontal",
+    "labelOrigin": "lowerLeft",
+    "referenceSystem": "MGRS"
   }
 }

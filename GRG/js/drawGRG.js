@@ -42,7 +42,7 @@ define([
   
   var grg = {};
   
-  grg.createGRG = function(HorizontalCells,VerticalCells,centerPoint,cellWidth,cellHeight,angle,labelStartPosition,labelStyle,gridStyle,gridOrigin,geodesic,map,geometryService) {
+  grg.createGRG = function(HorizontalCells,VerticalCells,centerPoint,cellWidth,cellHeight,angle,labelStartPosition,labelStyle,labelDirection,gridStyle,gridOrigin,geodesic,map,geometryService) {
     
     //set up variables
     var letterIndex,secondLetterIndex,letter,secondLetter,number;
@@ -57,38 +57,68 @@ define([
     
     switch (labelStartPosition) {
       case 'upperLeft':
-        letterIndex = VerticalCells - 1;
-        secondLetterIndex = -1;
-        if(labelStyle != 'numeric') {
-          number = 0;
+        if(labelDirection == 'horizontal') {
+          letterIndex = VerticalCells - 1;
+          secondLetterIndex = -1;
+          if(labelStyle != 'numeric') {
+            number = 0;
+          } else {
+            number = (VerticalCells - 1) * HorizontalCells;
+            if(gridStyle == "hexagon") {
+              number = number + Math.floor(VerticalCells / 2);
+            }
+          }
         } else {
-          number = (VerticalCells - 1) * HorizontalCells;
-          if(gridStyle == "hexagon") {
-            number = number + Math.floor(VerticalCells / 2);
+          letterIndex = -1;
+          secondLetterIndex = VerticalCells - 1;
+          if(labelStyle != 'numeric') {
+            number = VerticalCells;
           }
         }
         break;
       case 'upperRight':
-        letterIndex = VerticalCells - 1;
-        secondLetterIndex = HorizontalCells;
-        if(labelStyle != 'numeric') {
-          number = HorizontalCells + 1
-        } else {
-          number = (VerticalCells * HorizontalCells) + 1;
-          if(gridStyle == "hexagon") {
-            number = number + Math.floor(VerticalCells / 2);
+        if(labelDirection == 'horizontal') {
+          letterIndex = VerticalCells - 1;
+          secondLetterIndex = HorizontalCells;
+          if(labelStyle != 'numeric') {
+            number = HorizontalCells + 1
+          } else {
+            number = (VerticalCells * HorizontalCells) + 1;
+            if(gridStyle == "hexagon") {
+              number = number + Math.floor(VerticalCells / 2);
+            }
           }
-        }        
+        } else {
+          if(labelStyle != 'numeric') {
+            number = VerticalCells;
+          } else {
+            number = (VerticalCells * (HorizontalCells + 1));
+          }
+          letterIndex = HorizontalCells;
+          secondLetterIndex = VerticalCells - 1;
+        }
         break;
       case 'lowerRight':
-        letterIndex = 0;
-        secondLetterIndex = HorizontalCells;
-        number = HorizontalCells + 1;
+        if(labelDirection == 'horizontal') {
+          letterIndex = 0;
+          secondLetterIndex = HorizontalCells;
+          number = HorizontalCells + 1;
+        } else {
+          letterIndex = HorizontalCells;
+          secondLetterIndex = 0;
+          number = 1;
+        }
         break;
-      case 'lowerLeft':
-        letterIndex = 0;
-        secondLetterIndex = -1;        
-        number = 0;
+      case 'lowerLeft':        
+        if(labelDirection == 'horizontal') {
+          letterIndex = 0;
+          number = 0;
+          secondLetterIndex = -1;
+        } else {
+          letterIndex = -1;
+          number = 1;
+          secondLetterIndex = 0;
+        }
         break;              
     }
     
@@ -244,14 +274,48 @@ define([
                  
         switch (labelStartPosition) {
           case 'upperLeft':
-          case 'lowerLeft':
-            number += 1;
-            secondLetterIndex += 1;
+            if(labelDirection == 'horizontal') {
+              secondLetterIndex += 1;
+              number += 1;
+            } else {
+              letterIndex += 1;
+              if(labelStyle == 'numeric'){
+                number =  (VerticalCells * j) - (i-1);
+              }              
+            }
+            break;
+          case 'lowerLeft':            
+            if(labelDirection == 'horizontal') {
+              secondLetterIndex += 1;
+              number += 1;
+            } else {
+              letterIndex += 1;
+              if(labelStyle == 'numeric'){
+                number = (VerticalCells * (j-1)) + i;
+              }
+            }
             break;
           case 'upperRight':
+            if(labelDirection == 'horizontal') {
+               number = number - 1;
+               secondLetterIndex = secondLetterIndex - 1;
+            } else {
+              letterIndex = letterIndex - 1;
+              if(labelStyle == 'numeric'){                  
+                number = number - HorizontalCells;
+              }
+            }               
+            break;
           case 'lowerRight':
-            number = number - 1;
-            secondLetterIndex = secondLetterIndex - 1;            
+            if(labelDirection == 'horizontal') {
+               number = number - 1;
+               secondLetterIndex = secondLetterIndex - 1;
+            } else {
+              letterIndex = letterIndex - 1;
+              if(labelStyle == 'numeric'){              
+                number = (VerticalCells * (HorizontalCells-j)) + i;
+              }
+            }               
             break;                        
         }
         
@@ -265,7 +329,7 @@ define([
             attr["grid"] = letter.toString() + number.toString();
             break;
           case 'alphaAlpha':
-            attr["grid"] = letter.toString() + secondLetter.toString();
+            attr["grid"] = letter.toString() + '-' + secondLetter.toString();
             break;
            case 'numeric':
             attr["grid"] = number.toString();
@@ -282,46 +346,82 @@ define([
       
       switch (labelStartPosition) {
           case 'upperLeft':
-            letterIndex = letterIndex - 1;
-            if(labelStyle != 'numeric') {
-              number = 0;
-            } else { 
-              if(gridStyle == "hexagon") {
-                number = (number - (2 * hexHorizontalCells)) - 1;
-              } else {
-                number = (number - (2 * HorizontalCells));
+            if(labelDirection == 'horizontal') {
+              letterIndex = letterIndex - 1;
+              if(labelStyle != 'numeric') {
+                number = 0;
+              } else { 
+                if(gridStyle == "hexagon") {
+                  number = (number - (2 * hexHorizontalCells)) - 1;
+                } else {
+                  number = (number - (2 * HorizontalCells));
+                }
+              }
+              secondLetterIndex = -1;
+            } else {
+              letterIndex = -1;
+              secondLetterIndex = (VerticalCells - (i+1));
+              if(labelStyle != 'numeric') {
+                number = VerticalCells - i;
               }
             }
-            secondLetterIndex = -1; 
             break;
           case 'upperRight':
-            letterIndex = letterIndex - 1;
-            if (labelStyle != 'numeric')
-            {
-              number = HorizontalCells + 1;
+            if(labelDirection == 'horizontal') {
+              letterIndex = letterIndex - 1;
+              if (labelStyle != 'numeric')
+              {
+                number = HorizontalCells + 1;
+              }
+              secondLetterIndex = HorizontalCells;
+            } else {
+              if (labelStyle != 'numeric') { 
+                number = number - 1;
+              } else {
+                number = (VerticalCells * (HorizontalCells + 1)) - i;
+              }
+              letterIndex = HorizontalCells;
+              secondLetterIndex = secondLetterIndex - 1;
+              
             }
-            secondLetterIndex = HorizontalCells; 
             break;
           case 'lowerRight':
-            letterIndex += 1;
-            if(labelStyle != 'numeric') {
-              number = HorizontalCells + 1;
-            } else {
-              if(gridStyle == "hexagon") {
-                number = (number + (2 * hexHorizontalCells)) + 1;
+            if(labelDirection == 'horizontal') {
+              letterIndex += 1;
+              if(labelStyle != 'numeric') {
+                number = HorizontalCells + 1;
               } else {
-                number = (number + (2 * HorizontalCells));
+                if(gridStyle == "hexagon") {
+                  number = (number + (2 * hexHorizontalCells)) + 1;
+                } else {
+                  number = (number + (2 * HorizontalCells));
+                }
+              }
+              secondLetterIndex = HorizontalCells;
+            } else {
+              letterIndex = HorizontalCells;
+              secondLetterIndex += 1;
+              if(labelStyle != 'numeric') {
+                number += 1;
+              } else {
+                number = HorizontalCells * i;
               }
             }
-            secondLetterIndex = HorizontalCells;
             break;
           case 'lowerLeft':
-            letterIndex += 1;
-            if (labelStyle != 'numeric')
-            {
-              number = 0;
+            if(labelDirection == 'horizontal') {
+              letterIndex += 1;
+              if (labelStyle != 'numeric') {
+                number = 0;
+              }
+              secondLetterIndex = -1;
+            } else {
+              letterIndex = -1;
+              if (labelStyle != 'numeric') {
+                number += 1;
+              } 
+              secondLetterIndex = i; 
             }
-            secondLetterIndex = -1; 
             break;              
         }                     
     }
@@ -345,7 +445,7 @@ define([
     if(totalNumber > 2000) {
       // Invalid entry
       var alertMessage = new Message({
-        message: 'You are attempting to create a grid comprising of ' + totalNumber + ' cells. It is advisable to reduce the number of cells being created by changing the grid size or grid area.'
+        message: 'You are attempting to create a grid comprising of ' + parseInt(totalNumber) + ' cells. It is advisable to reduce the number of cells being created by changing the grid size or grid area.'
       });
       return false;
     } else {
