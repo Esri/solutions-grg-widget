@@ -163,6 +163,19 @@ define([
         },
 
       postCreate: function () {
+        //modify String's prototype so we can format a string
+        if (!String.prototype.format) {
+          String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+              return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+              ;
+            });
+          };
+        }
+        
         this.inherited(arguments);
         
         this.extentAreaFillSymbol = {
@@ -446,19 +459,7 @@ define([
             
             //Handle click event of clear GRG Area button        
             this.own(on(this.grgAreaBySizeClearGRGButton, 'click', lang.hitch(this,
-              this._clearGRGLayer)));
-              
-            //Handle click event of publish GRG to portal button
-            this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
-              if(this.addGRGNameArea.isValid()) {
-                this._initSaveToPortal(this.addGRGNameArea.value)
-              } else {
-                // Invalid entry
-                var alertMessage = new Message({
-                  message: this.nls.missingLayerNameMessage
-                });
-              }
-            })));
+              this._clearGRGLayer))); 
             
             //Handle click event of number of row / columns checkbox        
             this.own(on(this.setNumberRowsColumns, 'click', lang.hitch(this, 
@@ -730,6 +731,17 @@ define([
             this.own(on(this.publishPanelBackButton, "click", lang.hitch(this, function () {
               this._gridSettingsInstance.onClose();          
               this._showPanel(this._lastOpenPanel);
+            })));
+            
+            //Handle click event of publish GRG to portal button
+            this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
+              if(this.addGRGNameArea.isValid()) {
+                this.publishMessage.innerHTML = '';
+                this._initSaveToPortal(this.addGRGNameArea.value)
+              } else {
+                // Invalid entry
+                this.publishMessage.innerHTML = this.nls.missingLayerNameMessage;
+              }
             })));
         
         
@@ -1785,36 +1797,29 @@ define([
                           this._reset();
                         })); 
                         this.busyIndicator.hide();
+                        var newURL = '<br /><a href="' +this.appConfig.portalUrl + "home/item.html?id=" + response1.itemId + '" target="_blank">';
+                        this.publishMessage.innerHTML = this.nls.successfullyPublished.format(newURL) + '</a>';
                       }
                     }), function(err2) {
                       this.busyIndicator.hide();
-                      new Message({
-                        message: "Add to definition: " + err2.message
-                      });                              
+                      this.publishMessage.innerHTML = this.nls.addToDefinition.format(err2.message);                                                    
                     });
                   } else {
                     this.busyIndicator.hide();
-                    new Message({
-                      message: "Unable to create " + featureServiceName
-                    });
+                    this.publishMessage.innerHTML = this.nls.unableToCreate.format(featureServiceName);                    
                   }
                 }), function(err1) {
                   this.busyIndicator.hide();
-                  new Message({
-                    message: "Create Service: " + err1.message
-                  });
+                  this.publishMessage.innerHTML = this.nls.createService.format(err1.message);                  
                 });
               } else {
                   this.busyIndicator.hide();
-                  new Message({                 
-                    message: "You already have a feature service named " + featureServiceName + ". Please choose another name."
-                  });                    
+                  this.publishMessage.innerHTML = this.nls.publishingFailedLayerExists.format(featureServiceName); 
+                  
               }
             }), function(err0) {
               this.busyIndicator.hide();
-              new Message({
-                message: "Check Service: " + err0.message
-              });
+              this.publishMessage.innerHTML = this.nls.checkService.format(err0.message);
             });
           }))
         }));          

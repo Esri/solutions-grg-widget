@@ -158,6 +158,13 @@
     float: left;
 }
 
+.jimu-widget-GRGDrafter .GRGDrafterPublishMessage {
+    float: left;
+    line-height: 16px;
+    padding: 18px 0px 0px 0;
+    font-weight: bold;
+}
+
 /*------------------------- Styles for Main Page End-----------------------*/
 
 /*------------------------- Styles for GRG Pages-----------------------*/

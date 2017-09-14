@@ -101,21 +101,25 @@ define({
     "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
     "missingGRGLayerName": 'You must enter a name for the GRG',
     
+    //publishing error messages
+    "publishingFailedLayerExists": 'Publishing Failed: You already have a feature service named {0}. Please choose another name.', //Shown as error for layer name already used when publishing {0} will be replaced with the layer name in the code so do not remove
+    "checkService": 'Check Service: {0}', //{0} will be replaced in the code so do not remove
+    "createService": 'Create Service: {0}', //{0} will be replaced in the code so do not remove
+    "unableToCreate": 'Unable to create: {0}', //{0} will be replaced in the code so do not remove
+    "addToDefinition": 'Add to definition: {0}', //{0} will be replaced in the code so do not remove
+    "successfullyPublished": 'Successfully published web layer{0}Manage the web layer', //{0} will be replaced in the code so do not remove
+    
     //common
     "createGRGBtn": 'Create GRG', // Shown as label on create button
     "clearGRGBtn": 'Clear GRG', // Shown as label on clear button
-    
-    
     "addPointToolTip": 'Add GRG Origin',
     "numberRowsColumnsLabel": 'Define number of rows and columns',
     "cellWidth": 'Cell Width (x)',
     "cellHeight": 'Cell Height (y)',
     "invalidNumberMessage": 'The value entered is not valid',
     "invalidRangeMessage": 'Value must be greater than 0',
-    "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',
-    
-     
-    "removeGRGLabel": 'Remove GRG Area',
+    "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',     
+    "removeGRGLabel": 'Remove GRG Area', //Shown as label for remove GRG
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
     "coordInputLabel": 'GRG Origin', // Shown as label for coordinate input
     "setCoordFormat": 'Set Coordinate Format String',
@@ -129,8 +133,8 @@ define({
     "missingParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG area has been drawn.</li><li>The cell width and height contain valid values.</li></ul>',
     "drawPointToolTip": 'Click to add GRG origin point',
     "drawToolTip2": 'Click to finish GRG Area',
-    "missingLayerNameMessage": 'You must enter a GRG Layer Name before you can publish',
-    "comfirmInputNotation": 'Confirm Input Notation',
+    "missingLayerNameMessage": 'You must enter a valid layer name before you can publish',
+    "comfirmInputNotation": 'Confirm Input Notation',   
     "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.' //Shown as error message for unknown coordinates
     
   })
