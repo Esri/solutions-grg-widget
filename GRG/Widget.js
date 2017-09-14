@@ -729,6 +729,8 @@ define([
         **/
             //Handle click event of Grid settings back button
             this.own(on(this.publishPanelBackButton, "click", lang.hitch(this, function () {
+              //remove any messages
+              this.publishMessage.innerHTML = '';
               this._gridSettingsInstance.onClose();          
               this._showPanel(this._lastOpenPanel);
             })));
@@ -870,7 +872,7 @@ define([
           this.dt_PointBySize.removeStartGraphic();
           this.dt_PointByRefSystem.removeStartGraphic();
           
-          dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+          dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
           dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
           dojo.removeClass(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
           dojo.removeClass(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
@@ -1025,7 +1027,7 @@ define([
           this._graphicsLayerGRGExtent.clear();
         }        
         var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
-        if(dojo.hasClass(node,'jimu-edit-active')) {
+        if(dojo.hasClass(node,'jimu-polygon-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaBySize.deactivate();
           this.map.enableMapNavigation();
@@ -1038,17 +1040,17 @@ define([
             this.editToolbar.activate(Edit.MOVE|Edit.EDIT_VERTICES, evt.graphic); 
           })));          
         }
-        domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+        domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
       },
       
       _grgAreaBySizeDrawExtentIconClicked: function () {
         this._clearGRGLayer(); 
         // deactive the other tool if active
         var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
-        if(dojo.hasClass(node,'jimu-edit-active')) {
+        if(dojo.hasClass(node,'jimu-polygon-active')) {
           //this tool is already selected so deactivate
           this.dt_AreaBySize.deactivate();
-          domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+          domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
           //clear any partial drawings
           this._graphicsLayerGRGExtent.clear();
         }        
@@ -1113,7 +1115,7 @@ define([
       
       _grgAreaByRefSystemDrawIconClicked: function () {
         var node = dijitRegistry.byId(this.grgAreaByRefSystemDrawIcon);
-        if(dojo.hasClass(node,'jimu-edit-active')) {
+        if(dojo.hasClass(node,'jimu-extent-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaByRefSystem.deactivate();
           this.map.enableMapNavigation();
@@ -1123,7 +1125,7 @@ define([
           this.map.disableMapNavigation();          
           this.dt_AreaByRefSystem.activate('extent');        
         }
-        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');
+        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');
         
       },
       
@@ -1202,7 +1204,7 @@ define([
       },
       
       _dt_AreaByRefSystemComplete: function (evt) {       
-        domClass.remove(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');
+        domClass.remove(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');
         var graphic = new Graphic(evt.geometry, this._extentSym);
         this._graphicsLayerGRGExtent.add(graphic);
         this.dt_AreaByRefSystem.deactivate();
@@ -1360,7 +1362,7 @@ define([
         this.grgAreaBySizeRotation.setValue(this.angle);
         this.grgAreaBySizeRotation.set('disabled', true);
         
-        html.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-edit-active');
+        html.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
         html.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');   
         html.removeClass(this.grgAreaBySizeDrawContainer, 'controlGroupHidden');
         html.addClass(this.grgAreaBySizeDrawContainer, 'controlGroup');
@@ -1370,7 +1372,7 @@ define([
       
       _grgAreaByRefSystemDeleteIconClicked: function () {
         this._graphicsLayerGRGExtent.clear();
-        html.removeClass(this.grgAreaByRefSystemDrawIcon, 'jimu-edit-active');          
+        html.removeClass(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');          
         html.removeClass(this.grgAreaByRefSystemDrawContainer, 'controlGroupHidden');
         html.addClass(this.grgAreaByRefSystemDrawContainer, 'controlGroup');
         html.removeClass(this.grgAreaByRefSystemDeleteContainer, 'controlGroup');

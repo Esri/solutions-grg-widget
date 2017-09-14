@@ -33,9 +33,16 @@
 .claro .dijitDialog {
   background-color: #4c4c4c;
 }
+
 .claro .dijitDialogTitle {
     color: #fff;
 }
+
+.claro .dijitDialogPaneActionBar {
+  background-color: #4c4c4c;
+  border-top: none;
+}
+
 .claro .jimu-widget-subtitle {
     color: #ffffff;
 }
@@ -77,8 +84,9 @@
     background-color: transparent;
     width: 15px;
     height: 15px;
-    margin-bottom: 4px;
+    margin-top: 7px;
     margin-left: 5px;
+    margin-bottom: -3px;
 }
 
 .jimu-widget-GRGDrafter .settingBtn:hover {
@@ -86,23 +94,41 @@
 }
 
 .jimu-widget-GRGDrafter .editBtn {
-    display: inline-block;
-    background: url(./images/edit_white.png);
+    display: right;
+    background: url(./images/draw_white.png);
     background-repeat: no-repeat;
     background-color: transparent;
-    width: 15px;
-    height: 15px;
-    margin-bottom: 4px;
-    margin-left: 5px;
+    width: 30px;
+    height: 30px;
 }
 
 .jimu-widget-GRGDrafter .editBtn:hover {
-    background: url('./images/edit_white_hover.png');
+    background: url('./images/draw_white_hover.png');
     background-repeat: no-repeat;
 }
 
 .jimu-widget-GRGDrafter .jimu-edit-active {
-    background: url('./images/edit_white_hover.png');
+    background: url('./images/draw_white_hover.png');
+    background-repeat: no-repeat;
+    border: none;
+}
+
+.jimu-widget-GRGDrafter .polygonBtn {
+    display: inline-block;
+    background: url(./images/polygon_white.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 30px;
+    height: 30px;
+}
+
+.jimu-widget-GRGDrafter .polygonBtn:hover {
+    background: url('./images/polygon_white_hover.png');
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .jimu-polygon-active {
+    background: url('./images/polygon_white_hover.png');
     background-repeat: no-repeat;
     border: none;
 }
@@ -112,10 +138,8 @@
     background: url(./images/extent_white.png);
     background-repeat: no-repeat;
     background-color: transparent;
-    width: 16px;
-    height: 16px;
-    margin-bottom: 4px;
-    margin-left: 5px;
+    width: 30px;
+    height: 30px;
 }
 
 .jimu-widget-GRGDrafter .extentBtn:hover {

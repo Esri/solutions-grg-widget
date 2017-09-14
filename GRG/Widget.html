@@ -89,7 +89,7 @@
                     <div class="GRGDrafterFullWidth">
                       <div>
                         <div class="GRGDrafterDoubleButtonLabel GRGDrafterEllipsis" title="${nls.newGRGAreaBySizeDefineAreaLabel}">${nls.newGRGAreaBySizeDefineAreaLabel}</div>                        
-                        <div title="${nls.addGRGAreaPolygonToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgAreaBySizeDrawPolygonIcon"></div>
+                        <div title="${nls.addGRGAreaPolygonToolTip}" class="jimu-icon polygonBtn" data-dojo-attach-point="grgAreaBySizeDrawPolygonIcon"></div>
                         <div title="${nls.addGRGAreaExtentToolTip}" class="jimu-icon extentBtn" data-dojo-attach-point="grgAreaBySizeDrawExtentIcon"></div>                        
                       </div>
                     </div>
@@ -188,7 +188,7 @@
                     <div class="GRGDrafterFullWidth" data-dojo-attach-point="grgAreaByRefSystemDrawContainer">
                       <div>
                       <div class="GRGDrafterButtonLabel GRGDrafterEllipsis" title="${nls.newGRGAreaBySizeDefineAreaLabel}">${nls.newGRGAreaBySizeDefineAreaLabel}</div>
-                      <div title="${nls.addPointToolTip}" class="jimu-icon jimu-icon-edit" data-dojo-attach-point="grgAreaByRefSystemDrawIcon"></div>
+                      <div title="${nls.addGRGAreaExtentToolTip}" class="jimu-icon extentBtn" data-dojo-attach-point="grgAreaByRefSystemDrawIcon"></div>
                       </div>
                     </div>
                   </div>
@@ -281,8 +281,8 @@
                   <!-- Draw GRG Point Coordinate Input -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis" style="width: 100%" title="${nls.coordInputLabel}" data-dojo-attach-point="grgPointBySizeCoordInputLabel">${nls.coordInputLabel}</div>                      
-                        <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointBySizeOriginCoords" />
-                        <div class='add-with-icon'>
+                        <div>
+                          <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointBySizeOriginCoords" />                        
                           <div  title="${nls.formatIconTooltip}" class="jimu-icon settingBtn" data-dojo-attach-point="grgPointBySizeCoordFormatButton"></div>
                           <div title="${nls.addPointToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgPointBySizeAddPointBtn"></div>
                         </div>  
@@ -364,8 +364,8 @@
                   <!-- Draw GRG Point Coordinate Input -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis" style="width: 100%" title="${nls.coordInputLabel}" data-dojo-attach-point="grgPointByRefSystemCoordInputLabel">${nls.coordInputLabel}</div>                      
-                        <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointByRefSystemOriginCoords" />
-                        <div class='add-with-icon'>
+                        <div>
+                          <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointByRefSystemOriginCoords" />                        
                           <div  title="${nls.formatIconTooltip}" class="jimu-icon settingBtn" data-dojo-attach-point="grgPointByRefSystemCoordFormatButton"></div>
                           <div title="${nls.addPointToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgPointByRefSystemAddPointBtn"></div>
                         </div>  
