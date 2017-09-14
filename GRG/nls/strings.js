@@ -51,7 +51,7 @@ define({
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
     "textColor": 'Text Color', // Shown as label for font colour
-    "lockSettings": 'Settings have been locked by your administrator', // Shown as tooltip on settings button if locked
+    "lockSettings": 'Settings have been locked by the application owner', // Shown as tooltip on settings button if locked
     
     "gridSettings": {
       "cellShape": "Cell Shape", // Shown as label to set Cell Shape Type
