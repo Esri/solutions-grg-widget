@@ -7,7 +7,7 @@ define({
     
     
     //Grid Tab Contents
-    "gridTabDescription": "Set the appearance and behaviour of the grid cells.", // Shown as description for grid settings
+    "gridTabDescription": "Set the appearance and behavior of the grid cells.", // Shown as description for grid settings
     "cellOutlineColor": "Cell Outine color", // Shown as label above cell outline color picker
     "cellFillColor": "Cell Fill color", // Shown as label above cell fill color picker
     "transparency": "Transparency", // Shown as label for transparency
@@ -33,7 +33,7 @@ define({
     
     
     //Label Tab Contents
-    "labelTabDescription": "Set the appearance and behaviour of the grid labels.", // Shown as description for grid settings    
+    "labelTabDescription": "Set the appearance and behavior of the grid labels.", // Shown as description for grid settings    
     "labelSettings": "Label Style", // Shown as label above label settings
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
