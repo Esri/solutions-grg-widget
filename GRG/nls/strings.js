@@ -23,7 +23,7 @@ define({
     //Area GRG By Reference System Panel    
     "newGRGAreaByRefSystemTitle": 'GRG from an Area by Reference System', // Shown as title for new GRG from reference system panel
     "gridSize": 'Grid Size', // Shown as title for new GRG from reference system panel
-    "UTMZoneandBand": 'UTM Zone and Band', // Shown as label for UTM Zone and Band in gridSize dropdown
+    "UTMZoneandBand": 'Grid Zone', // Shown as label for UTM Zone and Band in gridSize dropdown
     "100000m": '100000 meter', // Shown as label for 100000 meter in gridSize dropdown
     "10000m": '10000 meter', // Shown as label for 10000 meter in gridSize dropdown
     "1000m": '1000 meter', // Shown as label for 10000 meter in gridSize dropdown
