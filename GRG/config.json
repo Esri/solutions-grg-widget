@@ -2,11 +2,11 @@
   "grg": {
     "cellFill": {
       "color": "#ffffff",
-      "transparency": 0
+      "transparency": 1
     },
     "cellOutline": {
       "color": "#000080",
-      "transparency": 1
+      "transparency": 0
     },
     "cellShape": "default",
     "cellUnits": "meters",
@@ -18,12 +18,13 @@
         "italic": false,
         "underline": false
       },
-      "fontSize": 12,
-      "textColor": "#2f4f4f"
+      "fontSize": 20,
+      "textColor": "#000000"
     },
     "labelType": "alphaNumeric",
     "labelDirection": "horizontal",
     "labelOrigin": "lowerLeft",
-    "referenceSystem": "MGRS"
+    "referenceSystem": "MGRS",
+    "lockSettings": false
   }
 }

@@ -36,7 +36,6 @@
       templateString: GridSettingsTemplate,
       selectedGridSettings: {}, //Holds selected Settings
       _defaultColor: '#1a299c',
-      _defaultTransparency: 1,
       _defaultTextSize: 12,
       _defaultFont: {"font": {"fontFamily": "Arial","bold": false,"italic": false,"underline": false},"fontSize": 12,"textColor": "#2f4f4f"},
       gridSettingsOptions:  {
@@ -57,18 +56,20 @@
       startup: function () {
         
         this.gridOutlineColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
-        this.gridOutlineColorPicker.startup();
         this.gridOutlineColorPicker.setValues({
-            "color": this.config.grg.cellOutline.color || this._defaultColor,
-            "transparency": this.config.grg.cellOutline.transparency || this._defaultTransparency
+            "color": this.config.grg.cellOutline.color,
+            "transparency": this.config.grg.cellOutline.transparency
           });
+        this.gridOutlineColorPicker.startup();
+        
           
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
-        this.gridFillColorPicker.startup();
         this.gridFillColorPicker.setValues({
-            "color": this.config.grg.cellFill.color || this._defaultColor,
-            "transparency": this.config.grg.cellFill.transparency || 0
+            "color": this.config.grg.cellFill.color,
+            "transparency": this.config.grg.cellFill.transparency
           });
+        this.gridFillColorPicker.startup();
+        
           
         this.fontSetting = new FontSetting({
             config: this.config.grg.font || this._defaultFont,

@@ -34,7 +34,6 @@ define([
       baseClass: 'jimu-widget-grg-setting',
       _defaultCellOutlineColor: "#1a299c",
       _defaultCellFillColor: "#ffffff",
-      _defaultTransparency: 1,
 
       postMixInProperties: function() {
         this.nls = lang.mixin(this.nls, window.jimuNls.common);
@@ -109,13 +108,13 @@ define([
         this.config = config;
         
         this.cellOutlineColorPicker.setValues({
-          "color": config.grg.cellOutline.color || this._defaultCellOutlineColor,
-          "transparency": config.grg.cellOutline.transparency || this._defaultTransparency
+          "color": config.grg.cellOutline.color,
+          "transparency": config.grg.cellOutline.transparency
         });
         
         this.cellFillColorPicker.setValues({
-          "color": config.grg.cellFill.color || this._defaultCellFillColor,
-          "transparency": config.grg.cellFill.transparency || 0
+          "color": config.grg.cellFill.color,
+          "transparency": config.grg.cellFill.transparency
         });
         
         this.cellShapeDropDown.setValue(this.config.grg.cellShape);

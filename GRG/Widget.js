@@ -936,10 +936,10 @@ define([
 
             //set grid colours
             var fillColor = new Color(updatedSettings.gridFillColor);
-            fillColor.a = updatedSettings.gridFillTransparency;
+            fillColor.a = 1 - updatedSettings.gridFillTransparency;
             
             var outlineColor = new Color(updatedSettings.gridOutlineColor);
-            outlineColor.a = updatedSettings.gridOutlineTransparency;
+            outlineColor.a = 1 - updatedSettings.gridOutlineTransparency;
                         
             this._GRGAreaFillSymbol = {
               type: 'esriSFS',
