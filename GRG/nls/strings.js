@@ -121,7 +121,7 @@ define({
     "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',     
     "removeGRGLabel": 'Remove GRG Area', //Shown as label for remove GRG
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
-    "coordInputLabel": 'GRG Origin', // Shown as label for coordinate input
+    "coordInputLabel": 'GRG Origin (DD)', // Shown as label for coordinate input box (DD) denotes that decimal degrees is set as the default
     "setCoordFormat": 'Set Coordinate Format String',
     "prefixNumbers": 'Add "+/-" prefix to positive and negative numbers',
     "cancelBtn": 'Cancel',
