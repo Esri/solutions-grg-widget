@@ -1785,10 +1785,31 @@ define([
                       if (response2.success) {
                         //Push features to new layer
                         var newFeatureLayer = new FeatureLayer(response1.serviceurl + "/0?token=" + token, {
-                          mode: FeatureLayer.MODE_SNAPSHOT,
-                          outFields: ["*"]                                  
-                         });
-                        this.map.addLayer(newFeatureLayer);
+                          id: featureServiceName,
+                          outFields: ["*"],
+                              
+                         });                        
+                        this.map.addLayers([newFeatureLayer]);                        
+                        
+                        //must ensure the layer is loaded before we can access it to turn on the labels if required
+                        if(newFeatureLayer.loaded){
+                          // show or hide labels
+                          featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
+                          featureLayerInfo.enablePopup();
+                          if(this._showLabels.value) {
+                            featureLayerInfo.showLabels();
+                          }
+                        } else {
+                          newFeatureLayer.on("load", lang.hitch(this, function () {
+                            // show or hide labels
+                            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
+                            featureLayerInfo.enablePopup();
+                            if(this._showLabels.value) {
+                              featureLayerInfo.showLabels();
+                            }
+                          }));
+                        }
+                        
                         var newGraphics = [];
                         array.forEach(this.GRGArea.graphics, function (g) {
                           newGraphics.push(new Graphic(g.geometry, null, {grid: g.attributes["grid"]}));
@@ -1801,11 +1822,12 @@ define([
                         this.busyIndicator.hide();
                         var newURL = '<br /><a href="' +this.appConfig.portalUrl + "home/item.html?id=" + response1.itemId + '" target="_blank">';
                         this.publishMessage.innerHTML = this.nls.successfullyPublished.format(newURL) + '</a>';
-                      }
+                        
+                      }                      
                     }), function(err2) {
                       this.busyIndicator.hide();
                       this.publishMessage.innerHTML = this.nls.addToDefinition.format(err2.message);                                                    
-                    });
+                    });                    
                   } else {
                     this.busyIndicator.hide();
                     this.publishMessage.innerHTML = this.nls.unableToCreate.format(featureServiceName);                    
@@ -1824,7 +1846,7 @@ define([
               this.publishMessage.innerHTML = this.nls.checkService.format(err0.message);
             });
           }))
-        }));          
+        }));        
       }     
     });
   });
