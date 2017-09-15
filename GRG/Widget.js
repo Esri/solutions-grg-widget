@@ -731,6 +731,8 @@ define([
             this.own(on(this.publishPanelBackButton, "click", lang.hitch(this, function () {
               //remove any messages
               this.publishMessage.innerHTML = '';
+              //clear layer name
+              this.addGRGNameArea.setValue('');
               this._gridSettingsInstance.onClose();          
               this._showPanel(this._lastOpenPanel);
             })));
@@ -959,12 +961,22 @@ define([
             
             var textColor = new Color(updatedSettings.fontSettings.textColor);
             
+            var labelTrans = (1 - updatedSettings.fontSettings.labelTransparency) * 255;
+            
+            if(updatedSettings.fontSettings.haloOn){
+              var haloSize = parseInt(updatedSettings.fontSettings.haloSize);
+            } else {
+              var haloSize = 0;
+            }
+            
+            var haloColor = new Color(updatedSettings.fontSettings.haloColor);
+            
             this._cellTextSymbol = {
               "color": [
                 textColor.r,
                 textColor.g,
                 textColor.b,
-                255
+                labelTrans
               ],
               "type": "textsymbol",
               "horizontalAlignment": "center",
@@ -981,7 +993,14 @@ define([
               "y": 0,
               "xoffset": 0,
               "yoffset": 0,
-              "align": "middle"
+              "align": "middle",
+              "haloSize": haloSize,
+              "haloColor": [
+                haloColor.r,
+                haloColor.g,
+                haloColor.b,
+                255
+              ]
             };
                         
             // create a text symbol to define the style of labels

@@ -29,4 +29,29 @@
       </div>
     </div>
   </div>
+  <div class="setting-items text-color clearFix" data-dojo-attach-point="transparencySetting">
+    <div class="label jimu-float-leading" title="${nls.transparency}">${nls.transparency}</div>
+    <div class="setting-wapper jimu-float-trailing">
+      <div class="font-group jimu-float-leading">
+        <div class="text-color-btn" data-dojo-attach-point="transparencySlider"></div>
+      </div>      
+    </div>
+  </div>  
+  <div class="setting-items halo-size clearFix" data-dojo-attach-point="haloSetting">
+    <div class="label jimu-float-leading" title="${nls.halo}">${nls.halo}</div>
+    <div class="setting-wapper jimu-float-trailing">
+      <div class="halo-size-group jimu-float-leading">
+        <select data-dojo-type="dijit/form/ComboBox" data-dojo-attach-point="haloSizeSelect"></select>
+      </div>
+      <div class="halo-size-group jimu-float-leading">
+        <div class="halo-color-btn" data-dojo-attach-point="haloColorBtn"></div>        
+      </div>
+      <div class="halo-size-group jimu-float-leading">
+        <div class="label" title="${nls.show}">${nls.show}</div>
+      </div>
+      <div class="halo-size-group jimu-float-leading">
+        <input class="halo-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="showHalo" checked="true" />
+      </div>
+    </div>
+  </div>
 </div>

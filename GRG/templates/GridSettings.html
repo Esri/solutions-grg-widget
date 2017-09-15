@@ -66,6 +66,14 @@
     </div>
     
     <div class="controlGroupHidden" data-dojo-attach-point="labelSettingsContainer">
+        <!-- Show Labels Toggle -->
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" >
+          <div>
+            <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.gridSettings.showLabels}">${nls.gridSettings.showLabels}</div>
+            <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="settingsShowLabelsToggle" checked="true" />
+          </div>
+        </div>
+        
         <!-- Label Start Position Selector -->
         <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="labelStartPositionContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelStartPosition}">
@@ -91,18 +99,11 @@
         </div>
         
         <!-- Font Settings -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="fontSettingsContainer">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow" data-dojo-attach-point="fontSettingsContainer">
           <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.labelStyle}">
                 ${nls.labelStyle}</div>
           <div data-dojo-attach-point="fontSettingNode"></div>
-        </div>
+        </div>        
         
-        <!-- Show Labels Toggle -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow" >
-          <div>
-            <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.gridSettings.showLabels}">${nls.gridSettings.showLabels}</div>
-            <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="settingsShowLabelsToggle" checked="true" />
-          </div>
-        </div>
     </div>
 </div>

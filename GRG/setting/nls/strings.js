@@ -37,7 +37,9 @@ define({
     "labelSettings": "Label Style", // Shown as label above label settings
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
-    "textColor": 'Text Color', // Shown as label for font colour    
+    "textColor": 'Text Color', // Shown as label for font colour
+    "halo": 'Halo', // Shown as label for halo settings    
+    "show": 'Show', // Shown as label for halo settings
     
     "labelTypeDropDown": "Label Type", // Shown as label above label type dropdown
     "alphaNumeric": 'Alpha-Numeric', // Shown as label for Alpha-Numeric in label type dropdown

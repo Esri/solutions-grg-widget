@@ -51,6 +51,8 @@ define({
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
     "textColor": 'Text Color', // Shown as label for font colour
+    "halo": 'Halo', // Shown as label for halo settings    
+    "show": 'Show', // Shown as label for halo settings
     "lockSettings": 'Settings have been locked by the application owner', // Shown as tooltip on settings button if locked
     
     "gridSettings": {

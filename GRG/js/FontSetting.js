@@ -27,6 +27,7 @@ define([
   'dojo/text!../templates/FontSetting.html',
   'jimu/dijit/ColorPickerPopup',
   "dijit/form/HorizontalSlider",
+  './TransparencyEditor',
   "dojo/store/Memory",
   "dijit/form/ComboBox",
   'jimu/dijit/CheckBox',
@@ -34,7 +35,7 @@ define([
 ],
   function (declare, lang, on, html, array,
     Evented, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template,
-    ColorPickerPopup, HorizontalSlider, Memory) {
+    ColorPickerPopup, HorizontalSlider, TransparencyEditor, Memory) {
     return declare([_WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, Evented], {
       templateString: template,
       nls: null,
@@ -56,7 +57,11 @@ define([
             underline: false
           },
           fontSize: "24",
-          textColor: "#282828"
+          textColor: "#282828",
+          haloSize: 1,
+          haloColor: "#FFFFFF",
+          haloOn: true,
+          labelTransparency: 1,
         };
         this.config = lang.mixin(lang.clone(this._DEFAULT_CONFIG), this.config);
 
@@ -100,6 +105,41 @@ define([
         });
         this.textColorPicker.placeAt(this.textColorBtn);
         this.textColorPicker.startup();
+        
+        //transparency
+        this.labelTransparency = new TransparencyEditor({}, this.transparencySlider);
+        this.labelTransparency.startup();
+        
+        
+        
+        //halo
+        //halo size
+        var haloSizeStore = new Memory({});
+        for (var i = 1, max = 10; i <= max; i += 1) {
+          haloSizeStore.put({ id: i, name: i });
+        }
+        this.haloSizeSelect.store = haloSizeStore;
+        this.haloSizeSelect.validator = lang.hitch(this, function () {
+          var s = this.haloSizeSelect.getValue();
+          if (s !== null && s !== "") {
+            return !isNaN(s);
+          }
+          return false;
+        });
+        
+        
+        //halo color picker
+        this.haloColorPicker = new ColorPickerPopup({
+          appearance: {
+            showTransparent: false,
+            showColorPalette: true,
+            showCoustom: true,
+            showCoustomRecord: true
+          },
+        });
+        this.haloColorPicker.placeAt(this.haloColorBtn);
+        this.haloColorPicker.startup();
+               
         //font
         this.own(on(this.fontSelect, 'change', lang.hitch(this, function (value) {
           if(this.config.font.fontFamily === value){
@@ -179,6 +219,36 @@ define([
             textColor: color.toHex()
           });
         })));
+        //transparency slider        
+        this.own(this.labelTransparency.watch('transparency', lang.hitch(this, function () {
+          this.onSettingChange({
+            labelTransparency: this.labelTransparency.getValues().transparency
+          });
+        })));
+        //halo size
+        this.own(on(this.haloSizeSelect, 'change', lang.hitch(this, function (value) {
+          if(this.config.haloSize === value || false === this.haloSizeSelect.isValid()){
+            return;
+          }
+          this.onSettingChange({
+            haloSize: value
+          });
+        })));
+        //.haloColor
+        this.own(on(this.haloColorPicker, 'change', lang.hitch(this, function (color) {
+          if(this.config.haloColor === color){
+            return;
+          }
+          this.onSettingChange({
+            haloColor: color.toHex()
+          });
+        })));
+        //halo toggle switch
+        this.own(on(this.showHalo, 'change', lang.hitch(this, function () {          
+          this.onSettingChange({
+            haloOn: this.showHalo.checked
+          });
+        })));
       },
       startup: function () {
         this.inherited(arguments);
@@ -215,6 +285,7 @@ define([
           return false;
         }
       },
+      
       setConfig: function (configObj) {
         if ("undefined" === configObj) {
           return;
@@ -235,11 +306,39 @@ define([
           configObj.textColor = this._DEFAULT_CONFIG.textColor;//"#000001";
         }
         this.config.textColor = configObj.textColor;
+        
+        if ("undefined" === typeof configObj.labelTransparency || "" === configObj.labelTransparency) {
+          configObj.labelTransparency = this._DEFAULT_CONFIG.labelTransparency;//"1";
+        }
+        this.config.labelTransparency = configObj.labelTransparency;
+        this.labelTransparency.setValues({"transparency": this.config.labelTransparency});
+        
+        if ("undefined" === typeof configObj.haloSize || "" === configObj.haloSize) {
+          configObj.haloSize = this._DEFAULT_CONFIG.haloSize;//"1";
+          
+        }
+        this.config.haloSize = configObj.haloSize;
+        this.haloSizeSelect.set('value', configObj.haloSize);
+        
+        if ("undefined" === typeof configObj.haloColor || "" === configObj.haloColor) {
+          configObj.haloColor = this._DEFAULT_CONFIG.haloColor;//"#FFFFFF";
+        }
+        this.config.haloColor = configObj.haloColor;
 
         html.setStyle(this.textColorPicker.domNode, 'backgroundColor', this.config.textColor);
         this.textColorPicker.picker.refreshRecords();
         this.textColorPicker.picker.setColor(this.config.textColor, false, true);
+        
+        html.setStyle(this.haloColorPicker.domNode, 'backgroundColor', this.config.haloColor);
+        this.haloColorPicker.picker.refreshRecords();
+        this.haloColorPicker.picker.setColor(this.config.haloColor, false, true);
+        
+        if ("undefined" === typeof configObj.haloOn || "" === configObj.haloOn) {
+          configObj.haloOn = this._DEFAULT_CONFIG.haloOn;//"#FFFFFF";
+        }
+        this.showHalo.set("checked",this.config.haloOn);
       },
+      
       setTextSize: function (size) {
         if (size !== this.textSizeSelect.getValue()) {
           this.textSizeSelect.set('value', size);
@@ -254,6 +353,7 @@ define([
           this.textSizeSlider.set('value', size);
         }
       },
+      
       fontBtnClickd: function (fontConfig) {
         if (true === fontConfig.bold) {
           html.addClass(this.bold, "selected");
@@ -273,6 +373,7 @@ define([
           html.removeClass(this.underline, "selected");
         }
       },
+      
       _initAppearance: function () {
         if (this.appearance) {
           if (false === this.appearance.bold) {
