@@ -47,7 +47,7 @@ define({
     "gridSettingsLabel": 'Grid Settings', // Shown as Title for Label Settings dropdown
     "gridSettingsButtonLabel": 'Configure Grid Settings', // Shown as tooltip for Label Settings dropdown
     "transparency": 'Transparency', // Shown as label on transparency sliders
-    "labelFormat": 'Label Format', // Shown as label on label settings
+    "labelStyle": 'Label Style', // Shown as label on label settings
     "font": 'Font', // Shown as label for font type
     "textSize": 'Text Size', // Shown as label for font size
     "textColor": 'Text Color', // Shown as label for font colour
