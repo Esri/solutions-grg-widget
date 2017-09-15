@@ -634,7 +634,7 @@ define([
             this.own(on(this.grgPointBySizeCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
               this._grgPointBySizeCoordFormatPopupApplyButtonClicked)));
             
-            //Handle click event on cacncel button of the coord format popup         
+            //Handle click event on cancel button of the coord format popup         
             this.own(on(this.grgPointBySizeCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
               function () {
                 dijitPopup.close(this.grgPointBySizeCoordinateFormat);
@@ -706,10 +706,10 @@ define([
             this.own(on(this.grgPointByRefSystemCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
               this._grgPointByRefSystemCoordFormatPopupApplyButtonClicked)));
             
-            //Handle click event on cacncel button of the coord format popup         
+            //Handle click event on cancel button of the coord format popup         
             this.own(on(this.grgPointByRefSystemCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
               function () {
-                dijitPopup.close(this.grgPointBySizeCoordinateFormat);
+                dijitPopup.close(this.grgPointByRefSystemCoordinateFormat);
               }
             )));
         
