@@ -865,6 +865,7 @@ define([
           this.dt_PointBySize.deactivate();
           this.dt_PointByRefSystem.deactivate();
           this.dt_AreaByRefSystem.deactivate();
+          this.editToolbar.deactivate();
           
           this.map.enableMapNavigation();
           this._grgAreaBySizeDeleteClicked();
