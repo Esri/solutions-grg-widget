@@ -14,12 +14,16 @@
     "font": {
       "font": {
         "fontFamily": "Arial",
-        "bold": false,
+        "bold": true,
         "italic": false,
         "underline": false
       },
-      "fontSize": 20,
-      "textColor": "#000000"
+      "fontSize": "12",
+      "textColor": "#000000",
+      "haloSize": "1",
+      "haloColor": "#ffffff",
+      "haloOn": true,
+      "labelTransparency": 0
     },
     "labelType": "alphaNumeric",
     "labelDirection": "horizontal",
