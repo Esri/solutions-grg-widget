@@ -254,11 +254,6 @@ define([
         this.inherited(arguments);
         this.setConfig(this.config);
         this.refresh();
-        //add titles
-        // var labels = html.query(".setting-items .label", this.domNode);
-        // array.forEach(labels, lang.hitch(this, function (label) {
-        //   html.setAttr(label, "title", html.getAttr(label, "innerHTML"));
-        // }));
       },
 
       onSettingChange: function (configObj) {

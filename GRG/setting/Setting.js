@@ -172,8 +172,8 @@ define([
         
         return this.config;
       },
-
-      destroy: function() {
+      
+      destroy: function(){
         this.inherited(arguments);
       }
       

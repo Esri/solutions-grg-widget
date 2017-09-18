@@ -45,7 +45,7 @@ define([
 
         this.slider = new HorizontalSlider({
           name: "slider",
-          value: 0,
+          value: 100,
           minimum: 0,
           maximum: 100,
           discreteValues: 101,

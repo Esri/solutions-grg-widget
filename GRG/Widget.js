@@ -202,7 +202,7 @@ define([
             }};        
         
         // create graphics layer for grid extent and add to map
-        this._graphicsLayerGRGExtent = new GraphicsLayer();
+        this._graphicsLayerGRGExtent = new GraphicsLayer({id: "graphicsLayerGRGExtent"});
         this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);        
         
         //set up symbology for point input
@@ -256,7 +256,7 @@ define([
         };
         
         this.GRGArea = new FeatureLayer(featureCollection,{
-          id: "Area GRG",
+          id: "Gridded-Reference-Graphic",
           outFields: ["*"],
           showLabels: true
         });   
@@ -916,7 +916,7 @@ define([
             this._showLabels.value = updatedSettings.showLabels;
             
             // show or hide labels
-            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Area GRG");
+            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
             featureLayerInfo.enablePopup();
             if(this._showLabels.value) {
               featureLayerInfo.showLabels();
@@ -972,35 +972,28 @@ define([
             var haloColor = new Color(updatedSettings.fontSettings.haloColor);
             
             this._cellTextSymbol = {
+              "type": "esriTS",
               "color": [
                 textColor.r,
                 textColor.g,
                 textColor.b,
                 labelTrans
               ],
-              "type": "textsymbol",
-              "horizontalAlignment": "center",
-              "rotated": false,
-              "kerning": true,
-              "font": {
-                "size": parseInt(updatedSettings.fontSettings.fontSize),
-                "style": updatedSettings.fontSettings.font.italic?"italic":"normal",
-                "variant": "normal",
-                "weight": updatedSettings.fontSettings.font.bold?"bold":"normal",
-                "family": updatedSettings.fontSettings.font.fontFamily
-              },
-              "x": 0,
-              "y": 0,
-              "xoffset": 0,
-              "yoffset": 0,
-              "align": "middle",
               "haloSize": haloSize,
               "haloColor": [
                 haloColor.r,
                 haloColor.g,
                 haloColor.b,
                 255
-              ]
+              ],              
+              "horizontalAlignment": "center",
+              "font": {
+                "size": parseInt(updatedSettings.fontSettings.fontSize),
+                "style": updatedSettings.fontSettings.font.italic?"italic":"normal",
+                "weight": updatedSettings.fontSettings.font.bold?"bold":"normal",
+                "family": updatedSettings.fontSettings.font.fontFamily,
+                "decoration" : updatedSettings.fontSettings.font.underline?"underline":"none"
+              }              
             };
                         
             // create a text symbol to define the style of labels
@@ -1777,6 +1770,13 @@ define([
         } else {
           this._removeStyleFile('darhboardTheme.css', 'css');
         }
+      },
+      
+      destroy: function() {        
+        this.inherited(arguments);        
+        this.map.removeLayer(this._graphicsLayerGRGExtent);
+        this.map.removeLayer(this.GRGArea);
+        console.log('grg widget distroyed')
       },
       
       _initSaveToPortal: function(layerName) {        

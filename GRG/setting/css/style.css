@@ -611,12 +611,10 @@
 }
 
 .jimu-widget-grg-setting .style-selector .underline {
-  display: none;
   background: url("../../images/U.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .underline.selected {
-  display: none;
   background: url("../../images/U_selected.svg") no-repeat;
 }
 
