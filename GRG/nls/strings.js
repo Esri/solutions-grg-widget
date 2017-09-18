@@ -113,7 +113,7 @@ define({
     
     //common
     "createGRGBtn": 'Create GRG', // Shown as label on create button
-    "clearGRGBtn": 'Clear GRG', // Shown as label on clear button
+    "clearGRGBtn": 'Clear', // Shown as label on clear button
     "addPointToolTip": 'Add GRG Origin',
     "numberRowsColumnsLabel": 'Define number of rows and columns',
     "cellWidth": 'Cell Width (x)',
@@ -121,7 +121,6 @@ define({
     "invalidNumberMessage": 'The value entered is not valid',
     "invalidRangeMessage": 'Value must be greater than 0',
     "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',     
-    "removeGRGLabel": 'Remove GRG Area', //Shown as label for remove GRG
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
     "coordInputLabel": 'GRG Origin (DD)', // Shown as label for coordinate input box (DD) denotes that decimal degrees is set as the default
     "setCoordFormat": 'Set Coordinate Format String',

@@ -308,7 +308,7 @@ define([
       var xmin, ymin, xmax, ymax, minLtr, maxLtr, minNum, maxNum,
           ltr, idx, rings, polygon, polygon_i, polyline, polyline_i,
           minXOffset, maxXOffset;
-      var mapExtent = extent.geometry;
+      var mapExtent = extent;
       var deg360 = mapExtent.spatialReference.isWebMercator() ?
         constants.WEBMERCATOR_360 :
         constants.GEOGRAPHIC_360;
@@ -557,7 +557,7 @@ define([
           
           //we need to rotate the drawn extent to match the angle of the grid
           var angle = geomUtils.getAngleBetweenPoints(polygon.getPoint(0, polygon.rings[0].length - 1),polygon.getPoint(0, polygon.rings[0].length - 2));
-          extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
+          extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1);
           
           // now that the 100k grid polygon exists, clip it by the grid zone polygon
           var clippedPolygon = geometryEngine.intersect(
@@ -658,7 +658,7 @@ define([
             if (firstRow && firstColumn) {
               //we only need to calculate the angle for the first polygon in the group
               var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
-              extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent.geometry),angle * -1);
+              extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1);
             }
             
             var clippedPolygon = geometryEngine.intersect(
