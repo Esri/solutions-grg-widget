@@ -1448,7 +1448,8 @@ define([
               esriConfig.defaults.geometryService); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            this._graphicsLayerGRGExtent.clear();
+            this.map.setExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().expand(2),false);
+            this._graphicsLayerGRGExtent.clear(); 
             this._showPanel("publishPage");
           }
         }
@@ -1494,9 +1495,14 @@ define([
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
             this.dt_PointBySize.removeStartGraphic();
+            var geomArray = [];
+            for(var i = 0;i < features.length;i++){
+              geomArray.push(features[i].geometry);
+            }
+            var union = GeometryEngine.union(geomArray)
+            this.map.setExtent(union.getExtent().expand(2),false);
             this._showPanel("publishPage");            
-          }
-          
+          }          
         } else {
           // Invalid entry
           var alertMessage = new Message({
@@ -1506,7 +1512,8 @@ define([
       },
       
       _grgPointByRefSystemCreateGRGButtonClicked: function () {
-        var width, height, cellBLPoint, extent, MGRS, offsets; 
+        var width, height, cellBLPoint, extent, MGRS, offsets;
+        var geomArray = [];
         this._clearLayers(false);
         if(drawGRG.checkGridSize(this.grgPointByRefCellHorizontal.getValue(),this.grgPointByRefCellVertical.getValue())){        
           if (this.dt_PointByRefSystem.startGraphic && this.grgPointByRefCellHorizontal.isValid() && this.grgPointByRefCellVertical.isValid()) {
@@ -1584,6 +1591,7 @@ define([
                   var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));                  
                   graphic.setAttributes({'grid': zones[i].gridPolygon.text});
                   features.push(graphic);
+                  geomArray.push(graphic.geometry);
                 }           
                 break;
               default:
@@ -1603,12 +1611,15 @@ define([
                     var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);                 
                     graphic.setAttributes({'grid': polysToLoop[i].text});                  
                     features.push(graphic);
+                    geomArray.push(graphic.geometry);
                     count++;
                   }
                 break;          
             }
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
+            var union = GeometryEngine.union(geomArray)
+            this.map.setExtent(union.getExtent().expand(2),false);
             this.createGraphicDeleteMenu();
             this._showPanel("publishPage");
           }
@@ -1618,7 +1629,8 @@ define([
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
-          var TRString, BRString;          
+          var TRString, BRString;
+          var geomArray = [];
           this._clearLayers(false);           
           // determine which UTM grid zones and bands fall within the extent
           var zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent(),this.map);
@@ -1629,8 +1641,10 @@ define([
               for (i = 0; i < zones.length; i++) {
                 if(this.grgAreaByRefSystemClipToggle.checked) {
                   var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
+                  geomArray.push(graphic.geometry);
                 } else {
                   var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                  geomArray.push(graphic.geometry);
                 }
                 graphic.setAttributes({'grid': zones[i].gridPolygon.text});
                 features.push(graphic);
@@ -1655,9 +1669,11 @@ define([
                 var count = 1;
                 for (i = 0; i < polysToLoop.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);                    
+                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);
+                    geomArray.push(graphic.geometry);                    
                   } else {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);                   
+                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                    geomArray.push(graphic.geometry);
                   }                
                   graphic.setAttributes({'grid': polysToLoop[i].text});                  
                   features.push(graphic);
@@ -1669,6 +1685,8 @@ define([
           
           //apply the edits to the feature layer
           this.GRGArea.applyEdits(features, null, null);
+          var union = GeometryEngine.union(geomArray)
+          this.map.setExtent(union.getExtent().expand(2),false);
           this.createGraphicDeleteMenu();
           this._showPanel("publishPage");
         }
