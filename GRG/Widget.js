@@ -744,6 +744,7 @@ define([
               }
             })));
             
+            //Handle click event of show labels toggle button
             this.own(on(this.settingsShowLabelsToggle, 'click', lang.hitch(this, function () {
               var featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
               this._showLabels = this.settingsShowLabelsToggle.checked;
