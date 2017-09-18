@@ -246,10 +246,6 @@
           this.referenceSystem.get('value')) {
           //check if reference system is changed
           isDataChanged = true;
-        }else if (this.selectedGridSettings.showLabels !==
-          this.settingsShowLabelsToggle.checked) {
-          //check if show labels toggle is changed
-          isDataChanged = true;
         } else if (this.selectedGridSettings.gridOutlineColor !==
           this.gridOutlineColorPicker.getValues().color) {
           //check if grid Outline Color is changed
@@ -303,7 +299,6 @@
           "labelDirection": this.labelDirection.get('value'),
           "gridOrigin": this.gridOrigin.get('value'),
           "referenceSystem": this.referenceSystem.get('value'),
-          "showLabels": this.settingsShowLabelsToggle.checked,
           "gridOutlineColor": this.gridOutlineColorPicker.getValues().color,
           "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,
           "gridFillColor": this.gridFillColorPicker.getValues().color,

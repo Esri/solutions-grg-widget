@@ -730,7 +730,7 @@ define([
               //clear layer name
               this.addGRGNameArea.setValue('');
               this._gridSettingsInstance.onClose();          
-              this._showPanel(this._lastOpenPanel);
+              this._showPanel(this._lastOpenPanel);              
             })));
             
             //Handle click event of publish GRG to portal button
@@ -741,6 +741,16 @@ define([
               } else {
                 // Invalid entry
                 this.publishMessage.innerHTML = this.nls.missingLayerNameMessage;
+              }
+            })));
+            
+            this.own(on(this.settingsShowLabelsToggle, 'click', lang.hitch(this, function () {
+              var featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+              this._showLabels = this.settingsShowLabelsToggle.checked;
+              if(this.settingsShowLabelsToggle.checked) {                
+                featureLayerInfo.showLabels();
+              } else {
+                featureLayerInfo.hideLabels();
               }
             })));
         
@@ -918,12 +928,11 @@ define([
             this._labelDirection = updatedSettings.labelDirection;
             this._gridOrigin = updatedSettings.gridOrigin;
             this._referenceSystem = updatedSettings.referenceSystem;
-            this._showLabels.value = updatedSettings.showLabels;
             
             // show or hide labels
             featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
             featureLayerInfo.enablePopup();
-            if(this._showLabels.value) {
+            if(this._showLabels) {
               featureLayerInfo.showLabels();
             } else {
               featureLayerInfo.hideLabels();
@@ -1783,7 +1792,7 @@ define([
                           // show or hide labels
                           featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
                           featureLayerInfo.enablePopup();
-                          if(this._showLabels.value) {
+                          if(this._showLabels) {
                             featureLayerInfo.showLabels();
                           }
                         } else {
@@ -1791,7 +1800,7 @@ define([
                             // show or hide labels
                             featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
                             featureLayerInfo.enablePopup();
-                            if(this._showLabels.value) {
+                            if(this._showLabels) {
                               featureLayerInfo.showLabels();
                             }
                           }));
