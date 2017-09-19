@@ -1807,11 +1807,11 @@ define([
           this._removeStyleFile('dartTheme.css', 'css');
         }
         //Check if DashBoardTheme
-        if (this.appConfig.theme.name === "DashboardTheme"){
+        if (this.appConfig.theme.name === "DashboardTheme" && this.appConfig.theme.styles[0] === "default"){
           //Load appropriate CSS for dashboard theme
-          utils.loadStyleLink('darkOverrideCSS', this.folderUrl + "css/dashboardTheme.css", null);
+          utils.loadStyleLink('darkDashboardOverrideCSS', this.folderUrl + "css/dashboardTheme.css", null);
         } else {
-          this._removeStyleFile('darhboardTheme.css', 'css');
+          this._removeStyleFile('dashboardTheme.css', 'css');
         }
       },
       
