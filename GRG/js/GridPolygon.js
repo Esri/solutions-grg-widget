@@ -114,6 +114,18 @@ define([
      */
     "ymin": 0,
     
+    /** The minimum x-coordinate value of the unclipped polygon
+    (the coordinate units are specified in the minMaxType property)
+     * @type string
+     */
+    "x": '',
+    
+    /** The minimum y-coordinate value of the unclipped polygon
+    (the coordinate units are specified in the minMaxType property)
+     * @type string
+     */
+    "y": '',
+    
     /** The maximum x-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type Number
@@ -162,6 +174,8 @@ define([
       this.ymin = args.ymin;
       this.xmax = args.xmax;
       this.ymax = args.ymax;
+      this.x = args.x;
+      this.y = args.y;
       this.minMaxType = args.minMaxType;
       this.utmZone = Math.round(args.utmZone);
       this.latitudeZone = args.latitudeZone;

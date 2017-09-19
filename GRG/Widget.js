@@ -538,6 +538,21 @@ define([
           //Handle completion of extent drawing
           this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
             this._dt_AreaByRefSystemComplete)));
+            
+          //Handle grid size dropdown change
+          this.own(on(this.grgAreaByRefSystemGridSize, 'change', lang.hitch(this, function () {
+              switch(this.grgAreaByRefSystemGridSize.getValue()){
+                case 'UTM':              
+                  this.grgAreaByRefLabelFormat.value = 'Z';        
+                  break;
+                case '100000':              
+                  this.grgAreaByRefLabelFormat.value = 'ZS';         
+                  break;
+                default:
+                  this.grgAreaByRefLabelFormat.value = 'ZSXY'; 
+                  break;
+              }
+            })));
         
         /**
         * GRG from Area by Non Standard Grid panel
@@ -613,7 +628,7 @@ define([
             this.own(this.dt_PointBySize.watch('startPoint', lang.hitch(this, 
               function (r, ov, nv) {
                 this.grgPointBySizeCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
-                this.dt_PointBySize.addStartGraphic(nv, this._ptSym);
+                this.dt_PointBySize.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
               }
             )));
             
@@ -686,7 +701,7 @@ define([
             this.own(this.dt_PointByRefSystem.watch('startPoint', lang.hitch(this, 
               function (r, ov, nv) {
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
-                this.dt_PointByRefSystem.addStartGraphic(nv, this._ptSym);
+                this.dt_PointByRefSystem.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
               }
             )));
             
@@ -708,6 +723,21 @@ define([
                 dijitPopup.close(this.grgPointByRefSystemCoordinateFormat);
               }
             )));
+            
+            //Handle grid size dropdown change
+            this.own(on(this.grgPointByRefSystemGridSize, 'change', lang.hitch(this, function () {
+              switch(this.grgPointByRefSystemGridSize.getValue()){
+                case 'UTM':              
+                  this.grgPointByRefLabelFormat.value = 'Z';        
+                  break;
+                case '100000':              
+                  this.grgPointByRefLabelFormat.value = 'ZS';         
+                  break;
+                default:
+                  this.grgPointByRefLabelFormat.value = 'ZSXY'; 
+                  break;
+              }
+            })));
         
         /**
         * Settings panel
@@ -729,7 +759,8 @@ define([
               this.publishMessage.innerHTML = '';
               //clear layer name
               this.addGRGNameArea.setValue('');
-              this._gridSettingsInstance.onClose();          
+              this._gridSettingsInstance.onClose();
+              this._graphicsLayerGRGExtent.show();
               this._showPanel(this._lastOpenPanel);              
             })));
             
@@ -899,8 +930,8 @@ define([
           
           if(includeExtentLayer) {
             this._graphicsLayerGRGExtent.clear();
-            this.dt_PointBySize.removeStartGraphic();
-            this.dt_PointByRefSystem.removeStartGraphic();
+            this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
+            this.dt_PointByRefSystem.removeStartGraphic(this._graphicsLayerGRGExtent);
             //reset the angle
             this.angle = 0;
             this.grgAreaBySizeRotation.setValue(this.angle);
@@ -1100,7 +1131,7 @@ define([
           this.dt_PointBySize.deactivate();
           this.map.enableMapNavigation();
         } else {
-          this.dt_PointBySize.removeStartGraphic();
+          this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
           this._clearLayers(true); 
           this.grgPointBySizeCoordTool.manualInput = false;        
           this.dt_PointBySize._setTooltipMessage(0);        
@@ -1121,7 +1152,7 @@ define([
           this.dt_PointByRefSystem.deactivate();
           this.map.enableMapNavigation();
         } else {
-          this.dt_PointByRefSystem.removeStartGraphic();
+          this.dt_PointByRefSystem.removeStartGraphic(this._graphicsLayerGRGExtent);
           this._clearLayers(true); 
           this.grgPointByRefSystemCoordTool.manualInput = false;        
           this.dt_PointByRefSystem._setTooltipMessage(0);        
@@ -1253,7 +1284,7 @@ define([
                 var fs = this.grgPointBySizeCoordinateFormat.content.formats[r.inputType];
                 this.grgPointBySizeCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
                 this.grgPointBySizeCoordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dt_PointBySize.addStartGraphic(r.coordinateEsriGeometry, this._ptSym);
+                this.dt_PointBySize.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1282,7 +1313,7 @@ define([
                 var fs = this.grgPointBySizeCoordinateFormat.content.formats[r.inputType];
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dt_PointByRefSystem.addStartGraphic(r.coordinateEsriGeometry, this._ptSym);
+                this.dt_PointByRefSystem.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1494,14 +1525,14 @@ define([
               esriConfig.defaults.geometryService); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            this.dt_PointBySize.removeStartGraphic();
+            this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
             var geomArray = [];
             for(var i = 0;i < features.length;i++){
               geomArray.push(features[i].geometry);
             }
             var union = GeometryEngine.union(geomArray)
             this.map.setExtent(union.getExtent().expand(2),false);
-            this._showPanel("publishPage");            
+            this._showPanel("publishPage");
           }          
         } else {
           // Invalid entry
@@ -1589,7 +1620,9 @@ define([
               case 'UTM':              
                 for (i = 0; i < zones.length; i++) {                  
                   var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));                  
-                  graphic.setAttributes({'grid': zones[i].gridPolygon.text});
+                  var label = this.grgPointByRefLabelFormat.value
+                  label = label.replace(/Z/, zones[i].gridPolygon.text);
+                  graphic.setAttributes({'grid': label});
                   features.push(graphic);
                   geomArray.push(graphic.geometry);
                 }           
@@ -1609,7 +1642,12 @@ define([
                   var count = 1;
                   for (i = 0; i < polysToLoop.length; i++) {
                     var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);                 
-                    graphic.setAttributes({'grid': polysToLoop[i].text});                  
+                    var label = this.grgPointByRefLabelFormat.value
+                    label = label.replace(/Y/, polysToLoop[i].y);
+                    label = label.replace(/X/, polysToLoop[i].x); 
+                    label = label.replace(/S/, polysToLoop[i].GZD); 
+                    label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                    graphic.setAttributes({'grid': label});                  
                     features.push(graphic);
                     geomArray.push(graphic.geometry);
                     count++;
@@ -1621,6 +1659,8 @@ define([
             var union = GeometryEngine.union(geomArray)
             this.map.setExtent(union.getExtent().expand(2),false);
             this.createGraphicDeleteMenu();
+            //we want to keep the point but not show it on the publish page, so just hide the layer
+            this._graphicsLayerGRGExtent.hide();
             this._showPanel("publishPage");
           }
         }
@@ -1629,31 +1669,33 @@ define([
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
-          var TRString, BRString;
-          var geomArray = [];
-          this._clearLayers(false);           
-          // determine which UTM grid zones and bands fall within the extent
-          var zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent(),this.map);
-          var features = [];
-          
-          switch(this.grgAreaByRefSystemGridSize.getValue()){
-            case 'UTM':              
-              for (i = 0; i < zones.length; i++) {
-                if(this.grgAreaByRefSystemClipToggle.checked) {
-                  var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
-                  geomArray.push(graphic.geometry);
-                } else {
-                  var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
-                  geomArray.push(graphic.geometry);
-                }
-                graphic.setAttributes({'grid': zones[i].gridPolygon.text});
-                features.push(graphic);
-              }            
-              break;
-            default:
-              var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
-              var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
-              if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
+          var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
+          var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
+          if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
+            var TRString, BRString;
+            var geomArray = [];
+            this._clearLayers(false);           
+            // determine which UTM grid zones and bands fall within the extent
+            var zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent(),this.map);
+            var features = [];
+            
+            switch(this.grgAreaByRefSystemGridSize.getValue()){
+              case 'UTM':              
+                for (i = 0; i < zones.length; i++) {
+                  if(this.grgAreaByRefSystemClipToggle.checked) {
+                    var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
+                    geomArray.push(graphic.geometry);
+                  } else {
+                    var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                    geomArray.push(graphic.geometry);
+                  }
+                  var label = this.grgAreaByRefLabelFormat.value
+                  label = label.replace(/Z/, zones[i].gridPolygon.text);
+                  graphic.setAttributes({'grid': label});
+                  features.push(graphic);
+                }            
+                break;
+              default:                  
                 var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000,this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
                 var currentValue = 10000;              
                 while (currentValue >= this.grgAreaByRefSystemGridSize.getValue()) {
@@ -1674,21 +1716,27 @@ define([
                   } else {
                     var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
                     geomArray.push(graphic.geometry);
-                  }                
-                  graphic.setAttributes({'grid': polysToLoop[i].text});                  
+                  }
+                  var label = this.grgAreaByRefLabelFormat.value
+                  label = label.replace(/Y/, polysToLoop[i].y);
+                  label = label.replace(/X/, polysToLoop[i].x); 
+                  label = label.replace(/S/, polysToLoop[i].GZD); 
+                  label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                  graphic.setAttributes({'grid': label});                  
                   features.push(graphic);
                   count++;
-                }
-              }
-              break;            
+                }                  
+                break;            
+            }              
+            //apply the edits to the feature layer
+            this.GRGArea.applyEdits(features, null, null);
+            var union = GeometryEngine.union(geomArray)
+            this.map.setExtent(union.getExtent().expand(2),false);
+            this.createGraphicDeleteMenu();
+            //we want to keep the extent but not show it on the publish page, so just hide the layer
+            this._graphicsLayerGRGExtent.hide();
+            this._showPanel("publishPage");
           }
-          
-          //apply the edits to the feature layer
-          this.GRGArea.applyEdits(features, null, null);
-          var union = GeometryEngine.union(geomArray)
-          this.map.setExtent(union.getExtent().expand(2),false);
-          this.createGraphicDeleteMenu();
-          this._showPanel("publishPage");
         }
       },
       
@@ -1776,7 +1824,7 @@ define([
       
       _initSaveToPortal: function(layerName) {        
         esriId.registerOAuthInfos();        
-        var featureServiceName = layerName;        
+        var featureServiceName = layerName;
         esriId.getCredential(this.appConfig.portalUrl + "/sharing", { oAuthPopupConfirmation: false }).then(lang.hitch(this, function() {
           //sign in
           new esriPortal.Portal(this.appConfig.portalUrl).signIn().then(lang.hitch(this, function(portalUser) {

@@ -205,6 +205,13 @@
                     </div>
                   </div>
                   
+                  <!-- Label Format-->
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.labelFormat}">${nls.labelFormat}</div>
+                      <input class="jimu-input textInput" style="width: calc(100% - 20px)" data-dojo-attach-point="grgAreaByRefLabelFormat" value="Z"></input>
+                      <div  title="${nls.helpIconTooltip}" class="jimu-icon helpBtn"></div>                          
+                  </div>
+                  
                   <!-- Create & Clear GRG Buttons -->
                   <div class="GRGDrafterHalfWidthContainer">
                     <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthLeft">
@@ -381,6 +388,12 @@
                           rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByRefCellVertical" value="5"></input>                      
                     </div>
                   </div>
+                  <!-- Label Format-->
+                  <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
+                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.labelFormat}">${nls.labelFormat}</div>
+                      <input class="jimu-input textInput" style="width: calc(100% - 20px)" data-dojo-attach-point="grgPointByRefLabelFormat" value="Z"></input>
+                      <div  title="${nls.helpIconTooltip}" class="jimu-icon helpBtn"></div>
+                  </div>
                   <!-- Create & Clear GRG Buttons -->
                   <div class="GRGDrafterHalfWidthContainer">
                     <div class="GRGDrafterBtnContainer GRGDrafterHalfWidthLeft">
@@ -424,8 +437,7 @@
                 <div class="GRGDrafterTitleDiv GRGDrafterEllipsis" title="${nls.publishTitle}">
                     ${nls.publishTitle}
                 </div>
-                <div class="GRGDrafterMainPageRow">
-                
+                <div class="GRGDrafterMainPageRow">                
                   <!-- GRG Layer Name -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.GRGLayerName}">${nls.GRGLayerName}</div>
@@ -442,8 +454,7 @@
                       <div class="GRGDrafterToggleLabel GRGDrafterEllipsis" title="${nls.gridSettings.showLabels}">${nls.gridSettings.showLabels}</div>
                       <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="settingsShowLabelsToggle" checked="true" />
                     </div>
-                  </div>
-        
+                  </div>        
                   <!-- Publishing Message -->
                   <div class="GRGDrafterPublishMessage" data-dojo-attach-point="publishMessage"></div>
                 </div>  

@@ -115,7 +115,8 @@ define([
       this.nonPolarGridZone = args.nonPolarGridZone;
       this.fullZoneGeometry = args.fullZoneGeometry;
       this.map = args.map;
-      
+      this.utmZone = args.utmZone;
+      this.latitudeBand = args.latitudeBand;
 
       // construct a GridPolygon, which is used as the label manager
       var gridPolygonArgs = {
@@ -127,8 +128,9 @@ define([
         "xmax": this.nonPolarGridZone.extent.xmax,
         "ymax": this.nonPolarGridZone.extent.ymax,
         "minMaxType": "degrees",
-        "utmZone": 0,
-        "text": this.nonPolarGridZone.id
+        "utmZone": this.utmZone,
+        "text": this.nonPolarGridZone.id,
+        "latitudeBand": this.latitudeBand
       };
       this.gridPolygon = new GridPolygon(gridPolygonArgs);
     }

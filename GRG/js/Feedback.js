@@ -33,15 +33,15 @@ define([
         this._set('startPoint', p);
       },
       
-      addStartGraphic: function (fromGeometry, withSym) {
+      addStartGraphic: function (fromGeometry, withSym, targetLayer) {
         this.removeStartGraphic();
         this.startGraphic = new EsriGraphic(fromGeometry, withSym);
-        this.map.graphics.add(this.startGraphic);
+        targetLayer.add(this.startGraphic);
       },
 
-      removeStartGraphic: function () {
+      removeStartGraphic: function (targetLayer) {
         if (this.startGraphic) {
-          this.map.graphics.remove(this.startGraphic);
+          targetLayer.remove(this.startGraphic);
         }
         this.startGraphic = null;
       }

@@ -492,6 +492,16 @@
     border: none;
 }
 
+.jimu-widget-GRGDrafter .helpBtn {
+    float: right;
+    background: url(./images/help_default.png);
+    background-repeat: no-repeat;
+    background-color: transparent;
+    width: 16px;
+    height: 16px;
+    margin-top: 6px;
+}
+
 .jimu-widget-GRGDrafter .polygonBtn {
     display: inline-block;
     background: url(./images/polygon_default.png);

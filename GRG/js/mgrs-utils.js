@@ -422,8 +422,9 @@ define([
                 "polygon": polygon_i,
                 "fullZoneGeometry": this._ZonesDictionary[idx].fullZoneGeometry, 
                 "offset": x_offset,
-                "nonPolarGridZone": this._ZonesDictionary[idx]
-                //"labelParameters": labelParameters
+                "nonPolarGridZone": this._ZonesDictionary[idx],
+                "utmZone": this._ZonesDictionary[idx].utmZone,
+                "latitudeBand": this._ZonesDictionary[idx].latitudeZone
               }));
             }
           }
@@ -517,7 +518,7 @@ define([
           // used for labeling and border graphics
 
           // find the label of the 100K grid
-          text = utmZone + latitudeZone + mgrs.findGridLetters(utmZone,
+          text = mgrs.findGridLetters(utmZone,
             (n + 50000 < 0 ? 10000000 + (n + 50000) : n + 50000), e + 50000);
 
           // Build the 100k grid boundary
@@ -590,6 +591,8 @@ define([
               "ymin": n,
               "xmax": (e + 100000),
               "ymax": (n + 100000),
+              "x": '',
+              "y": '',
               "minMaxType": "utm",
               "utmZone": utmZone,
               "latitudeZone": latitudeZone,
@@ -691,6 +694,8 @@ define([
                 "ymin": n,
                 "xmax": e + interval,
                 "ymax": n + interval,
+                "x": this._padZero(e % 100000 / interval,  5 - Math.log10(interval)).toString(),
+                "y": this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,5 - Math.log10(interval)).toString(),
                 "minMaxType": "utm",
                 "utmZone": utmZone,
                 "latitudeZone": latitudeZone,
