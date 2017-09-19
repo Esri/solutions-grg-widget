@@ -764,7 +764,6 @@ define([
               this.publishMessage.innerHTML = '';
               //clear layer name
               this.addGRGNameArea.setValue('');
-              this._gridSettingsInstance.onClose();
               this._graphicsLayerGRGExtent.show();
               this._showPanel(this._lastOpenPanel);              
             })));
