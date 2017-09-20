@@ -661,7 +661,12 @@ define([
             if (firstRow && firstColumn) {
               //we only need to calculate the angle for the first polygon in the group
               var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
-              extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1);
+              if(/^[GHQRYZ]/.test(GZD)) {
+                //depending on which side of a grid zone junction the polygon falls on either rotate by bottom left or bottom right
+                extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1,new Point(extent.xmin,extent.ymin,extent.spatialReference));
+              } else {
+                extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1,new Point(extent.xmax,extent.ymin,extent.spatialReference));
+              }
             }
             
             var clippedPolygon = geometryEngine.intersect(
