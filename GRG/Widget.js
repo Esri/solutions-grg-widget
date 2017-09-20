@@ -435,8 +435,8 @@ define([
                 this._showPanel("settingsPage");
               })));
             } else {
-              //this.grgAreaBySizeSettingsButton.title = this.nls.lockSettings;
-              html.addClass(this.grgAreaBySizeSettingsButton, 'controlGroupHidden');
+              this.grgAreaBySizeSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgAreaBySizeSettingsButton, 'controlGroupHidden');
             }
             //Handle click event of Add GRG Area by Polygon button
             this.own(on(this.grgAreaBySizeDrawPolygonIcon, 'click', lang.hitch(this, 
@@ -520,8 +520,8 @@ define([
               this._showPanel("settingsPage");
             })));
           } else {
-            //this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
-            html.addClass(this.grgAreaByRefSystemSettingsButton, 'controlGroupHidden');
+            this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
+            //html.addClass(this.grgAreaByRefSystemSettingsButton, 'controlGroupHidden');
           }          
           
           //Handle click event of draw extent icon
@@ -573,8 +573,8 @@ define([
                 this._showPanel("settingsPage");
               })));
             } else {
-              //this.grgAreaByNonStandardSettingsButton.title = this.nls.lockSettings;
-              html.addClass(this.grgAreaByNonStandardSettingsButton, 'controlGroupHidden');
+              this.grgAreaByNonStandardSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgAreaByNonStandardSettingsButton, 'controlGroupHidden');
             }
             
             
@@ -597,8 +597,8 @@ define([
                 this._showPanel("settingsPage");
               })));
             } else {
-              //this.grgPointBySizeSettingsButton.title = this.nls.lockSettings;
-              html.addClass(this.grgPointBySizeSettingsButton, 'controlGroupHidden');
+              this.grgPointBySizeSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgPointBySizeSettingsButton, 'controlGroupHidden');
             }
                         
             //Handle click event of create GRG point button        
@@ -672,8 +672,8 @@ define([
                 this._showPanel("settingsPage");
               })));
             } else {
-              //this.grgPointByRefSystemSettingsButton.title = this.nls.lockSettings;
-              html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
+              this.grgPointByRefSystemSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
             }          
             
             //Handle click event of create GRG point button        
