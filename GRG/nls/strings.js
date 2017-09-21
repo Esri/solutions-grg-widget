@@ -115,7 +115,7 @@ define({
     "createGRGBtn": 'Create GRG', // Shown as label on create button
     "clearGRGBtn": 'Clear', // Shown as label on clear button
     "labelFormat": 'Label Format', // Shown as label above label format input box
-    "helpIconTooltip": 'Z: Grid Zone Designation (GZD)\nS: 100,000-meter grid square designator\nX: X Coordinate (Easting)\nY: Y Coordinate (Northing)\n\nExample:\n Z-S-X-Y 15S-WC-80817-51205', // Shown as label above label format input box
+    "helpIconTooltip": 'Z: Grid Zone Designator (GZD)\nS: 100,000-meter Grid Square Identification (GSID)\nX: Easting (X Coordinate)\nY: Northing (Y Coordinate)\n\nExamples:\n ZSXY is 15SWC8081751205\nZS X,Y is 15SWC 80817,51205', // Shown as label above label format input box
     "addPointToolTip": 'Add GRG Origin',
     "numberRowsColumnsLabel": 'Define number of rows and columns',
     "cellWidth": 'Cell Width (x)',
