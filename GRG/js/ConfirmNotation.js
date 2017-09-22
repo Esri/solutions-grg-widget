@@ -17,20 +17,12 @@
 /*global define*/
 define([
     'dojo/_base/declare',
-    'dojo/_base/lang',
-    'dojo/on',
-    'dojo/topic',
-    'dojo/dom-attr',
     'dijit/_WidgetBase',
     'dijit/_TemplatedMixin',
     'dijit/_WidgetsInTemplateMixin',
     'dojo/text!../templates/ConfirmNotation.html'
 ], function (
     dojoDeclare,
-    dojoLang,
-    dojoOn,
-    dojoTopic,
-    dojoDomAttr,
     dijitWidgetBase,
     dijitTemplatedMixin,
     dijitWidgetsInTemplate,

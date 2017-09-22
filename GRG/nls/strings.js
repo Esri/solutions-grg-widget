@@ -19,6 +19,7 @@ define({
     "addGRGAreaPolygonToolTip": "Draw GRG Area using polygon", // Shown as tooltip on draw rectangle icon
     "addGRGAreaExtentToolTip": "Draw GRG Area using extent", // Shown as tooltip on draw extent icon
     "rotation": 'Grid Rotation', // Shown as label above rotation input box
+    "numberRowsColumnsLabel": 'Define number of rows and columns', // Shown as label next to the define rows and columns toggle
     
     //Area GRG By Reference System Panel    
     "newGRGAreaByRefSystemTitle": 'GRG from an Area by Reference System', // Shown as title for new GRG from reference system panel
@@ -98,10 +99,10 @@ define({
     
     //Publish Panel
     "publishTitle": "Publish GRG to Portal", // Shown as Title for Grid Settings page and label on settings buttons
-    "publishGRGBtn": 'Publish',    
+    "publishGRGBtn": 'Publish', // Shown as label on publish GRG button   
     "GRGLayerName": 'Published GRG Layer Name', // Shown as label for layer name box
-    "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores',
-    "missingGRGLayerName": 'You must enter a name for the GRG',
+    "invalidGRGLayerName": 'Layer name must only contain alpha-numeric characters and underscores', //Shown as validation error on published layer name
+    "missingGRGLayerName": 'You must enter a name for the GRG', //Shown as validation error on empty published layer name
     
     //publishing error messages
     "publishingFailedLayerExists": 'Publishing Failed: You already have a feature service named {0}. Please choose another name.', //Shown as error for layer name already used when publishing {0} will be replaced with the layer name in the code so do not remove
@@ -115,29 +116,27 @@ define({
     "createGRGBtn": 'Create GRG', // Shown as label on create button
     "clearGRGBtn": 'Clear', // Shown as label on clear button
     "labelFormat": 'Label Format', // Shown as label above label format input box
-    "helpIconTooltip": 'Z: Grid Zone Designator (GZD)\nS: 100,000-meter Grid Square Identification (GSID)\nX: Easting (X Coordinate)\nY: Northing (Y Coordinate)\n\nExamples:\n ZSXY is 15SWC8081751205\nZS X,Y is 15SWC 80817,51205', // Shown as label above label format input box
-    "addPointToolTip": 'Add GRG Origin',
-    "numberRowsColumnsLabel": 'Define number of rows and columns',
-    "cellWidth": 'Cell Width (x)',
-    "cellHeight": 'Cell Height (y)',
-    "invalidNumberMessage": 'The value entered is not valid',
-    "invalidRangeMessage": 'Value must be greater than 0',
-    "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9',     
+    "helpIconTooltip": 'Z: Grid Zone Designator (GZD)\nS: 100,000-meter Grid Square Identification (GSID)\nX: Easting (X Coordinate)\nY: Northing (Y Coordinate)\n\nExamples:\nZSXY is 15SWC8081751205\nZS X,Y is 15SWC 80817,51205', // Shown as label above label format input box
+    "addPointToolTip": 'Add GRG Origin', // Show as tooltip help on the draw point icon    
+    "cellWidth": 'Cell Width (x)', // Shown as label above cell width input
+    "cellHeight": 'Cell Height (y)', // Shown as label above cell height input
+    "invalidNumberMessage": 'The value entered is not valid', //Shown as validation error on invalid entries
+    "invalidRangeMessage": 'Value must be greater than 0', //Shown as validation error on invalid entries
+    "gridAngleInvalidRangeMessage": 'Value must be between -89.9 and 89.9', //Shown as validation error for the angle input     
     "formatIconTooltip": 'Format Input', // Shown as tooltip on the format input coordinate button
     "coordInputLabel": 'GRG Origin (DD)', // Shown as label for coordinate input box (DD) denotes that decimal degrees is set as the default
-    "setCoordFormat": 'Set Coordinate Format String',
-    "prefixNumbers": 'Add "+/-" prefix to positive and negative numbers',
-    "cancelBtn": 'Cancel',
-    "applyBtn": 'Apply',
-    "notationsMatch": 'notations match your input please confirm which you would like to use:',
+    "setCoordFormat": 'Set Coordinate Format String', // Shown as label for set format string
+    "prefixNumbers": 'Add "+/-" prefix to positive and negative numbers', // Shown as text next to the add prefix check box
+    "cancelBtn": 'Cancel', // Shown as label on cancel button
+    "applyBtn": 'Apply', // Shown as label on apply button
+    "comfirmInputNotation": 'Confirm Input Notation',  //Shown as panel title when more than one notation match
+    "notationsMatch": 'notations match your input please confirm which you would like to use:', // Shown as message when more than one notation match
     "numberOfCellsHorizontal": '# Horizontal Cells', // Shown as label for number of Horizontal cells
     "numberOfCellsVertical": '# Vertical Cells', // Shown as label for number of Vertical cells
     "gridAngle": 'Grid Rotation', // Shown as label for grid angle
     "missingParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG area has been drawn.</li><li>The cell width and height contain valid values.</li></ul>',
-    "drawPointToolTip": 'Click to add GRG origin point',
-    "drawToolTip2": 'Click to finish GRG Area',
-    "missingLayerNameMessage": 'You must enter a valid layer name before you can publish',
-    "comfirmInputNotation": 'Confirm Input Notation',   
+    "drawPointToolTip": 'Click to add GRG origin point', // Shown as tooltip help on the cursor when using the draw point tool
+    "missingLayerNameMessage": 'You must enter a valid layer name before you can publish', //shown as error message for invalid layer name     
     "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.' //Shown as error message for unknown coordinates
     
   })

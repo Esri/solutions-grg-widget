@@ -502,6 +502,10 @@
     margin-top: 6px;
 }
 
+.jimu-widget-GRGDrafter .helpBtn:hover{
+    cursor: help;
+}
+
 .jimu-widget-GRGDrafter .polygonBtn {
     display: inline-block;
     background: url(./images/polygon_default.png);

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 Esri. All Rights Reserved.
+// Copyright © 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the 'License');
 // you may not use this file except in compliance with the License.
@@ -37,9 +37,6 @@ define([
    * @param {Object}
    * properties
    * The VisibleGridZone constructor takes an object as described below
-   * @param {external:Polyline}
-   * properties.polyline
-   * The visible border of the grid zone
    * @param {external:Polygon}
    * properties.polygon
    * The visible area of the grid zone
@@ -65,18 +62,12 @@ define([
    *
    * visibleGridZone = new VisibleGridZone({
    *     "map": map,
-   *     "polyline": clippedPolygon,
    *     "polygon": zonePolygon,
    *     "offset": 0,
    *     "nonPolarGridZone": nonPolarGridZone
    * });
    */
   return declare(null, /** @lends module:mgrs-utils~VisibleGridZone# */ {
-
-    /** The clipped portion of the grid zone polyline that represents the visible border
-     * @type {external:Polyline}
-     */
-    "polyline": null,
 
     /** The clipped portion of the grid zone polygon that represents the visible area
      * @type {external:Polygon}
@@ -110,7 +101,6 @@ define([
     constructor: function(args) {
       // offset must be an integer
       this.offset = Math.round(args.offset);
-      this.polyline = args.polyline;
       this.polygon = args.polygon;
       this.nonPolarGridZone = args.nonPolarGridZone;
       this.fullZoneGeometry = args.fullZoneGeometry;

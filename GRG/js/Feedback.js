@@ -28,24 +28,23 @@ define([
   EsriGraphic
   ) {
     var w = dojoDeclare([esriDraw,dojoStateful], {
-      startPoint: null,
-      _setStartPoint: function (p){
-        this._set('startPoint', p);
-      },
-      
-      addStartGraphic: function (fromGeometry, withSym, targetLayer) {
-        this.removeStartGraphic();
-        this.startGraphic = new EsriGraphic(fromGeometry, withSym);
-        targetLayer.add(this.startGraphic);
-      },
+    startPoint: null,
+    _setStartPoint: function (p){
+      this._set('startPoint', p);
+    },
+    
+    addStartGraphic: function (fromGeometry, withSym, targetLayer) {
+      this.removeStartGraphic(targetLayer);
+      this.startGraphic = new EsriGraphic(fromGeometry, withSym);
+      targetLayer.add(this.startGraphic);
+    },
 
-      removeStartGraphic: function (targetLayer) {
-        if (this.startGraphic) {
-          targetLayer.remove(this.startGraphic);
-        }
-        this.startGraphic = null;
+    removeStartGraphic: function (targetLayer) {
+      if (this.startGraphic) {
+        targetLayer.remove(this.startGraphic);
       }
-
+      this.startGraphic = null;
+    }
   });
 
   return w;

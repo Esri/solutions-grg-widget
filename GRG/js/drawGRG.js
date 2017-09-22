@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 Esri. All Rights Reserved.
+// Copyright © 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ define([
   'esri/geometry/webMercatorUtils',
   'esri/SpatialReference',
   'esri/geometry/Circle',
-  'jimu/dijit/Message',
   'esri/request',
+  'jimu/dijit/Message',  
   'dojo/json',
   './geometryUtils'
 ], function(
@@ -34,8 +34,8 @@ define([
   webMercatorUtils,
   SpatialReference,
   EsriCircle,
-  Message,
   esriRequest,
+  Message,  
   JSON,
   geometryUtils
 ) {
@@ -242,8 +242,6 @@ define([
               break;              
           }
           
-          
-          
           if(gridStyle == "default") {
             polygon.addRing([ 
                  [startX + ((j-1) * cellWidth) , startY + ((i-1) * cellHeight)],
@@ -271,7 +269,6 @@ define([
           var graphic = new Graphic(polygonRotated);
         }
         
-                 
         switch (labelStartPosition) {
           case 'upperLeft':
             if(labelDirection == 'horizontal') {

@@ -1,5 +1,20 @@
+///////////////////////////////////////////////////////////////////////////
+// Copyright © 2017 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License Version 2.0 (the 'License');
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an 'AS IS' BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+
 define([
-  'dojo',
   'dojo/_base/declare',
   'jimu/BaseWidget',
   'dojo/_base/array',
@@ -69,7 +84,6 @@ define([
   'dijit/form/NumberSpinner',
 ],
   function (
-    dojo,
     declare,
     BaseWidget,
     array,
@@ -135,22 +149,21 @@ define([
       baseClass: 'jimu-widget-GRGDrafter',
       _lastOpenPanel: "mainPage", //Flag to hold last open panel, default will be main page
       _currentOpenPanel: "mainPage", //Flag to hold last open panel, default will be main page
-      _gridSettingsInstance: null, //Object to hold Plan Settings instance
-      _cellShape: "default",
-      _labelStartPosition: "lowerLeft",
-      _cellUnits: "meters",
-      _labelType: "alphaNumeric",
-      _labelDirection: "horizontal",
-      _gridOrigin: "center",
-      _referenceSystem: 'MGRS',
-      _showLabels: {'value': true},
-      _GRGAreaFillSymbol: null,
-      _cellTextSymbol: null,
-      angle: 0,
-      GRG: null,
+      _gridSettingsInstance: null, //Object to hold Grid Settings instance
+      _cellShape: "default", //Current selected grid cell shape
+      _labelStartPosition: "lowerLeft", //Current selected label start position
+      _cellUnits: "meters", //Current selected cell units
+      _labelType: "alphaNumeric", //Current selected label type
+      _labelDirection: "horizontal", //Current selected label direction
+      _gridOrigin: "center", //Current selected grid origin
+      _referenceSystem: 'MGRS', //Current selected reference system
+      _showLabels: true, //flag to hold whether labels should be shown 
+      _GRGAreaFillSymbol: null, //Fill symbol used for GRG cells
+      _cellTextSymbol: null, //Text symbol used for GRG labeling
+      angle: 0, //angle of GRG
       featureLayerInfo: null,
-      centerPoint: [],
-      geodesicGrid: true,
+      centerPoint: [], //Current center point of the GRG extent
+      geodesicGrid: true, //Flag for if the GRG is to be created geodesically
       
       postMixInProperties: function () {
         //mixin default nls with widget nls
@@ -159,11 +172,11 @@ define([
       },
       
       constructor: function (args) {
-          declare.safeMixin(this, args);
-        },
+        declare.safeMixin(this, args);
+      },
 
       postCreate: function () {
-        //modify String's prototype so we can format a string
+        //modify String's prototype so we can format a string using .format
         if (!String.prototype.format) {
           String.prototype.format = function() {
             var args = arguments;
@@ -178,6 +191,7 @@ define([
         
         this.inherited(arguments);
         
+        //set up the symbology used for the interactive polygon draw tools
         this.extentAreaFillSymbol = {
           type: 'esriSFS',
           style: 'esriSFSSolid',
@@ -187,27 +201,33 @@ define([
             width: 1.25,
             type: 'esriSLS',
             style: 'esriSLSSolid'
-          }};
-          
-        this.pointSymbol = {
-            'color': [255, 0, 0, 255],
-            'size': 8,
-            'type': 'esriSMS',
-            'style': 'esriSMSCircle',
-            'outline': {
-                'color': [255, 0, 0, 255],
-                'width': 1,
-                'type': 'esriSLS',
-                'style': 'esriSLSSolid'
-            }};        
+          }
+        };
         
-        // create graphics layer for grid extent and add to map
+        //set up the symbology used for the interactive point draw tools        
+        this.pointSymbol = {
+          'color': [255, 0, 0, 255],
+          'size': 8,
+          'type': 'esriSMS',
+          'style': 'esriSMSCircle',
+          'outline': {
+            'color': [255, 0, 0, 255],
+            'width': 1,
+            'type': 'esriSLS',
+            'style': 'esriSLSSolid'
+          }
+        };        
+        
+        //create graphics layer for grid extent and add to map
         this._graphicsLayerGRGExtent = new GraphicsLayer({id: "graphicsLayerGRGExtent"});
+        
+        //set up symbology for polygon input
         this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);        
         
         //set up symbology for point input
         this._ptSym = new SimpleMarkerSymbol(this.pointSymbol);
         
+        //create a feature collection for the drawn GRG to populate 
         var featureCollection = {
           "layerDefinition": {
             "geometryType": "esriGeometryPolygon",
@@ -223,25 +243,23 @@ define([
             }],
             "drawingInfo": {
               "renderer": {
-               "type": "simple",
-               "symbol": this.gridSymbol
+                "type": "simple",
+                "symbol": this.gridSymbol
               },
               "transparency": 0,
-              "labelingInfo": [
-                {
-                  "labelExpression": "[grid]",
-                  "labelExpressionInfo": {"value": "{grid}"},
-                  "format": null,
-                  "fieldInfos": null,
-                  "useCodedValues": false,
-                  "maxScale": 0,
-                  "minScale": 0,
-                  "where": null,
-                  "sizeInfo": null,
-                  "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
-                  "symbol": this._cellTextSymbol
-                }
-              ]
+              "labelingInfo": [{
+                "labelExpression": "[grid]",
+                "labelExpressionInfo": {"value": "{grid}"},
+                "format": null,
+                "fieldInfos": null,
+                "useCodedValues": false,
+                "maxScale": 0,
+                "minScale": 0,
+                "where": null,
+                "sizeInfo": null,
+                "labelPlacement": "esriServerPolygonPlacementAlwaysHorizontal",
+                "symbol": this._cellTextSymbol
+                }]
             },
             "extent": {
               "xmin":-18746028.312877923,
@@ -255,12 +273,14 @@ define([
           }
         };
         
+        //create a the GRG feature layer
         this.GRGArea = new FeatureLayer(featureCollection,{
           id: "Gridded-Reference-Graphic",
           outFields: ["*"],
           showLabels: true
         });   
         
+        //add the GRG feature layer and the GRG extent graphics layer to the map 
         this.map.addLayers([this.GRGArea,this._graphicsLayerGRGExtent]);
         
         //set up coordinate input dijit for GRG Point by Size
@@ -270,7 +290,8 @@ define([
           content: new editOutputCoordinate({nls: this.nls}),
           style: 'width: 400px'
         });
-
+        
+        //we need an extra class added the the coordinate format node for the Dart theme 
         if(this.appConfig.theme.name === 'DartTheme')
         {
           domClass.add(this.grgPointBySizeCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
@@ -283,7 +304,8 @@ define([
           content: new editOutputCoordinate({nls: this.nls}),
           style: 'width: 400px'
         });
-
+        
+        //we need an extra class added the the coordinate format node for the Dart theme
         if(this.appConfig.theme.name === 'DartTheme')
         {
           domClass.add(this.grgPointByRefSystemCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
@@ -306,6 +328,7 @@ define([
                               
         this._initLoading();
         
+        //set up all the handlers for the different click events
         this._handleClickEvents();
         
         this._createGridSettings();
@@ -338,9 +361,7 @@ define([
       * @memberOf widgets/GRG/Widget
       */
       _initLoading: function () {
-        this.loading = new LoadingIndicator({
-          hidden: true
-        });
+        this.loading = new LoadingIndicator({hidden: true});
         this.loading.placeAt(this.domNode);
         this.loading.startup();
       },
@@ -355,13 +376,12 @@ define([
         **/
             //handle new GRG Area button click
             this.own(on(this.newGRGAreaButton, "click", lang.hitch(this, function () {
-              var node = dijitRegistry.byId(this.newGRGAreaButton);
-              if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+              if(domClass.contains(this.newGRGAreaButton,'GRGDrafterLabelSettingsDownButton')) {
                 //in closed state - so open and change arrow to up
                 html.removeClass(this.fromAreaContainer, 'controlGroupHidden');
                 html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
                 html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
-                //close label settings if open
+                //close grg by point dropdown if open
                 html.addClass(this.fromPointContainer, 'controlGroupHidden');
                 html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
                 html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
@@ -375,13 +395,12 @@ define([
             
             //handle new GRG Point button click
             this.own(on(this.newGRGPointButton, "click", lang.hitch(this, function () {
-              var node = dijitRegistry.byId(this.newGRGPointButton);
-              if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+              if(domClass.contains(this.newGRGPointButton,'GRGDrafterLabelSettingsDownButton')) {
                 //in closed state - so open and change arrow to up
                 html.removeClass(this.fromPointContainer, 'controlGroupHidden');
                 html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
                 html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
-                //close label settings if open
+                //close grg by area dropdown if open
                 html.addClass(this.fromAreaContainer, 'controlGroupHidden');
                 html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
                 html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
@@ -421,8 +440,7 @@ define([
         
         /**
         * GRG from Area by Size panel
-        **/
-        
+        **/        
             //Handle click event of back button
             this.own(on(this.grgAreaBySizePanelBackButton, 'click', lang.hitch(this, function () {
               this._resetOnBackToMainPage();
@@ -438,6 +456,7 @@ define([
               this.grgAreaBySizeSettingsButton.title = this.nls.lockSettings;
               //html.addClass(this.grgAreaBySizeSettingsButton, 'controlGroupHidden');
             }
+            
             //Handle click event of Add GRG Area by Polygon button
             this.own(on(this.grgAreaBySizeDrawPolygonIcon, 'click', lang.hitch(this, 
               this._grgAreaBySizeDrawPolygonIconClicked)));
@@ -467,7 +486,7 @@ define([
             this.own(on(this.cellHorizontal, 'blur', lang.hitch(this, function () {
               if(this.cellHorizontal.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
-                  if(this.angle == 0) {
+                  if(this.angle === 0) {
                     this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
                   } else {   
                     this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
@@ -480,7 +499,7 @@ define([
             this.own(on(this.cellVertical, 'blur', lang.hitch(this, function () {
               if(this.cellVertical.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
-                  if(this.angle == 0) {
+                  if(this.angle === 0) {
                     this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
                   } else {   
                     this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
@@ -491,6 +510,7 @@ define([
             
             //Handle rotation number change
             this.own(on(this.grgAreaBySizeRotation, 'keyup', lang.hitch(this, function () {
+              //set time out needed to give chance for the the input validation to occur
               setTimeout(lang.hitch(this, function(){ 
                 this.grgAreaBySizeRotation.setValue(parseFloat(this.grgAreaBySizeRotation.displayedValue)); 
                 if (this.grgAreaBySizeRotation.isValid() && !isNaN(this.grgAreaBySizeRotation.value) && this._graphicsLayerGRGExtent.graphics[0]){                        
@@ -506,43 +526,42 @@ define([
         
         /**
         * GRG from Area by Reference System panel
-        **/
-        
-          //Handle click event of back button
-          this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
-            this._resetOnBackToMainPage();
-          })));
-          
-          //handle Grid Settings button
-          if(!this.config.grg.lockSettings) {
-            this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-              this._updateSettingsPage(this._currentOpenPanel);
-              this._showPanel("settingsPage");
+        **/        
+            //Handle click event of back button
+            this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
+              this._resetOnBackToMainPage();
             })));
-          } else {
-            this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
-            //html.addClass(this.grgAreaByRefSystemSettingsButton, 'controlGroupHidden');
-          }          
-          
-          //Handle click event of draw extent icon
-          this.own(on(this.grgAreaByRefSystemDrawIcon, 'click', lang.hitch(this, 
-            this._grgAreaByRefSystemDrawIconClicked)));
-          
-          //Handle click event of create GRG button        
-          this.own(on(this.grgAreaByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
-            this._grgAreaByRefSystemCreateGRGButtonClicked)));
+            
+            //handle Grid Settings button
+            if(!this.config.grg.lockSettings) {
+              this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgAreaByRefSystemSettingsButton, 'controlGroupHidden');
+            }          
+            
+            //Handle click event of draw extent icon
+            this.own(on(this.grgAreaByRefSystemDrawIcon, 'click', lang.hitch(this, 
+              this._grgAreaByRefSystemDrawIconClicked)));
+            
+            //Handle click event of create GRG button        
+            this.own(on(this.grgAreaByRefSystemCreateGRGButton, 'click', lang.hitch(this, 
+              this._grgAreaByRefSystemCreateGRGButtonClicked)));
 
-          //Handle click event of clear GRG button        
+            //Handle click event of clear GRG button        
             this.own(on(this.grgAreaByRefSystemClearGRGButton, 'click', lang.hitch(this, function () {
               this._clearLayers(true);
             })));            
-          
-          //Handle completion of extent drawing
-          this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
-            this._dt_AreaByRefSystemComplete)));
             
-          //Handle grid size dropdown change
-          this.own(on(this.grgAreaByRefSystemGridSize, 'change', lang.hitch(this, function () {
+            //Handle completion of extent drawing
+            this.own(on(this.dt_AreaByRefSystem, 'draw-complete', lang.hitch(this,
+              this._dt_AreaByRefSystemComplete)));
+              
+            //Handle grid size dropdown change
+            this.own(on(this.grgAreaByRefSystemGridSize, 'change', lang.hitch(this, function () {
               switch(this.grgAreaByRefSystemGridSize.getValue()){
                 case 'UTM':              
                   this.grgAreaByRefLabelFormat.value = 'Z';        
@@ -576,14 +595,11 @@ define([
               this.grgAreaByNonStandardSettingsButton.title = this.nls.lockSettings;
               //html.addClass(this.grgAreaByNonStandardSettingsButton, 'controlGroupHidden');
             }
-            
-            
         **/
         
         /**
         * GRG from Point by Size panel
-        **/
-        
+        **/        
             //Handle click event of back button
             this.own(on(this.grgPointBySizePanelBackButton, 'click', lang.hitch(this, function () {
               this._resetOnBackToMainPage();
@@ -657,8 +673,7 @@ define([
         
         /**
         * GRG from Point by Reference System panel
-        **/
-        
+        **/        
             //Handle click event of back button
             this.own(on(this.grgPointByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
               this._resetOnBackToMainPage();
@@ -746,14 +761,12 @@ define([
         
         /**
         * Settings panel
-        **/
-        
+        **/        
             //Handle click event of Grid settings back button
             this.own(on(this.gridSettingsPanelBackButton, "click", lang.hitch(this, function () {
               this._gridSettingsInstance.onClose();          
               this._showPanel(this._lastOpenPanel);
-            })));
-        
+            })));        
         
         /**
         * Publish panel
@@ -788,8 +801,7 @@ define([
               } else {
                 featureLayerInfo.hideLabels();
               }
-            })));
-        
+            })));        
         
         /**
         * Toolbar events
@@ -803,8 +815,7 @@ define([
             this.own(on(this.editToolbar, "rotate-stop", lang.hitch(this,function(evt){
                 this.angle = this.angle + parseFloat(evt.info.angle.toFixed(1));
                 this.grgAreaBySizeRotation.setValue(this.angle);
-            })));
-            
+            })));            
                       
             //Handle graphic vertices changed 
             this.own(on(this.editToolbar, "vertex-move-stop", lang.hitch(this,function(evt){
@@ -820,8 +831,8 @@ define([
       },
       
       /**
-      * Get panel node from panel name
-      * @param {string} panel name
+      * Update the settings panel depending on which other panel the
+      * settings are entered from 
       * @memberOf widgets/GRG/Widget
       **/
       _updateSettingsPage: function (panelName) {
@@ -832,6 +843,7 @@ define([
         html.removeClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
         html.removeClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
         
+        //hide the grid origin and reference system settings (these are not common to all settings)
         html.addClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
         html.addClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
         
@@ -841,16 +853,19 @@ define([
           case "grgAreaFromNonStandard":
             break;
           case "grgPointBySize":
+            //when creating point by size the grid orign can be used so remove the hidden class
             html.removeClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
             break;
           case "grgAreaByRefSystem":
           case "grgPointByRefSystem":
+            //hide elements that are not relevant to creating by reference system 
             html.addClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
+            //when creating by reference system give the user a choice of which one by removing the hidden class
             html.removeClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');            
             break;
         }
@@ -903,44 +918,49 @@ define([
       },
 
       _reset: function () {
-          this._clearLayers(true);
-          //ensure all toolbars are deactivated
-          this.dt_AreaBySize.deactivate();
-          this.dt_PointBySize.deactivate();
-          this.dt_PointByRefSystem.deactivate();
-          this.dt_AreaByRefSystem.deactivate();
-          
-          this.map.enableMapNavigation();
-                    
-          dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
-          dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
-          dojo.removeClass(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
-          dojo.removeClass(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
-          
-          html.addClass(this.fromAreaContainer, 'controlGroupHidden');
-          html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
-          html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
-          html.addClass(this.fromPointContainer, 'controlGroupHidden');
-          html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
-          html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
-        },
+        this._clearLayers(true);
+        
+        //ensure all toolbars are deactivated
+        this.dt_AreaBySize.deactivate();
+        this.dt_PointBySize.deactivate();
+        this.dt_PointByRefSystem.deactivate();
+        this.dt_AreaByRefSystem.deactivate();
+        
+        //enable map navigation if disabled due to a tool being in use
+        this.map.enableMapNavigation();
+        
+        //remove any active classes from the tool icons          
+        dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
+        dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
+        dojo.removeClass(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
+        dojo.removeClass(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
+        
+        //reset the two dropdown menus on the main page
+        html.addClass(this.fromAreaContainer, 'controlGroupHidden');
+        html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
+        html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
+        html.addClass(this.fromPointContainer, 'controlGroupHidden');
+        html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
+        html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
+      },
 
       _clearLayers: function (includeExtentLayer) {
-          this.GRGArea.clear();
-          //refresh GRG layer to make sure any labels are removed
-          this.GRGArea.refresh();          
-          //ensure the edit toolbar is deactived
-          this.editToolbar.deactivate();
-          
-          if(includeExtentLayer) {
-            this._graphicsLayerGRGExtent.clear();
-            this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
-            this.dt_PointByRefSystem.removeStartGraphic(this._graphicsLayerGRGExtent);
-            //reset the angle
-            this.angle = 0;
-            this.grgAreaBySizeRotation.setValue(this.angle);
-            this.grgAreaBySizeRotation.set('disabled', true);            
-          }
+        this.GRGArea.clear();
+        //refresh GRG layer to make sure any labels are removed
+        this.GRGArea.refresh();          
+        //ensure the edit toolbar is deactived
+        this.editToolbar.deactivate();
+        
+        //sometimes we only want to clear the GRGArea layer and not the graphic layer 
+        if(includeExtentLayer) {
+          this._graphicsLayerGRGExtent.clear();
+          this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
+          this.dt_PointByRefSystem.removeStartGraphic(this._graphicsLayerGRGExtent);
+          //reset the angle
+          this.angle = 0;
+          this.grgAreaBySizeRotation.setValue(this.angle);
+          this.grgAreaBySizeRotation.set('disabled', true);            
+        }
       },
 
       /**
@@ -954,7 +974,8 @@ define([
           config: this.config,
           appConfig: this.appConfig
         }, domConstruct.create("div", {}, this.gridSettingsNode));        
-        //add a listener for change in settings
+        
+        //add a listener for a change in settings
         this.own(this._gridSettingsInstance.on("gridSettingsChanged",
           lang.hitch(this, function (updatedSettings) {
             this._cellShape = updatedSettings.cellShape;
@@ -974,16 +995,18 @@ define([
               featureLayerInfo.hideLabels();
             }
             
-            if(this._cellShape == "default") {
+            //disable or enable the cell height input depending on the cell shape
+            //(hexagon does not need a height input) 
+            if(this._cellShape === "default") {
               this.grgAreaBySizeCellHeight.set('disabled', false);
               this.grgAreaBySizeCellHeight.setValue(this.grgAreaBySizeCellWidth.value);
-              this.pointCellHeight.set('disabled', false);
-              this.pointCellHeight.setValue(this.pointCellWidth.value);
+              this.grgPointBySizeCellHeight.set('disabled', false);
+              this.grgPointBySizeCellHeight.setValue(this.grgPointBySizeCellWidth.value);
             } else {
               this.grgAreaBySizeCellHeight.set('disabled', true);
               this.grgAreaBySizeCellHeight.setValue(0);
-              this.pointCellHeight.set('disabled', true);
-              this.pointCellHeight.setValue(0);
+              this.grgPointBySizeCellHeight.set('disabled', true);
+              this.grgPointBySizeCellHeight.setValue(0);
             }
 
             //set grid colours
@@ -1002,15 +1025,16 @@ define([
                 width: 2,
                 type: 'esriSLS',
                 style: 'esriSLSSolid'
-            }};
+              }
+            };
             
             // create a renderer for the grg layer to override default symbology
             var gridSymbol = new SimpleFillSymbol(this._GRGAreaFillSymbol); 
             var gridRenderer = new SimpleRenderer(gridSymbol);
             this.GRGArea.setRenderer(gridRenderer);
             
-            var textColor = new Color(updatedSettings.fontSettings.textColor);
-            
+            //set label properties
+            var textColor = new Color(updatedSettings.fontSettings.textColor);            
             var labelTrans = (1 - updatedSettings.fontSettings.labelTransparency) * 255;
             
             if(updatedSettings.fontSettings.haloOn){
@@ -1021,6 +1045,7 @@ define([
             
             var haloColor = new Color(updatedSettings.fontSettings.haloColor);
             
+            //override the text symbol with the new settings
             this._cellTextSymbol = {
               "type": "esriTS",
               "color": [
@@ -1052,8 +1077,8 @@ define([
             labelClass.symbol = new TextSymbol(this._cellTextSymbol);
             this.GRGArea.setLabelingInfo([labelClass]);
             
-            this.GRGArea.refresh();
-              
+            //refresh the layer to apply the settings
+            this.GRGArea.refresh();              
           })));
         this._gridSettingsInstance.startup();
       },
@@ -1078,17 +1103,19 @@ define([
         this._currentOpenPanel = currentPanel;
       },
       
+      /**
+      * Handle the draw polygon icon being clicked on the GRG Area by Size Panel
+      * @memberOf widgets/GRG/Widget
+      **/
       _grgAreaBySizeDrawPolygonIconClicked: function () {
         this._clearLayers(true); 
         // deactive the other tool if active
-        var node = dijitRegistry.byId(this.grgAreaBySizeDrawExtentIcon);
-        if(dojo.hasClass(node,'jimu-extent-active')) {
+        if(domClass.contains(this.grgAreaBySizeDrawExtentIcon,'jimu-extent-active')) {
           //this tool is already selected so deactivate
           this.dt_AreaBySize.deactivate();
           domClass.toggle(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
         }        
-        var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
-        if(dojo.hasClass(node,'jimu-polygon-active')) {
+        if(domClass.contains(this.grgAreaBySizeDrawPolygonIcon,'jimu-polygon-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaBySize.deactivate();
           this.map.enableMapNavigation();
@@ -1103,17 +1130,19 @@ define([
         domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
       },
       
+      /**
+      * Handle the draw extent icon being clicked on the GRG Area by Size Panel
+      * @memberOf widgets/GRG/Widget
+      **/
       _grgAreaBySizeDrawExtentIconClicked: function () {
         this._clearLayers(true); 
         // deactive the other tool if active
-        var node = dijitRegistry.byId(this.grgAreaBySizeDrawPolygonIcon);
-        if(dojo.hasClass(node,'jimu-polygon-active')) {
+        if(domClass.contains(this.grgAreaBySizeDrawPolygonIcon,'jimu-polygon-active')) {
           //this tool is already selected so deactivate
           this.dt_AreaBySize.deactivate();
           domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
         }        
-        var node = dijitRegistry.byId(this.grgAreaBySizeDrawExtentIcon);
-        if(dojo.hasClass(node,'jimu-extent-active')) {
+        if(domClass.contains(this.grgAreaBySizeDrawExtentIcon,'jimu-extent-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaBySize.deactivate();
           this.map.enableMapNavigation();
@@ -1128,9 +1157,12 @@ define([
         domClass.toggle(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
       },
       
+      /**
+      * Handle the draw point icon being clicked on the GRG Point by Size Panel
+      * @memberOf widgets/GRG/Widget
+      **/
       _grgPointBySizeDrawButtonClicked: function () {
-        var node = dijitRegistry.byId(this.grgPointBySizeAddPointBtn);
-        if(dojo.hasClass(node,'jimu-edit-active')) {
+        if(domClass.contains(this.grgPointBySizeAddPointBtn,'jimu-edit-active')) {
           //already selected so deactivate draw tool
           this.dt_PointBySize.deactivate();
           this.map.enableMapNavigation();
@@ -1149,9 +1181,12 @@ define([
         domClass.toggle(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
       },
       
+      /**
+      * Handle the draw point icon being clicked on the GRG Point by Reference System
+      * @memberOf widgets/GRG/Widget
+      **/
       _grgPointByRefSystemDrawButtonClicked: function () {
-        var node = dijitRegistry.byId(this.grgPointByRefSystemAddPointBtn);
-        if(dojo.hasClass(node,'jimu-edit-active')) {
+        if(domClass.contains(this.grgPointByRefSystemAddPointBtn,'jimu-edit-active')) {
           //already selected so deactivate draw tool
           this.dt_PointByRefSystem.deactivate();
           this.map.enableMapNavigation();
@@ -1170,9 +1205,12 @@ define([
         domClass.toggle(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
       },
       
+      /**
+      * Handle the draw extent icon being clicked on the GRG Area by Reference System
+      * @memberOf widgets/GRG/Widget
+      **/
       _grgAreaByRefSystemDrawIconClicked: function () {
-        var node = dijitRegistry.byId(this.grgAreaByRefSystemDrawIcon);
-        if(dojo.hasClass(node,'jimu-extent-active')) {
+        if(domClass.contains(this.grgAreaByRefSystemDrawIcon,'jimu-extent-active')) {
           //already selected so deactivate draw tool
           this.dt_AreaByRefSystem.deactivate();
           this.map.enableMapNavigation();
@@ -1187,14 +1225,17 @@ define([
             this.editToolbar.activate(Edit.MOVE|Edit.SCALE, evt.graphic); 
           })));          
         }
-        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');
-        
+        domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');        
       },
       
+      /**
+      * Handle the completion of the draw tool on the GRG Area by Size
+      * @memberOf widgets/GRG/Widget
+      **/
       _dt_AreaBySizeComplete: function (evt) {
         this.map.enableMapNavigation();
         this.dt_AreaBySize.deactivate();        
-        if(evt.geometry.type == 'extent'){
+        if(evt.geometry.type === 'extent'){
           evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry);
           var graphic = new Graphic(evt.geometry, this._extentSym);
           this.grgAreaBySizeRotation.set('disabled', false);
@@ -1209,9 +1250,13 @@ define([
         this._calculateCellWidthAndHeight(evt.geometry);        
       },
       
+      /**
+      * Calulate the width and height from the drawn feature
+      * @memberOf widgets/GRG/Widget
+      **/      
       _calculateCellWidthAndHeight: function (geometry) {
         //if the input id geographics project the geometry to WMAS
-        if (geometry.spatialReference.wkid == 4326) {
+        if (geometry.spatialReference.wkid === 4326) {
           // if the geographic point can be projected the map spatial reference do so
           geometry = WebMercatorUtils.geographicToWebMercator(geometry);
         }
@@ -1230,34 +1275,44 @@ define([
         //convert the width and height into meters
         var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellWidth, this._cellUnits);
         var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellHeight, this._cellUnits);
-
-        /**
-        * if the width or height of a grid cell is over 20000m we need to use a planar grid
-        * so recalculate the width and height using a planar measurement
-        **/
-        if((cellWidthMeters < 20000) && ((cellHeightMeters < 20000 && this._cellShape != "hexagon") || this._cellShape == "hexagon")) {
+        
+        //if the width or height of a grid cell is over 20000m we need to use a planar grid
+        //so recalculate the width and height using a planar measurement
+        if((cellWidthMeters < 20000) && ((cellHeightMeters < 20000 && this._cellShape !== "hexagon") || this._cellShape === "hexagon")) {
           this.geodesicGrid = true;
           this.grgAreaBySizeCellWidth.setValue(calculatedCellWidth);
-          this._cellShape == "default"?this.grgAreaBySizeCellHeight.setValue(calculatedCellHeight):this.grgAreaBySizeCellHeight.setValue(0);
+          this._cellShape === "default"?this.grgAreaBySizeCellHeight.setValue(calculatedCellHeight):this.grgAreaBySizeCellHeight.setValue(0);
         } else {
           this.geodesicGrid = false;
           this.grgAreaBySizeCellWidth.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,1), this._cellUnits))/this.cellHorizontal.value)); 
-          this._cellShape == "default"?this.grgAreaBySizeCellHeight.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value)):this.grgAreaBySizeCellHeight.setValue(0);
+          this._cellShape === "default"?this.grgAreaBySizeCellHeight.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value)):this.grgAreaBySizeCellHeight.setValue(0);
         }        
       },
       
+      /**
+      * Handle the completion of the draw point tool on the GRG Point by Size
+      * @memberOf widgets/GRG/Widget
+      **/      
       _dt_PointBySizeComplete: function () {          
         domClass.remove(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
         this.dt_PointBySize.deactivate();
         this.map.enableMapNavigation();
       },
       
+      /**
+      * Handle the completion of the draw point tool on the GRG Point by Reference System
+      * @memberOf widgets/GRG/Widget
+      **/
       _dt_PointByRefSystemComplete: function () {          
         domClass.remove(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
         this.dt_PointByRefSystem.deactivate();
         this.map.enableMapNavigation();
       },
       
+      /**
+      * Handle the completion of the draw extent tool on the GRG Area by Reference System
+      * @memberOf widgets/GRG/Widget
+      **/
       _dt_AreaByRefSystemComplete: function (evt) {
         domClass.remove(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');
         var graphic = new Graphic(gridGeomUtils.extentToPolygon(evt.geometry), this._extentSym);
@@ -1266,15 +1321,15 @@ define([
         this.map.enableMapNavigation();
       },
       
-      /*
-       * catch key press in start point for GRG Point by Size
-       */
+      /**
+      * catch key press in start point for GRG Point by Size
+      **/
       _grgPointBySizeCoordToolKeyWasPressed: function (evt) {
         this.grgPointBySizeCoordTool.manualInput = true;
         if (evt.keyCode === keys.ENTER) {
           this.grgPointBySizeCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
-              if(r.inputType == "UNKNOWN"){
+              if(r.inputType === "UNKNOWN"){
                 var alertMessage = new Message({
                   message: this.nls.parseCoordinatesError
                 });
@@ -1295,15 +1350,15 @@ define([
         }
       },
             
-      /*
-       * catch key press in start point for GRG Point by Size
-       */
+      /**
+      * catch key press in start point for GRG Point by Size
+      **/
       _grgPointByRefSystemCoordToolKeyWasPressed: function (evt) {
         this.grgPointByRefSystemCoordTool.manualInput = true;
         if (evt.keyCode === keys.ENTER) {
           this.grgPointByRefSystemCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
-              if(r.inputType == "UNKNOWN"){
+              if(r.inputType === "UNKNOWN"){
                 var alertMessage = new Message({
                   message: this.nls.parseCoordinatesError
                 });
@@ -1324,9 +1379,10 @@ define([
         }
       },
       
-      /*
-       *
-       */
+      /**
+      * Reformat coordinate label depend on what reference system is chosen
+      * Point by Size Panel
+      **/
       _grgPointBySizeSetCoordLabel: function (toType) {
         this.grgPointBySizeCoordInputLabel.innerHTML = dojoString.substitute(
           'GRG Origin (${crdType})', {
@@ -1334,9 +1390,10 @@ define([
           });
       },
       
-      /*
-       *
-       */
+      /**
+      * Reformat coordinate label depend on what reference system is chosen
+      * Point by Reference System Panel
+      **/
       _grgPointByRefSystemSetCoordLabel: function (toType) {
         this.grgPointByRefSystemCoordInputLabel.innerHTML = dojoString.substitute(
           'GRG Origin (${crdType})', {
@@ -1344,9 +1401,10 @@ define([
           });
       },
       
-      /*
-       *
-       */
+      /**
+      * Handle the format coordinate input popup opening
+      * Point by Size Panel
+      **/
       _grgPointBySizeCoordFormatButtonClicked: function () {
         this.grgPointBySizeCoordinateFormat.content.set('ct', this.grgPointBySizeCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
@@ -1355,9 +1413,10 @@ define([
         });
       },
       
-      /*
-       *
-       */
+      /**
+      * Handle the format coordinate input popup opening
+      * Point by Reference System Panel
+      **/
       _grgPointByRefSystemCoordFormatButtonClicked: function () {
         this.grgPointByRefSystemCoordinateFormat.content.set('ct', this.grgPointByRefSystemCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
@@ -1366,9 +1425,10 @@ define([
         });
       },
       
-      /*
-       *
-       */
+      /**
+      * Handle the format coordinate input being applied
+      * Point by Size Panel
+      **/
       _grgPointBySizeCoordFormatPopupApplyButtonClicked: function () {
         var fs = this.grgPointBySizeCoordinateFormat.content.formats[this.grgPointBySizeCoordinateFormat.content.ct];
         var cfs = fs.defaultFormat;
@@ -1386,9 +1446,10 @@ define([
         dijitPopup.close(this.grgPointBySizeCoordinateFormat);        
       },
       
-      /*
-       *
-       */
+      /**
+      * Handle the format coordinate input being applied
+      * Point by Reference System Panel
+      **/
       _grgPointByRefSystemCoordFormatPopupApplyButtonClicked: function () {
         var fs = this.grgPointByRefSystemCoordinateFormat.content.formats[this.grgPointByRefSystemCoordinateFormat.content.ct];
         var cfs = fs.defaultFormat;
@@ -1406,6 +1467,9 @@ define([
         dijitPopup.close(this.grgPointByRefSystemCoordinateFormat);        
       },
       
+      /**
+      * Handle the toggle for set number of row / columns changing
+      **/
       _setNumberRowsColumnsCheckBoxChanged: function () {
         if(this.setNumberRowsColumns.checked) {
           this.grgAreaBySizeCellWidth.set('disabled', true);
@@ -1422,19 +1486,22 @@ define([
         }
       },
       
+      /**
+      * Handle create GRG button being clicked on the GRG Area by Size Panel
+      **/
       _grgAreaBySizeCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
           this._clearLayers(false);
           
-          if(this.angle == 0) {
+          if(this.angle === 0) {
             var geom = gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
           } else {          
             var geom = this._graphicsLayerGRGExtent.graphics[0].geometry;
           }
           
           //if the input is geographics project the geometry to WMAS
-          if (geom.spatialReference.wkid == 4326) {
+          if (geom.spatialReference.wkid === 4326) {
             // if the geographic point can be projected the map spatial reference do so
             geom = WebMercatorUtils.geographicToWebMercator(geom);
           }
@@ -1462,7 +1529,7 @@ define([
           var numCellsHorizontal = Math.round(GRGAreaWidth/cellWidth);
           
           var numCellsVertical;
-          this._cellShape == "default"?numCellsVertical = Math.round(GRGAreaHeight/cellHeight):numCellsVertical = Math.round(GRGAreaHeight/(cellWidth)/Math.cos(30* Math.PI/180)) + 1;
+          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaHeight/cellHeight):numCellsVertical = Math.round(GRGAreaHeight/(cellWidth)/Math.cos(30* Math.PI/180)) + 1;
           
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical))
           {
@@ -1490,21 +1557,21 @@ define([
         }
       },
       
-      /*
-       *
-       */
+      /**
+      * Handle create GRG button being clicked on the GRG Point by Size Panel
+      **/
       _grgPointBySizeCreateGRGButtonClicked: function () {
         //check form inputs for validity
-        if (this.dt_PointBySize.startGraphic && this.pointCellWidth.isValid() && this.pointCellHeight.isValid() && this.gridAnglePoint.isValid()) {
+        if (this.dt_PointBySize.startGraphic && this.grgPointBySizeCellWidth.isValid() && this.grgPointBySizeCellHeight.isValid() && this.gridAnglePoint.isValid()) {
           
           //get center point of AOI
           var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointBySizeCoordTool.inputCoordinate.coordinateEsriGeometry);
           
-          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.pointCellWidth.value,this._cellUnits);
-          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.pointCellHeight.value,this._cellUnits);          
+          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointBySizeCellWidth.value,this._cellUnits);
+          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointBySizeCellHeight.value,this._cellUnits);          
 
           // if the width or height of a grid cell is over 20000m we need to use a planar grid
-          if((cellWidth < 20000) && ((cellHeight < 20000 && this._cellShape != "hexagon") || this._cellShape == "hexagon")) {
+          if((cellWidth < 20000) && ((cellHeight < 20000 && this._cellShape !== "hexagon") || this._cellShape === "hexagon")) {
             this.geodesicGrid = true;
           } else {
             this.geodesicGrid = false;
@@ -1546,6 +1613,9 @@ define([
         }
       },
       
+      /**
+      * Handle create GRG button being clicked on the GRG Point by Reference System Panel
+      **/
       _grgPointByRefSystemCreateGRGButtonClicked: function () {
         var width, height, cellBLPoint, extent, MGRS, offsets;
         var geomArray = [];
@@ -1584,7 +1654,7 @@ define([
                 MGRS = mgrs.LLtoMGRS(gridOrigin.y,gridOrigin.x,4);
                 break;
             }
-            if(this.grgPointByRefSystemGridSize.getValue() == 'UTM') {
+            if(this.grgPointByRefSystemGridSize.getValue() === 'UTM') {
               cellBLPoint = new Point(tempLon,tempLat);
               width =  this.grgPointByRefCellHorizontal.getValue() * 6;          
               height = this.grgPointByRefCellVertical.getValue() * 8;
@@ -1670,6 +1740,9 @@ define([
         }
       },
       
+      /**
+      * Handle create GRG button being clicked on the GRG Area by Reference System Panel
+      **/
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
@@ -1744,6 +1817,9 @@ define([
         }
       },
       
+      /**
+      * Create right click context delete option on graphics
+      **/
       createGraphicDeleteMenu: function () {
           // Creates right-click context menu for GRAPHICS
           ctxMenuForGraphics = new Menu({}); 
@@ -1769,6 +1845,10 @@ define([
           });
         },
       
+      
+      /**
+      * Handle different theme styles
+      **/
       //source:
       //https://stackoverflow.com/questions/9979415/dynamically-load-and-unload-stylesheets
       _removeStyleFile: function (filename, filetype) {
@@ -1808,17 +1888,21 @@ define([
           //Load appropriate CSS for dart theme
           utils.loadStyleLink('darkOverrideCSS', this.folderUrl + "css/dartTheme.css", null);
         } else {
-          this._removeStyleFile('dartTheme.css', 'css');
+          this._removeStyleFile(this.folderUrl + "css/dartTheme.css", 'css');
         }
         //Check if DashBoardTheme
         if (this.appConfig.theme.name === "DashboardTheme" && this.appConfig.theme.styles[0] === "default"){
           //Load appropriate CSS for dashboard theme
           utils.loadStyleLink('darkDashboardOverrideCSS', this.folderUrl + "css/dashboardTheme.css", null);
         } else {
-          this._removeStyleFile('dashboardTheme.css', 'css');
+          this._removeStyleFile(this.folderUrl + "css/dashboardTheme.css", 'css');
         }
       },
       
+      /**
+      * Handle widget being destroyed
+      * Primarly needed when in WAB configuration mode
+      **/
       destroy: function() {        
         this.inherited(arguments);        
         this.map.removeLayer(this._graphicsLayerGRGExtent);
@@ -1826,6 +1910,9 @@ define([
         console.log('grg widget distroyed')
       },
       
+      /**
+      * Handle publish GRG to portal
+      **/
       _initSaveToPortal: function(layerName) {        
         esriId.registerOAuthInfos();        
         var featureServiceName = layerName;

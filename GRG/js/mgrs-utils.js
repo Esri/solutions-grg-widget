@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 Esri. All Rights Reserved.
+// Copyright © 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the 'License');
 // you may not use this file except in compliance with the License.
@@ -33,9 +33,7 @@ define([
   "./VisibleGridZone",
   "./GridPolygon",
   "esri/geometry/geometryEngine",
-  "esri/graphic",
   "esri/geometry/Point",
-  "esri/geometry/Polyline",
   "esri/geometry/Polygon"
 ], function(
   JSON,
@@ -47,9 +45,7 @@ define([
   VisibleGridZone,
   GridPolygon,
   geometryEngine,
-  Graphic,
   Point,
-  Polyline,
   Polygon
 ) {
   return {
@@ -217,90 +213,11 @@ define([
           }
         } 
       }
-
       return zonesDictionary;
-    })(),
+    })(),    
 
     /**
-     * Determines which MGRS grid interval (in meters) supports the current map extent
-     * @param  {Number} minSpacing  The minimum spacing of lines (in screen pixels)
-     * @param  {external:Map} map   A Map object
-     * @param  {String} [detail]    Either "more" or "less".
-     * For example, when close to the minSpacing threshhold,
-     * which way to lean (i.e. "more" detail or "less" detail).
-     * This effects the way rounding is dones within this function.
-     * @return {Number}             The minimum spacing of lines (in meters)
-     */
-    getInterval: function(minSpacing, map, detail) {
-      var minSpacingWidth, pt, pt1, pt2, utmZone, minSpacingLog10, minSpacingPow10, interval;
-      var shift = 0;
-
-      // Find which power of 10 (i.e. 1, 10, 100, 1000, 10000, etc) in meters
-      // is the closest match to the 'minSpacing' parameter (minSpacing is in screen pixels)
-      minSpacingWidth = map.getResolutionInMeters() * minSpacing; // the width in meters
-      pt = map.extent.getCenter();
-
-      // create two points, offset vertically from the screen center,
-      // used to determine how many meters the minSpacing screen pixels equates to
-      pt1 = map.toMap(map.toScreen(pt).offset(0, minSpacing / 2)); // bottom point
-      pt2 = map.toMap(map.toScreen(pt).offset(0, -minSpacing / 2)); // top point
-
-      // since the min/max extent of the MGRS grid is -80/84 respectively,
-      // limit the computation to that range
-      while (pt1.getLatitude() >= 84 || pt2.getLatitude() >= 84) {
-        shift++;
-        pt1 = map.toMap(map.toScreen(pt).offset(0, minSpacing / 2 + shift * minSpacing));
-        pt2 = map.toMap(map.toScreen(pt).offset(0, -minSpacing / 2 + shift * minSpacing));
-      }
-      while (pt1.getLatitude() <= -80 || pt2.getLatitude() <= -80) {
-        shift++;
-        pt1 = map.toMap(map.toScreen(pt).offset(0, minSpacing / 2 - shift * minSpacing));
-        pt2 = map.toMap(map.toScreen(pt).offset(0, -minSpacing / 2 - shift * minSpacing));
-      }
-
-      var pt1Lat = pt1.getLatitude();
-      var pt1Lon = pt1.getLongitude();
-      var pt2Lat = pt2.getLatitude();
-      var pt2Lon = pt2.getLongitude();
-
-      // convert to UTM, and determine approximate meter spacing (width)
-      utmZone = mgrs.getZoneNumber(pt1Lat, pt1Lon);
-      minSpacingWidth = Math.abs(mgrs.LLtoUTM(pt1Lat, pt1Lon, utmZone)[1] -
-        mgrs.LLtoUTM(pt2Lat, pt2Lon, utmZone)[1]);
-
-      // its easier for me to understand what minSpacingLog10
-      // represents by thinking of it in terms of:
-      // Equation: minSpacingWidth = 10 ^ minSpacingLog10
-      minSpacingLog10 = Math.log10(minSpacingWidth);
-      switch(detail) {
-        case "more":
-          minSpacingPow10 = Math.floor(minSpacingLog10); // round down
-          break;
-        case "less": case "strict":
-          minSpacingPow10 = Math.ceil(minSpacingLog10); // round up
-          break;
-        default:
-          minSpacingPow10 = Math.round(minSpacingLog10); // round closest
-          break;
-      }
-
-      interval = Math.pow(10, minSpacingPow10);
-      if (minSpacingWidth > interval * 2) {
-        // sometimes, the computed interval is just too small using the
-        // above method and needs to be adjusted
-        // this check seems to work well
-        interval *= 10;
-      }
-      if (interval > 100000) {
-        // return 0 so that other functions can easily check if it is set (i.e. 0 == false)
-        return false;
-      } else {
-        return interval;
-      }
-    },
-
-    /**
-     * Finds the intersecting MGRS grid zones that are visible in an extent
+     * Finds the intersecting MGRS grid zones from the input extent
      * @param  {Object} grid The grid overlay object
      * @return {module:mgrs-utils~VisibleGridZone[]} An array of non-polar grid zones
      */
@@ -399,26 +316,15 @@ define([
             polygon = new Polygon({
               rings: rings
             });
-
-            // create the zone border polyline
-            polyline = new Polyline({
-              paths: rings
-            }); 
-
+            
             // check if zone polygon intersects with the original mapextent
             polygon_i = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
               mapExtentPolygon);
             if (polygon_i) {
-              // get the border of the visible zone (can be null)
-              polyline_i = geometryEngine.intersect(
-                gridGeomUtils.toWebMercator(polyline),
-                mapExtentPolygon);
-
               // create a VisibleGridZone instance and add it to the visibleGridZones results array
               visibleGridZones.push( new VisibleGridZone({
                 "map": map,
-                "polyline": polyline_i,
                 "polygon": polygon_i,
                 "fullZoneGeometry": this._ZonesDictionary[idx].fullZoneGeometry, 
                 "offset": x_offset,
@@ -487,11 +393,10 @@ define([
     },
 
     /**
-     * Creates graphics and labels for the 100K meter grids
+     * Creates graphics for the 100K meter grids
      * @param  {module:mgrs-utils~MgrsGridHandlerArguments} args
      * An object holding the arguments for the various handlers
      *
-     * @todo Implement configurable parameter for when to label (center and corners), based on zoom
      */
     handle100kGrids: function(args, map, extent) {
       var zonePolygon = args.polygon;
@@ -505,7 +410,7 @@ define([
       var maxN = args.maxN;
       var poly100k = [];
 
-      var n, e, i, ring, pt, text, polygon, polyline, gridPolygonArgs, gridPolygon, labels;
+      var n, e, i, ring, pt, text, polygon, polyline, gridPolygonArgs, gridPolygon;
 
       // Loop through northings, starting at the increment just south of minN
       // go through each increment of 100K meters, until maxN is reached
@@ -580,8 +485,6 @@ define([
                 gridGeomUtils.toWebMercator(fullZoneGeometry));
               }            
 
-            // The GridPolygon class is primarily meant to handle labeling.
-            // The following code is all about building the GridPolygon in order to get the labels.
             gridPolygonArgs = {
               "clippedPolygon": clippedPolygon,
               "unclippedPolygon": polygon,
@@ -615,18 +518,13 @@ define([
     },
 
     /**
-     * Creates graphics and labels for grid interval lines
+     * Creates graphics for grid interval 
      * (i.e. lines at less than 100K meter spacing)
      * @param  {module:mgrs-utils~MgrsGridHandlerArguments} poly
      * An object holding the arguments for the various handlers
      */
     handleGridSquares: function(poly, map, interval, extent) {
-      // This method is similar in nature to the 'handle100kGrids' method,
-      // but in the case of intervals,
-      // there are no polygons to create, only horizontal and vertical lines.
-      // Thus, much of this code is similar
-      // to the 'handle100kGrids' method, without the need for a GridPolygon
-      // class object (and less complex labeling logic)
+      // This method is similar in nature to the 'handle100kGrids' method
       var polyOut = [];
       var zonePolygon = poly.utmZonePoly;
       var latitudeZone = poly.latitudeZone;
@@ -722,6 +620,9 @@ define([
       return polyOut;
     },
     
+    /**
+     * Pads text with zeros
+     */
     _padZero: function(number, width) {
       number = number.toString();
       while (number.length < width) {
