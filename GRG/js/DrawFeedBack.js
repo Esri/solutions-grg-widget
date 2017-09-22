@@ -18,97 +18,82 @@
 define([
   'dojo/_base/declare',
   'dojo/_base/lang',
-  'dojo/_base/connect',
   'dojo/topic',
-  'esri/graphic',
-  'esri/toolbars/draw',
-  'esri/geometry/Circle',
-  'esri/geometry/Polyline',
-  'esri/geometry/geometryEngine',
   './Feedback'
 ], function (
   dojoDeclare,
   dojoLang,
-  dojoConnect,
-  dojoTopic,
-  esriGraphic,
-  esriDraw,
-  esriCircle,
-  esriPolyline,
-  esriGeometryEngine,
+  dojoTopic,    
   drawFeedback
 ) {
-    var clz = dojoDeclare([drawFeedback], {
-        /**
-         *
-         **/
-        constructor: function (map,coordTool) {
-            this.syncEvents();
-            this.inherited(arguments);            
-        },
+  var clz = dojoDeclare([drawFeedback], {
+    /**
+     *
+     **/
+    constructor: function (map,coordTool) {
+      this.syncEvents();
+      this.inherited(arguments);            
+    },
         
-        /*
+    syncEvents: function () {
+      dojoTopic.subscribe(
+        'grg-center-point-input',
+        dojoLang.hitch(this, this.onCenterPointManualInputHandler)
+      );
+  
+      dojoTopic.subscribe(
+        'clear-points',
+        dojoLang.hitch(this, this.clearPoints)
+      ); 
+    },
+        
+    /*
+    Handler for clearing out points
+    */
+    clearPoints: function (centerPoint) {
+      this._points = [];
+      this.map.graphics.clear();
+    },
+        
+    /**
+     *
+     **/
+    clearGraphics: function (evt) {
+        this.map.graphics.clear();
+    },
+    
+    /*
+    Handler for the manual input of a center point
+    */
+    onCenterPointManualInputHandler: function (centerPoint) {
+      this._points = [];
+      this._points.push(centerPoint.offset(0, 0));
+      this.set('startPoint', this._points[0]);
+      this.map.centerAt(centerPoint);
+    },
 
-        */
-        syncEvents: function () {
-            dojoTopic.subscribe(
-                'grg-center-point-input',
-                dojoLang.hitch(this, this.onCenterPointManualInputHandler)
-            );
-        
-            dojoTopic.subscribe(
-                'clear-points',
-                dojoLang.hitch(this, this.clearPoints)
-            ); 
-        },
-        
-        /*
-        Handler for clearing out points
-        */
-        clearPoints: function (centerPoint) {
-            this._points = [];
-            this.map.graphics.clear();
-        },
-        
-        /**
-         *
-         **/
-        clearGraphics: function (evt) {
-            this.map.graphics.clear();
-        },
-        
-        /*
-        Handler for the manual input of a center point
-        */
-        onCenterPointManualInputHandler: function (centerPoint) {
-            this._points = [];
-            this._points.push(centerPoint.offset(0, 0));
-            this.set('startPoint', this._points[0]);
-            this.map.centerAt(centerPoint);
-        },
+    /**
+     *
+     **/
+    _onClickHandler: function (evt) {
+      this._points = [];
+      var snapPoint;
+      if (this.map.snappingManager) {
+        snapPoint = this.map.snappingManager._snappingPoint;
+      }
+      var start = snapPoint || evt.mapPoint;
+      var map = this.map;
+      this._points.push(start.offset(0, 0));
+      this.set('startPoint', this._points[0]);
+      this._drawEnd(start);            
+    },
 
-        /**
-         *
-         **/
-        _onClickHandler: function (evt) {
-            var snapPoint;
-            if (this.map.snappingManager) {
-                snapPoint = this.map.snappingManager._snappingPoint;
-            }
-            var start = snapPoint || evt.mapPoint;
-            var map = this.map;
-            this._points.push(start.offset(0, 0));
-            this.set('startPoint', this._points[0]);
-            this._drawEnd(start);            
-        },
-
-        /*
-         *
-         */
-        cleanup: function (evt) {
-            //do nothing yet
-        }
-
-    });
-    return clz;
+    /*
+     *
+     */
+    cleanup: function (evt) {
+        //do nothing yet
+    }
+  });
+  return clz;
 });

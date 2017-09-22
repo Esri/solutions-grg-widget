@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// Copyright © 2014 Esri. All Rights Reserved.
+// Copyright © 2017 Esri. All Rights Reserved.
 //
 // Licensed under the Apache License Version 2.0 (the 'License');
 // you may not use this file except in compliance with the License.
@@ -23,14 +23,12 @@ define([
   "dojo/json",
   "./constants",
   "esri/geometry/Polygon",
-  "esri/geometry/Polyline",
   "esri/geometry/Extent"
 ], function(
   declare,
   JSON,
   constants,
   Polygon,
-  Polyline,
   Extent
 ) {
 
@@ -169,33 +167,6 @@ define([
         "rings": rings,
         "spatialReference": this.spatialReference
       });
-    },
-
-    /**
-     * Convert to a polyline
-     * @param  {Number} [offsetX=0] Instruction to return a non-normalized polyline
-     * (i.e. falls outside the normal world extent)
-     * Used for drawing grids when a map is in wraparound mode
-     * NOTE: Specify a negative integer for west of W180° OR a positive integer for east of E180°
-     * @return {external:Polyline} The zone, represented as a Polyline
-     */
-    toPolyline: function(offsetX) {
-      var paths = JSON.parse(JSON.stringify(this._rings));
-
-      // Shift the rings left/right to match the x-offset (i.e. how many increments left or right
-      // of the dateline, to support wraparound maps)
-      if (offsetX) {
-        for (var i = 0; i < paths[0].length; i++) { // modify the zone paths for x_offset
-          paths[0][i][0] += offsetX * constants.GEOGRAPHIC_360;
-        }
-      }
-
-      // build and return the polyline
-      return new Polyline({
-        "paths": paths,
-        "spatialReference": this.spatialReference
-      });
     }
-
   });
 });

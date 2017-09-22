@@ -60,6 +60,6 @@ define({
       
       
     // Lock Settings
-    "lockSettings": "Lock Settings - This will prevent the user from being able to change any of the configured settings within the widget"    
+    "lockSettings": "Lock Settings - This will prevent the user from being able to change any of the configured settings within the widget"  // Shown as description next to locak settings toggle   
   })
 });

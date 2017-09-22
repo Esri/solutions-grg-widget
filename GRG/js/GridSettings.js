@@ -1,4 +1,20 @@
-﻿define([
+﻿///////////////////////////////////////////////////////////////////////////
+// Copyright © 2017 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License Version 2.0 (the 'License');
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an 'AS IS' BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+
+define([
   'dojo/_base/declare',
   'dojo/_base/array',
   'dojo/_base/html',
@@ -114,8 +130,6 @@
         this.inherited(arguments);
         //set class to main container
         domClass.add(this.domNode, "GRGDrafterSettingsContainer GRGDrafterFullWidth");
-        //TODO: try to remove the timeout
-        setTimeout(lang.hitch(this, this._setBackgroundColorForDartTheme), 500);
         this._handleClickEvents();
       },
       
@@ -126,8 +140,7 @@
       _handleClickEvents: function () {        
         //handle grid settings button clicked
         this.own(on(this.gridSettingsButton, "click", lang.hitch(this, function () {
-          var node = dijitRegistry.byId(this.gridSettingsButton);
-          if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+          if(domClass.contains(this.gridSettingsButton,'GRGDrafterLabelSettingsDownButton')) {
             //in closed state - so open and change arrow to up
             html.removeClass(this.gridSettingsContainer, 'controlGroupHidden');
             html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
@@ -146,8 +159,7 @@
         
         //handle label settings button clicked
         this.own(on(this.labelSettingsButton, "click", lang.hitch(this, function () {
-          var node = dijitRegistry.byId(this.labelSettingsButton);
-          if(dojo.hasClass(node,'GRGDrafterLabelSettingsDownButton')) {
+          if(domClass.contains(this.labelSettingsButton,'GRGDrafterLabelSettingsDownButton')) {
             //in closed state - so open and change arrow to up
             html.removeClass(this.labelSettingsContainer, 'controlGroupHidden');
             html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
@@ -174,25 +186,6 @@
         })));
       },
 
-      /**
-      * This function overrides dijit/select
-      * background color for dart theme
-      * @memberOf widgets/GRGDrafter/Settings
-      **/
-      _setBackgroundColorForDartTheme: function () {
-        var buttonContentsDiv, i, selectBoxArrowDiv;
-        // if applied theme is dart Theme
-        if (this.appConfig.theme.name === "DartTheme") {
-          //update the style of arrow buttons for dijit/select to match with combobox
-          buttonContentsDiv = query(".dijitSelect .dijitButtonContents", this.planSettingsNode);
-          selectBoxArrowDiv = query(".dijitSelect .dijitArrowButton", this.planSettingsNode);
-          // loop through all dijit/select div for applying css
-          for (i = 0; i < buttonContentsDiv.length && i < selectBoxArrowDiv.length; i++) {
-            domClass.add(buttonContentsDiv[i], "dijitButtonContentsDartTheme");
-            domClass.add(selectBoxArrowDiv[i], "dijitArrowButtonDartTheme");
-          }
-        }
-      },
 
       /**
       * Add options to passed dropdown
@@ -303,7 +296,7 @@
           "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,
           "gridFillColor": this.gridFillColorPicker.getValues().color,
           "gridFillTransparency": this.gridFillColorPicker.getValues().transparency,
-          "fontSettings": JSON.parse(JSON.stringify(this.fontSetting.getConfig())),
+          "fontSettings": lang.clone(this.fontSetting.getConfig()),
         };
         this.emit("gridSettingsChanged", this.selectedGridSettings);
       }
