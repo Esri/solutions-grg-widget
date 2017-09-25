@@ -349,6 +349,7 @@ define([
       var utmZonePolygons = {};
       var intervalSpacing = interval;
       var polys = [];
+      extent = gridGeomUtils.toWebMercator(extent);
       
       for (var i = 0; i < visibleGridZones.length; i++) {
         var visibleGridZone = visibleGridZones[i];
@@ -539,6 +540,8 @@ define([
       var n, e, text, polygon, gridPolygonArgs, extentRotated;
       var firstRow = true; 
       var firstColumn = true;
+      
+      extent = gridGeomUtils.toWebMercator(extent);
       
       for (n = Math.floor(minN / interval) * interval; n < maxN; n += interval) {
         for (e = Math.floor(minE / interval) * interval; e < maxE; e += interval) {
