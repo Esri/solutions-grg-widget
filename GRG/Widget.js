@@ -959,7 +959,9 @@ define([
           //reset the angle
           this.angle = 0;
           this.grgAreaBySizeRotation.setValue(this.angle);
-          this.grgAreaBySizeRotation.set('disabled', true);            
+          this.grgAreaBySizeRotation.set('disabled', true);
+          this.grgAreaBySizeCellHeight.set('disabled', true);
+          this.grgAreaBySizeCellWidth.set('disabled', true);
         }
       },
 
@@ -998,7 +1000,6 @@ define([
             //disable or enable the cell height input depending on the cell shape
             //(hexagon does not need a height input) 
             if(this._cellShape === "default") {
-              this.grgAreaBySizeCellHeight.set('disabled', false);
               this.grgAreaBySizeCellHeight.setValue(this.grgAreaBySizeCellWidth.value);
               this.grgPointBySizeCellHeight.set('disabled', false);
               this.grgPointBySizeCellHeight.setValue(this.grgPointBySizeCellWidth.value);
@@ -1059,7 +1060,7 @@ define([
                 haloColor.r,
                 haloColor.g,
                 haloColor.b,
-                255
+                labelTrans
               ],              
               "horizontalAlignment": "center",
               "font": {
@@ -1244,7 +1245,11 @@ define([
           var graphic = new Graphic(evt.geometry, this._extentSym);
           evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry.getExtent());
           domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
-        }        
+        }
+        if(this._cellShape === "default") {
+          this.grgAreaBySizeCellHeight.set('disabled', false);
+        }
+        this.grgAreaBySizeCellWidth.set('disabled', false);        
         this._graphicsLayerGRGExtent.add(graphic);
         this.centerPoint = evt.geometry.getCentroid();
         this._calculateCellWidthAndHeight(evt.geometry);        
@@ -1693,7 +1698,11 @@ define([
             switch(this.grgPointByRefSystemGridSize.getValue()){
               case 'UTM':              
                 for (i = 0; i < zones.length; i++) {                  
-                  var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));                  
+                  if (this.map.spatialReference.wkid !== 4326) {
+                    var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                  } else {
+                    var graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
+                  }
                   var label = this.grgPointByRefLabelFormat.value
                   label = label.replace(/Z/, zones[i].gridPolygon.text);
                   graphic.setAttributes({'grid': label});
@@ -1715,7 +1724,11 @@ define([
                   }
                   var count = 1;
                   for (i = 0; i < polysToLoop.length; i++) {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);                 
+                    if (this.map.spatialReference.wkid !== 4326) {
+                      var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                    } else {
+                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone));
+                    }
                     var label = this.grgPointByRefLabelFormat.value
                     label = label.replace(/Y/, polysToLoop[i].y);
                     label = label.replace(/X/, polysToLoop[i].x); 
@@ -1760,12 +1773,19 @@ define([
               case 'UTM':              
                 for (i = 0; i < zones.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
-                    var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
-                    geomArray.push(graphic.geometry);
+                    if (this.map.spatialReference.wkid !== 4326) {
+                      var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
+                    } else {
+                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(zones[i].gridPolygon.clippedPolygon));
+                    }
                   } else {
-                    var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
-                    geomArray.push(graphic.geometry);
+                    if (this.map.spatialReference.wkid !== 4326) {
+                      var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                    } else {
+                      var graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
+                    }
                   }
+                  geomArray.push(graphic.geometry);
                   var label = this.grgAreaByRefLabelFormat.value
                   label = label.replace(/Z/, zones[i].gridPolygon.text);
                   graphic.setAttributes({'grid': label});
@@ -1788,10 +1808,18 @@ define([
                 var count = 1;
                 for (i = 0; i < polysToLoop.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolygon);
+                    if (this.map.spatialReference.wkid !== 4326) {
+                      var graphic = new Graphic(polysToLoop[i].clippedPolygon);
+                    } else {
+                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolygon));
+                    }
                     geomArray.push(graphic.geometry);                    
                   } else {
-                    var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                    if (this.map.spatialReference.wkid !== 4326) {
+                      var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                    } else {
+                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone));
+                    }
                     geomArray.push(graphic.geometry);
                   }
                   var label = this.grgAreaByRefLabelFormat.value
