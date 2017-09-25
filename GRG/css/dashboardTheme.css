@@ -20,6 +20,14 @@
      background-color: transparent; 
 }
 
+.claro .dijitTextBoxHover {
+  background-color: #222;
+}
+
+.claro .dijitTextBoxFocused .dijitInputContainer {
+  background: #222;
+}
+
 /* button icons */
 
 .jimu-widget-GRGDrafter .settingBtn {
