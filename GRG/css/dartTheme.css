@@ -29,6 +29,21 @@
     background-image: url(images/tooltip.png);    
 }
 
+/* dojo color picker */
+
+.jimu-colorpalette  {
+  background-color: #4c4c4c;
+}
+
+.jimu-color-picker-dialog .dijitTooltipContainer {
+  background-color: #4c4c4c !important;
+}
+
+.claro .dojoxColorPicker, .claro .dijitColorPalette {
+    background: #4c4c4c;
+}
+
+
 /*dojo dialog box*/
 .claro .dijitDialog {
   background-color: #4c4c4c;
@@ -151,4 +166,10 @@
     background: url('./images/extent_white_hover.png');
     background-repeat: no-repeat;
     border: none;
+}
+
+
+.claro .dijitSliderImageHandle, .claro .dijitSliderImageHandle:after {
+    background: transparent;
+    margin-top: 0px;
 }
