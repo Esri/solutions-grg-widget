@@ -959,7 +959,9 @@ define([
           //reset the angle
           this.angle = 0;
           this.grgAreaBySizeRotation.setValue(this.angle);
-          this.grgAreaBySizeRotation.set('disabled', true);            
+          this.grgAreaBySizeRotation.set('disabled', true);
+          this.grgAreaBySizeCellHeight.set('disabled', true);
+          this.grgAreaBySizeCellWidth.set('disabled', true);
         }
       },
 
@@ -998,7 +1000,6 @@ define([
             //disable or enable the cell height input depending on the cell shape
             //(hexagon does not need a height input) 
             if(this._cellShape === "default") {
-              this.grgAreaBySizeCellHeight.set('disabled', false);
               this.grgAreaBySizeCellHeight.setValue(this.grgAreaBySizeCellWidth.value);
               this.grgPointBySizeCellHeight.set('disabled', false);
               this.grgPointBySizeCellHeight.setValue(this.grgPointBySizeCellWidth.value);
@@ -1244,7 +1245,11 @@ define([
           var graphic = new Graphic(evt.geometry, this._extentSym);
           evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry.getExtent());
           domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
-        }        
+        }
+        if(this._cellShape === "default") {
+          this.grgAreaBySizeCellHeight.set('disabled', false);
+        }
+        this.grgAreaBySizeCellWidth.set('disabled', false);        
         this._graphicsLayerGRGExtent.add(graphic);
         this.centerPoint = evt.geometry.getCentroid();
         this._calculateCellWidthAndHeight(evt.geometry);        
@@ -1477,13 +1482,10 @@ define([
           this.cellHorizontal.set('disabled', false);
           this.cellVertical.set('disabled', false);
         } else {
-          this.grgAreaBySizeCellWidth.set('disabled', false);
-          this.grgAreaBySizeCellHeight.set('disabled', false);
           this.cellHorizontal.set('disabled', true);
           this.cellVertical.set('disabled', true);
-          this.cellHorizontal.set('value', 10);
-          this.cellVertical.set('value', 10);
         }
+        this._clearLayers(true);
       },
       
       /**
