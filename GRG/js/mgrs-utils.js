@@ -48,6 +48,12 @@ define([
   Point,
   Polygon
 ) {
+  // If Math.log10 is not supported by default in the browser, add it here
+  if (!Math.log10) {
+    Math.log10 = function log10(val) {
+      return Math.log(val) / Math.LN10;
+    };
+  }
   return {
     /**
      * The zonesDictionary object contains all 1197 unique keys
