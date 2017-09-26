@@ -3,8 +3,8 @@ Contributing to the GRG Widget Repository
 
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
 
-***All development work is to be performed in a branch and when ready for release committed to master.***
-***Your code is required to adhere to coding rules using [JS Hint](http://www.jshint.com/) and [JSCS](http://jscs.info/) there is a .jshintrc file and .jscs file included in the root folder which enforces these styles.***
+- ***All development work is to be performed in a branch and when ready for release committed to master.***
+- ***Your code is required to adhere to coding rules using [JS Hint](http://www.jshint.com/) and [JSCS](http://jscs.info/). There is a .jshintrc file and .jscs file included in the root folder which enforces these styles.***
 
 Issues
 ------
