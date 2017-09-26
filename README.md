@@ -16,22 +16,23 @@ A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference 
 * [Licensing](#licensing)
 
 ## Features
-* Allows users to create an gridded reference graphic from:
-  * An area
-    * By Dimension
-    * By Reference System
-  * A point
-    * By Dimension
-    * By Reference System
+Allows users to create an gridded reference graphic from:
+ * An area
+   * By Dimension
+   * By Reference System
+ * A point
+   * By Dimension
+   * By Reference System
     
 ## Instructions
 In order to develop and test widgets you need to deploy the GRG directory to the stemapp/widgets directory in your WebApp Builder installation.
 
 ## Requirements
-* Minimum requirement is ArcGIS WebApp Builder v.1.0. Widget has been updated to v.2.5. 
+* Minimum requirement is ArcGIS WebApp Builder v.1.0.
+* Widget has been updated to v.2.5. 
 
 ## Issues
-* Find a bug or want to request a new feature?  Please let us know by submitting an [issue](https://github.com/ArcGIS/solutions-grg-widget/issues/new).
+Find a bug or want to request a new feature?  Please let us know by submitting an [issue](https://github.com/ArcGIS/solutions-grg-widget/issues/new).
 
 ## Contributing
 Esri welcomes contributions from anyone and everyone. Please see our [guidelines for contributing](https://github.com/esri/contributing).
