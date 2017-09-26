@@ -1482,13 +1482,10 @@ define([
           this.cellHorizontal.set('disabled', false);
           this.cellVertical.set('disabled', false);
         } else {
-          this.grgAreaBySizeCellWidth.set('disabled', false);
-          this.grgAreaBySizeCellHeight.set('disabled', false);
           this.cellHorizontal.set('disabled', true);
           this.cellVertical.set('disabled', true);
-          this.cellHorizontal.set('value', 10);
-          this.cellVertical.set('value', 10);
         }
+        this._clearLayers(true);
       },
       
       /**
