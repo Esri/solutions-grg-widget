@@ -31,6 +31,13 @@ In order to develop and test widgets you need to deploy the GRG directory to the
 * Minimum requirement is ArcGIS WebApp Builder v.1.0.
 * Widget has been updated to v.2.5. 
 
+## Resources
+* [Web AppBuilder for ArcGIS (Developer Edition)](https://developers.arcgis.com/web-appbuilder/)
+* [ArcGIS Solutions](http://solutions.arcgis.com/)
+* [ArcGIS for JavaScript API Resource Center](http://help.arcgis.com/en/webapi/javascript/arcgis/index.html)
+* [ArcGIS Blog](http://blogs.esri.com/esri/arcgis/)
+* [twitter@esri](http://twitter.com/esri)
+
 ## Issues
 Find a bug or want to request a new feature?  Please let us know by submitting an [issue](https://github.com/ArcGIS/solutions-grg-widget/issues/new).
 
