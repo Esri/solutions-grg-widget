@@ -48,7 +48,7 @@ If you are using [JS Hint](http://http://www.jshint.com/) there is a .jshintrc f
 We allow for 120 characters per line instead of the highly restrictive 80.
 
 ## Licensing
-Copyright 2013 Esri
+Copyright 2016 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
