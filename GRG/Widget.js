@@ -1125,6 +1125,7 @@ define([
           this.dt_AreaBySize.activate('polygon');
           //depending on what draw option is used we want different edit functionality
           this.own(on(this._graphicsLayerGRGExtent, "click", lang.hitch(this, function(evt) {
+            this.editToolbar._defaultOptions.uniformScaling = true;
             this.editToolbar.activate(Edit.MOVE|Edit.EDIT_VERTICES, evt.graphic); 
           })));          
         }
@@ -1152,6 +1153,7 @@ define([
           this.dt_AreaBySize.activate('extent');
           //depending on what draw option is used we want different edit functionality
           this.own(on(this._graphicsLayerGRGExtent, "click", lang.hitch(this, function(evt) {
+            this.editToolbar._defaultOptions.uniformScaling = true;
             this.editToolbar.activate(Edit.MOVE|Edit.ROTATE|Edit.SCALE, evt.graphic); 
           })));
         }
@@ -1223,7 +1225,8 @@ define([
           this.editToolbar.deactivate();
           //depending on what draw option is used we want different edit functionality
           this.own(on(this._graphicsLayerGRGExtent, "click", lang.hitch(this, function(evt) {
-            this.editToolbar.activate(Edit.MOVE|Edit.SCALE, evt.graphic); 
+            this.editToolbar._defaultOptions.uniformScaling = false; 
+            this.editToolbar.activate(Edit.MOVE|Edit.SCALE, evt.graphic);         
           })));          
         }
         domClass.toggle(this.grgAreaByRefSystemDrawIcon, 'jimu-extent-active');        
