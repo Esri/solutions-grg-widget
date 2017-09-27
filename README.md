@@ -1,9 +1,9 @@
 # GRG Widget
 A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations - from cordon and search operations to security for presidential inaugurations.
 
-<!--[View it live](http://edn1.esri.com/quickstart-map-js/)-->
+![App](solutions-grg-widget.png)
 
-<!--![App](https://raw.github.com/Esri/quickstart-map-js/master/quickstart-map-js.png)-->
+[View it live](https://nationalsecurity.esri.com/solutionsweb/grg/)
 
 ## Sections
 
