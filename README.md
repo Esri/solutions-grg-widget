@@ -29,7 +29,7 @@ In order to develop and test widgets you need to deploy the GRG directory to the
 
 ## Requirements
 * Minimum requirement is ArcGIS WebApp Builder v.1.0.
-* Widget has been updated to v.2.5. 
+* Widget has been updated to v.2.6. 
 
 ## Resources
 * [Web AppBuilder for ArcGIS (Developer Edition)](https://developers.arcgis.com/web-appbuilder/)
@@ -48,7 +48,7 @@ If you are using [JS Hint](http://http://www.jshint.com/) there is a .jshintrc f
 We allow for 120 characters per line instead of the highly restrictive 80.
 
 ## Licensing
-Copyright 2013 Esri
+Copyright 2017 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -63,4 +63,4 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's
-[license.txt](license.txt) file.
+[LICENSE](LICENSE) file.
