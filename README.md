@@ -28,7 +28,7 @@ Allows users to create an gridded reference graphic from:
 In order to develop and test widgets you need to deploy the GRG directory to the stemapp/widgets directory in your WebApp Builder installation.
 
 ## Requirements
-* Minimum requirement is ArcGIS WebApp Builder v.1.0.
+* Minimum requirement is ArcGIS Web AppBuilder v.1.0.
 * Widget has been updated to v.2.6. 
 
 ## Resources
