@@ -1,9 +1,13 @@
 # GRG Widget
-A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations - from cordon and search operations to security for presidential inaugurations.
+
+A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations, including:
+- Cordon and search
+- Security
+- Search and Rescue
 
 ![App](solutions-grg-widget.png)
 
-[View it live](https://nationalsecurity.esri.com/solutionsweb/grg/)
+[View it live](https://nationalsecurity.esri.com/solutionsweb/GriddedReferenceGraphic)
 
 ## Sections
 
@@ -25,7 +29,7 @@ Allows users to create an gridded reference graphic from:
    * By Reference System
     
 ## Instructions
-In order to develop and test widgets you need to deploy the GRG directory to the stemapp/widgets directory in your WebApp Builder installation.
+In order to develop and test widgets you need to deploy the GRG directory to the `stemapp/widgets directory` in your WebApp Builder installation.
 
 ## Requirements
 * Minimum requirement is ArcGIS Web AppBuilder v.1.0.
