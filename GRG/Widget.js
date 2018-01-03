@@ -283,6 +283,25 @@ define([
         //add the GRG feature layer and the GRG extent graphics layer to the map 
         this.map.addLayers([this.GRGArea,this._graphicsLayerGRGExtent]);
         
+        //must ensure the layer is loaded before we can access it to turn on the labels if required
+        if(this.GRGArea.loaded){
+          // show or hide labels
+          featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+          featureLayerInfo.enablePopup();
+          if(this._showLabels) {
+            featureLayerInfo.showLabels();
+          }
+        } else {
+          this.GRGArea.on("load", lang.hitch(this, function () {
+            // show or hide labels
+            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+            featureLayerInfo.enablePopup();
+            if(this._showLabels) {
+              featureLayerInfo.showLabels();
+            }
+          }));
+        }
+        
         //set up coordinate input dijit for GRG Point by Size
         this.grgPointBySizeCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
         this.grgPointBySizeCoordTool.inputCoordinate.formatType = 'DD';
@@ -987,15 +1006,6 @@ define([
             this._labelDirection = updatedSettings.labelDirection;
             this._gridOrigin = updatedSettings.gridOrigin;
             this._referenceSystem = updatedSettings.referenceSystem;
-            
-            // show or hide labels
-            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
-            featureLayerInfo.enablePopup();
-            if(this._showLabels) {
-              featureLayerInfo.showLabels();
-            } else {
-              featureLayerInfo.hideLabels();
-            }
             
             //disable or enable the cell height input depending on the cell shape
             //(hexagon does not need a height input) 
