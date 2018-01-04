@@ -314,27 +314,8 @@ define([
               }
             }               
             break;                        
-        }
-        
-        letter = grg.convertNumberToLetters(letterIndex);
-        secondLetter = grg.convertNumberToLetters(secondLetterIndex);
-        
-        var attr = {};
-        
-        switch (labelStyle) {
-          case 'alphaNumeric':
-            attr["grid"] = letter.toString() + number.toString();
-            break;
-          case 'alphaAlpha':
-            attr["grid"] = letter.toString() + '-' + secondLetter.toString();
-            break;
-           case 'numeric':
-            attr["grid"] = number.toString();
-            break
-        }
-        
-        graphic.setAttributes(attr);        
-        features.push(graphic);
+        }        
+        features.push(grg.addGraphicLabel(graphic,labelStyle,number,letterIndex,secondLetterIndex));
       }
       
       startPoint = nextStartPoint;
@@ -667,6 +648,136 @@ define([
       callbackParamName: "callback"                          
     },{usePost: true});
     return def;
+  },
+  
+  grg.labelReferenceGrid = function (features, labelType, startPos, gridSize) {
+    var letterIndex = -1;
+    var number = 1;
+    var secondLetterIndex, letter,secondLetter;
+    var newLine = true;
+    var currentFeature = null;
+    var labeledFeatures = [];
+    
+    while (features.length > 0) {
+      if (newLine) {
+        letterIndex++;
+        if(labelType === 'alphaNumeric') {
+          number = 1;
+        } else if(labelType === 'alphaAlpha') {
+          secondLetterIndex = 0;
+        }                  
+        //union all the features that are currently in the features array
+        var union = geometryEngine.union(features);
+        //get the start corner of the union extent
+        var extent = union.getExtent();
+        switch(startPos){
+          case 'lowerLeft':
+            var startCorner = geometryEngine.nearestCoordinate(union, new Point(extent.xmin,extent.ymin,extent.spatialReference));
+            break;
+          case 'lowerRight':
+            var startCorner = geometryEngine.nearestCoordinate(union, new Point(extent.xmax,extent.ymin,extent.spatialReference));
+            break;
+          case 'upperLeft':
+            var startCorner = geometryEngine.nearestCoordinate(union, new Point(extent.xmin,extent.ymax,extent.spatialReference));
+            break;
+          case 'upperRight':
+            var startCorner = geometryEngine.nearestCoordinate(union, new Point(extent.xmax,extent.ymax,extent.spatialReference));
+            break;
+        }                
+        //find the feature that shares the startCorner geometry
+        for(var i = 0;i < features.length; i++ ) {
+          if(geometryEngine.touches(features[i],startCorner.coordinate)) {
+            currentFeature = features[i];                                        
+            labeledFeatures.push(grg.addGraphicLabel(new Graphic(features[i]),labelType,number,letterIndex,secondLetterIndex));            
+            number++;
+            secondLetterIndex++;
+            //remove item from features
+            var index = features.indexOf(features[i]);
+            features.splice(index, 1);
+            newLine = false;
+            break;
+          }
+        }                
+      } else {
+        newLine = true;
+        //get the extent of the current feature
+        var extent = currentFeature.getExtent();
+        
+        //get the opposite corner of the current feature extent
+        switch(startPos){
+          case 'lowerLeft':
+            // get BR
+            var oppositeCorner = geometryEngine.nearestCoordinate(currentFeature, new Point(extent.xmax,extent.ymin,extent.spatialReference));
+            break;
+          case 'lowerRight':
+            // get BL
+            var oppositeCorner = geometryEngine.nearestCoordinate(currentFeature, new Point(extent.xmin,extent.ymin,extent.spatialReference));
+            break;
+          case 'upperLeft':
+            // get TR
+            var oppositeCorner = geometryEngine.nearestCoordinate(currentFeature, new Point(extent.xmax,extent.ymax,extent.spatialReference));
+            break;
+          case 'upperRight':
+            // get TL
+            var oppositeCorner = geometryEngine.nearestCoordinate(currentFeature, new Point(extent.xmin,extent.ymax,extent.spatialReference));
+            break;
+        }                  
+        
+        //find the feature that shares the opposite corner geometry
+        for(var i = 0;i < features.length; i++ ) {
+          var extent = features[i].getExtent();
+          
+          switch(startPos){
+            case 'lowerLeft':
+              var newCorner = geometryEngine.nearestCoordinate(features[i], new Point(extent.xmin,extent.ymin,extent.spatialReference));
+              break;
+            case 'lowerRight':
+              var newCorner = geometryEngine.nearestCoordinate(features[i], new Point(extent.xmax,extent.ymin,extent.spatialReference));
+              break;
+            case 'upperLeft':
+              var newCorner = geometryEngine.nearestCoordinate(features[i], new Point(extent.xmin,extent.ymax,extent.spatialReference));
+              break;
+            case 'upperRight':
+              var newCorner = geometryEngine.nearestCoordinate(features[i], new Point(extent.xmax,extent.ymax,extent.spatialReference));
+              break;
+          }
+        
+          //newCorner is not always the correct coord so just do an slight buffer on the geometry and use contains
+          var buffer = geometryEngine.buffer(newCorner.coordinate, gridSize === 'UTM'?10000:gridSize/5, 9001);
+          
+          if(geometryEngine.contains(buffer,oppositeCorner.coordinate)) {  
+            currentFeature = features[i]; 
+            labeledFeatures.push(grg.addGraphicLabel(new Graphic(features[i]),labelType,number,letterIndex,secondLetterIndex));
+            number++;
+            secondLetterIndex++;
+            //remove item from features
+            var index = features.indexOf(features[i]);
+            features.splice(index, 1);
+            newLine = false;                      
+            break;
+          }
+        }
+      }
+    }
+    return labeledFeatures;    
+  },
+  
+  grg.addGraphicLabel = function (graphic, labelType, number, letterIndex, secondLetterIndex) {
+    var letter = grg.convertNumberToLetters(letterIndex);
+    var secondLetter = grg.convertNumberToLetters(secondLetterIndex);var attr = {};
+    switch (labelType) {
+      case 'alphaNumeric':
+        attr["grid"] = letter.toString() + number.toString();
+        break;
+      case 'alphaAlpha':
+        attr["grid"] = letter.toString() + '-' + secondLetter.toString();
+        break;
+       case 'numeric':
+        attr["grid"] = number.toString();
+        break;
+    }
+    graphic.setAttributes(attr);
+    return graphic;    
   }
   
   return grg;

@@ -59,6 +59,7 @@ define([
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
           "labelStartPosition": ["lowerLeft", "lowerRight", "upperLeft", "upperRight"],      
           "labelType": ["alphaNumeric", "alphaAlpha", "numeric"],
+          "labelTypeWithRefSys": ["gridReferenceSystem","alphaNumeric", "alphaAlpha", "numeric"],
           "labelDirection": ["horizontal", "vertical"],
           "gridOrigin": ["center", "lowerLeft", "lowerRight", "upperLeft", "upperRight"],
           "referenceSystem": ["MGRS", "USNG"]
@@ -99,6 +100,7 @@ define([
         this._loadOptionsForDropDown(this.labelStartPosition, this.gridSettingsOptions.labelStartPosition);
         this._loadOptionsForDropDown(this.cellUnits, this.gridSettingsOptions.cellUnits);
         this._loadOptionsForDropDown(this.labelType, this.gridSettingsOptions.labelType);
+        this._loadOptionsForDropDown(this.labelTypeWithRefSys, this.gridSettingsOptions.labelTypeWithRefSys);
         this._loadOptionsForDropDown(this.labelDirection, this.gridSettingsOptions.labelDirection);
         this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
         this._loadOptionsForDropDown(this.referenceSystem, this.gridSettingsOptions.referenceSystem);
@@ -227,6 +229,10 @@ define([
           this.labelType.get('value')) {
           //check if labelType is changed
           isDataChanged = true;
+        } else if (this.selectedGridSettings.labelTypeWithRefSys !==
+          this.labelTypeWithRefSys.get('value')) {
+          //check if labelType is changed
+          isDataChanged = true;
         } else if (this.selectedGridSettings.labelDirection !==
           this.labelDirection.get('value')) {
           //check if labelDirection is changed
@@ -289,6 +295,7 @@ define([
           "labelStartPosition": this.labelStartPosition.get('value'),
           "cellUnits": this.cellUnits.get('value'),
           "labelType": this.labelType.get('value'),
+          "labelTypeWithRefSys": this.labelTypeWithRefSys.get('value'),
           "labelDirection": this.labelDirection.get('value'),
           "gridOrigin": this.gridOrigin.get('value'),
           "referenceSystem": this.referenceSystem.get('value'),
