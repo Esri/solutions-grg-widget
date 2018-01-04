@@ -154,6 +154,7 @@ define([
       _labelStartPosition: "lowerLeft", //Current selected label start position
       _cellUnits: "meters", //Current selected cell units
       _labelType: "alphaNumeric", //Current selected label type
+      _labelTypeWithRefSys: "gridReferenceSystem", //Current selected label type
       _labelDirection: "horizontal", //Current selected label direction
       _gridOrigin: "center", //Current selected grid origin
       _referenceSystem: 'MGRS', //Current selected reference system
@@ -865,6 +866,8 @@ define([
         //hide the grid origin and reference system settings (these are not common to all settings)
         html.addClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
         html.addClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
+        html.addClass(this._gridSettingsInstance.labelStyleWithRefSysContainer, 'controlGroupHidden');
+        
         
         switch (panelName) {         
           case "grgAreaBySize":
@@ -877,15 +880,14 @@ define([
             break;
           case "grgAreaByRefSystem":
           case "grgPointByRefSystem":
-            //hide elements that are not relevant to creating by reference system 
+            //hide elements that are not relevant to creating by reference system            
             html.addClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
-            html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');            
             html.addClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
-            html.addClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
-            html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
             html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
             //when creating by reference system give the user a choice of which one by removing the hidden class
-            html.removeClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');            
+            html.removeClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
+            html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer, 'controlGroupHidden');          
             break;
         }
       },
@@ -1003,6 +1005,7 @@ define([
             this._labelStartPosition = updatedSettings.labelStartPosition;
             this._cellUnits = updatedSettings.cellUnits;
             this._labelType = updatedSettings.labelType;
+            this._labelTypeWithRefSys = updatedSettings.labelTypeWithRefSys;
             this._labelDirection = updatedSettings.labelDirection;
             this._gridOrigin = updatedSettings.gridOrigin;
             this._referenceSystem = updatedSettings.referenceSystem;
@@ -1018,6 +1021,14 @@ define([
               this.grgAreaBySizeCellHeight.setValue(0);
               this.grgPointBySizeCellHeight.set('disabled', true);
               this.grgPointBySizeCellHeight.setValue(0);
+            }
+            
+            if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
+              html.addClass(this.grgAreaByRefSystemLabelFormat, 'controlGroupHidden');
+              html.addClass(this.grgPointByRefSystemLabelFormat, 'controlGroupHidden');
+            } else {
+              html.removeClass(this.grgAreaByRefSystemLabelFormat, 'controlGroupHidden');
+              html.removeClass(this.grgPointByRefSystemLabelFormat, 'controlGroupHidden');
             }
 
             //set grid colours
@@ -1731,30 +1742,37 @@ define([
                     polysToLoop = [];
                     polysToLoop = polys;
                     currentValue = currentValue / 10;                
-                  }
-                  var count = 1;
+                  }                  
                   for (i = 0; i < polysToLoop.length; i++) {
                     if (this.map.spatialReference.wkid !== 4326) {
                       var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
                     } else {
                       var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone));
                     }
-                    var label = this.grgPointByRefLabelFormat.value
-                    label = label.replace(/Y/, polysToLoop[i].y);
-                    label = label.replace(/X/, polysToLoop[i].x); 
-                    label = label.replace(/S/, polysToLoop[i].GZD); 
-                    label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
-                    graphic.setAttributes({'grid': label});                  
-                    features.push(graphic);
+                    if(this._labelTypeWithRefSys === 'gridReferenceSystem') {
+                      var label = this.grgPointByRefLabelFormat.value
+                      label = label.replace(/Y/, polysToLoop[i].y);
+                      label = label.replace(/X/, polysToLoop[i].x); 
+                      label = label.replace(/S/, polysToLoop[i].GZD); 
+                      label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                      graphic.setAttributes({'grid': label});                  
+                      features.push(graphic);                      
+                    }
                     geomArray.push(graphic.geometry);
-                    count++;
                   }
                 break;          
             }
-            //apply the edits to the feature layer
-            this.GRGArea.applyEdits(features, null, null);
+            // change map scale to extent of grg
             var union = GeometryEngine.union(geomArray)
             this.map.setExtent(union.getExtent().expand(2),false);
+            
+            if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
+              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgPointByRefSystemGridSize.getValue());
+            }
+            
+            //apply the edits to the feature layer
+            this.GRGArea.applyEdits(features, null, null);
+            
             this.createGraphicDeleteMenu();
             //we want to keep the point but not show it on the publish page, so just hide the layer
             this._graphicsLayerGRGExtent.hide();
@@ -1815,7 +1833,6 @@ define([
                   currentValue = currentValue / 10;                
                 }                
                 
-                var count = 1;
                 for (i = 0; i < polysToLoop.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
                     if (this.map.spatialReference.wkid !== 4326) {
@@ -1832,21 +1849,28 @@ define([
                     }
                     geomArray.push(graphic.geometry);
                   }
-                  var label = this.grgAreaByRefLabelFormat.value
-                  label = label.replace(/Y/, polysToLoop[i].y);
-                  label = label.replace(/X/, polysToLoop[i].x); 
-                  label = label.replace(/S/, polysToLoop[i].GZD); 
-                  label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
-                  graphic.setAttributes({'grid': label});                  
-                  features.push(graphic);
-                  count++;
+                  if(this._labelTypeWithRefSys === 'gridReferenceSystem') {
+                    var label = this.grgAreaByRefLabelFormat.value
+                    label = label.replace(/Y/, polysToLoop[i].y);
+                    label = label.replace(/X/, polysToLoop[i].x); 
+                    label = label.replace(/S/, polysToLoop[i].GZD); 
+                    label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                    graphic.setAttributes({'grid': label});                  
+                    features.push(graphic);                  
+                  }
+                  
                 }                  
                 break;            
-            }              
+            }
+            // change map scale to extent of grg
+            var union = GeometryEngine.union(geomArray)
+            this.map.setExtent(union.getExtent().expand(2),false)
+            
+            if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
+              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgAreaByRefSystemGridSize.getValue());
+            }
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            var union = GeometryEngine.union(geomArray)
-            this.map.setExtent(union.getExtent().expand(2),false);
             this.createGraphicDeleteMenu();
             //we want to keep the extent but not show it on the publish page, so just hide the layer
             this._graphicsLayerGRGExtent.hide();
@@ -1859,29 +1883,29 @@ define([
       * Create right click context delete option on graphics
       **/
       createGraphicDeleteMenu: function () {
-          // Creates right-click context menu for GRAPHICS
-          ctxMenuForGraphics = new Menu({}); 
-                  
-          ctxMenuForGraphics.addChild(new MenuItem({ 
-            label: "Delete",
-            onClick: lang.hitch(this, function() {
-              this.GRGArea.remove(selected);
-              //refresh each of the feature/graphic layers to enusre labels are removed
-              this.GRGArea.refresh();             
-            })
-          }));
+        // Creates right-click context menu for GRAPHICS
+        ctxMenuForGraphics = new Menu({}); 
+                
+        ctxMenuForGraphics.addChild(new MenuItem({ 
+          label: "Delete",
+          onClick: lang.hitch(this, function() {
+            this.GRGArea.remove(selected);
+            //refresh each of the feature/graphic layers to enusre labels are removed
+            this.GRGArea.refresh();             
+          })
+        }));
 
-          ctxMenuForGraphics.startup();
+        ctxMenuForGraphics.startup();
 
-          this.GRGArea.on("mouse-over", function(evt) {
-            selected = evt.graphic;           
-            ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
-          });
+        this.GRGArea.on("mouse-over", function(evt) {
+          selected = evt.graphic;           
+          ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
+        });
 
-          this.GRGArea.on("mouse-out", function(evt) {
-            ctxMenuForGraphics.unBindDomNode(evt.graphic.getDojoShape().getNode());
-          });
-        },
+        this.GRGArea.on("mouse-out", function(evt) {
+          ctxMenuForGraphics.unBindDomNode(evt.graphic.getDojoShape().getNode());
+        });
+      },
       
       
       /**
@@ -2012,7 +2036,7 @@ define([
                           this._reset();
                         })); 
                         this.busyIndicator.hide();
-                        var newURL = '<br /><a href="' +this.appConfig.portalUrl + "home/item.html?id=" + response1.itemId + '" target="_blank">';
+                        var newURL = '<br /><a href="' + this.appConfig.portalUrl + "home/item.html?id=" + response1.itemId + '" target="_blank">';
                         this.publishMessage.innerHTML = this.nls.successfullyPublished.format(newURL) + '</a>';
                         
                       }                      
