@@ -133,6 +133,10 @@
     background: url("../images/globe.png") no-repeat;
 }
 
+.jimu-widget-GRGDrafter .GRGDrafterNewGRGAreaByTimeButton
+{
+    background: url("../images/clock.png") no-repeat;
+}
 
 .jimu-widget-GRGDrafter .GRGDrafterMainMenuDropDownIcon
 {
