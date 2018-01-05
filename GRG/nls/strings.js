@@ -154,6 +154,9 @@ define({
     "numberOfCellsVertical": '# Vertical Cells', // Shown as label for number of Vertical cells
     "gridAngle": 'Grid Rotation', // Shown as label for grid angle
     "missingParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG area has been drawn.</li><li>The cell width and height contain valid values.</li></ul>',
+    "missingOriginParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG origin has been set.</li><li>The time, speed and angle inputs contain valid values.</li></ul>',
+    "invalidWidthHeightParametersMessage": '<p>The GRG creation form has missing or invalid parameters. Please ensure the cell width and height inputs contain valid values.</p>',
+    "invalidHorizontalVerticalParametersMessage": '<p>The GRG creation form has missing or invalid parameters. Please ensure the number of cells horizontal and vertical inputs contain valid values.</p>',
     "drawPointToolTip": 'Click to add GRG origin point', // Shown as tooltip help on the cursor when using the draw point tool
     "missingLayerNameMessage": 'You must enter a valid layer name before you can publish', //shown as error message for invalid layer name     
     "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.' //Shown as error message for unknown coordinates

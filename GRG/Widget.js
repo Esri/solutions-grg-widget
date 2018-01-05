@@ -1868,44 +1868,84 @@ define([
         }
       },
       
-      
-      
       /**
-      * Handle create GRG button being clicked on the GRG Point by Reference System Panel
+      * Handle create GRG button being clicked on the GRG Point by Time Panel
       **/
       _grgPointByTimeCreateGRGButtonClicked: function () {
-        
-        
-        //check form inputs for validity
-        if (this.dt_PointByTime.startGraphic && this.grgPointByTimeCellWidth.isValid() && this.grgPointByTimeCellHeight.isValid() && this.grgPointByTimeRotation.isValid()) {
-          // work out radius in meters
-          var currentTimeInSeconds = this.grgPointByTimeTime.get('value') * this.grgPointByTimeTimeUnits.get('value');
-          var currentRateInMetersPerSecond = (this.grgPointByTimeRate.get('value') * this.grgPointByTimeRateUnits.value.split(';')[0]) / this.grgPointByTimeRateUnits.value.split(';')[1];
-          var calculatedRadiusInMeters = currentTimeInSeconds * currentRateInMetersPerSecond;
+        //check there is a origin point set and the time and speed values are valid
+        if (this.dt_PointByTime.startGraphic && this.grgPointByTimeTime.isValid() && this.grgPointByTimeRate.isValid() && this.grgPointByTimeRotation.isValid()) {
           
-          console.log();
-        
-          //get grg origin point
-          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);
+          // from the time and spped settings work out the radius in meters
+          var timeInSeconds = this.grgPointByTimeTime.get('value') * this.grgPointByTimeTimeUnits.get('value');
+          var rateInMetersPerSecond = (this.grgPointByTimeRate.get('value') * this.grgPointByTimeRateUnits.value.split(';')[0]) / this.grgPointByTimeRateUnits.value.split(';')[1];
+          var calculatedRadiusInMeters = timeInSeconds * rateInMetersPerSecond;
           
-          // create buffer from radius
-          var buffer = GeometryEngine.buffer(centerPoint, calculatedRadiusInMeters, 9001);
+          // now we have the radius in meters we can create a polygon of the grg area from the origin point         
+          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);  
           
-          //get buffer extent
-          var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+          console.log(calculatedRadiusInMeters);
           
-          var GRGAreaWidth = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,1), 'meters'); 
-          var GRGAreaHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,3), 'meters');
-         
+          // if the radius to large we need to create the grid in planar measurements otherwise geodesic
+          if(calculatedRadiusInMeters < 200000) {
+            this.geodesicGrid = true;
+            var buffer = GeometryEngine.geodesicBuffer(centerPoint, calculatedRadiusInMeters, 9001);
+            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            // as we have created a circle the grg area and width should be uniform so we only need to calculate one of them
+            var GRGAreaWidthHeight = GeometryEngine.geodesicLength(new Polyline({
+                paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
+                spatialReference: geom.spatialReference
+              }), 'meters');            
+          } else {
+            this.geodesicGrid = false;
+            var buffer = GeometryEngine.buffer(centerPoint, calculatedRadiusInMeters, 9001);
+            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            var GRGAreaWidthHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,1), 'meters');
+          }          
           
-          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellWidth.value, this._cellUnits);
-          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellHeight.value,this._cellUnits);
+          // add the buffer to the graphics layer
+          var graphic = new Graphic(buffer, this._extentSym);
+          this._graphicsLayerGRGExtent.add(graphic);        
+                    
+          // the required cell width and height to be used depends on the setting of the define rows and columns toggle
+          if(this.setNumberRowsColumnsTime.checked) {
+            // check validity of the number of horizontal and vertical cell values
+            if(this.grgPointByTimeCellHorizontal.isValid() && this.grgPointByTimeCellVertical.isValid()) {
+              var cellWidthMeters = GRGAreaWidthHeight / this.grgPointByTimeCellHorizontal.value;
+              var cellHeightMeters = GRGAreaWidthHeight / this.grgPointByTimeCellVertical.value; 
+            } else {
+              // Invalid values
+              var alertMessage = new Message({
+                message: this.nls.invalidHorizontalVerticalParametersMessage
+              });
+              return;
+            }
+          } else {            
+            // check validity of the cell width and height values
+            if(this.grgPointByTimeCellWidth.isValid() && this.grgPointByTimeCellHeight.isValid()) {
+              var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellWidth.value, this._cellUnits);
+              var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellHeight.value,this._cellUnits);              
+            } else {
+             // Invalid values
+              var alertMessage = new Message({
+                message: this.nls.invalidWidthHeightParametersMessage
+              });
+              return;              
+            }
+          }
           
           //work out how many cells are needed horizontally & Vertically to cover the whole canvas area
-          var numCellsHorizontal = Math.round(GRGAreaWidth/cellWidth);
-          
+          var numCellsHorizontal = Math.round(GRGAreaWidthHeight/cellWidthMeters);
+            
           var numCellsVertical;
-          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaHeight/cellHeight):numCellsVertical = Math.round(GRGAreaHeight/(cellWidth)/Math.cos(30* Math.PI/180)) + 1;
+          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaWidthHeight/cellHeightMeters):numCellsVertical = Math.round(GRGAreaWidthHeight/(cellWidthMeters)/Math.cos(30* Math.PI/180)) + 1;
+          
+          // there is a possibility that the cell width and height already cover the whole GRG area in this case just set the number of cells horizontal and vertical to 1
+          if(numCellsHorizontal < 1) {
+            numCellsHorizontal = 1;
+          }
+          if(numCellsVertical < 1) {
+            numCellsVertical = 1;
+          }
           
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical))
           {
@@ -1913,8 +1953,8 @@ define([
               numCellsHorizontal,
               numCellsVertical,
               centerPoint,
-              cellWidth,
-              cellHeight,
+              cellWidthMeters,
+              cellHeightMeters,
               this.grgPointByTimeRotation.value,
               this._labelStartPosition,
               this._labelType,
@@ -1926,6 +1966,7 @@ define([
               esriConfig.defaults.geometryService); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
+            this.createGraphicDeleteMenu();
             this.dt_PointByTime.removeStartGraphic(this._graphicsLayerGRGExtent);
             var geomArray = [];
             for(var i = 0;i < features.length;i++){
@@ -1938,11 +1979,9 @@ define([
         } else {
           // Invalid entry
           var alertMessage = new Message({
-            message: this.nls.missingParametersMessage
-          });          
-        }
-        
-        
+            message: this.nls.missingOriginParametersMessage
+          });
+        }        
       },
       
       /**
