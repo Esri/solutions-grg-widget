@@ -1749,11 +1749,9 @@ define([
         if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
           this._clearLayers(false);
           
-          if(this.angle === 0) {
-            var geom = gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
-          } else {          
-            var geom = this._graphicsLayerGRGExtent.graphics[0].geometry;
-          }
+          var geom = (this.angle === 0) ? 
+            gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()) : 
+            this._graphicsLayerGRGExtent.graphics[0].geometry;          
           
           //if the input is geographics project the geometry to WMAS
           if (geom.spatialReference.wkid === 4326) {
@@ -1763,7 +1761,7 @@ define([
           
           var GRGAreaWidth, GRGAreaHeight;
           //work out width and height of AOI, method depends on if the grid is to be geodesic
-          if(this.geodesicGrid) {
+          if (this.geodesicGrid) {
             GRGAreaWidth = GeometryEngine.geodesicLength(new Polyline({
               paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
               spatialReference: geom.spatialReference
@@ -1990,7 +1988,8 @@ define([
       _grgPointByRefSystemCreateGRGButtonClicked: function () {
         var width, height, cellBLPoint, extent, MGRS, offsets;
         var geomArray = [];
-        this._clearLayers(false);
+        this._clearLayers(false);      
+
         if(drawGRG.checkGridSize(this.grgPointByRefCellHorizontal.getValue(),this.grgPointByRefCellVertical.getValue())){        
           if (this.dt_PointByRefSystem.startGraphic && this.grgPointByRefCellHorizontal.isValid() && this.grgPointByRefCellVertical.isValid()) {
             var gridOrigin = this.grgPointByRefSystemCoordTool.inputCoordinate.coordinateEsriGeometry;
@@ -2056,6 +2055,14 @@ define([
               
               extent = WebMercatorUtils.geographicToWebMercator(extent);
             }
+
+            //Check if geometry is in one of the polar regions
+            if (drawGRG.isGeomInPolarRegions(extent)) {
+              new Message({
+                message: this.nls.grgPolarRegionError
+              });
+              return;
+            }              
             
             var zones = mgrsUtils.zonesFromExtent(extent,this.map); 
             
@@ -2132,6 +2139,15 @@ define([
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
+
+          //Check if geometry is in one of the polar regions
+          if (drawGRG.isGeomInPolarRegions(this._graphicsLayerGRGExtent.graphics[0].geometry)) {
+            new Message({
+              message: this.nls.grgPolarRegionError
+            });
+            return;
+          }
+
           var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
           var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){

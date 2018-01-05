@@ -25,6 +25,7 @@ define([
   'esri/request',
   'jimu/dijit/Message',  
   'dojo/json',
+  'dojo/_base/lang',
   './geometryUtils'
 ], function(
   Point,
@@ -37,6 +38,7 @@ define([
   esriRequest,
   Message,  
   JSON,
+  lang,
   geometryUtils
 ) {
   
@@ -429,6 +431,51 @@ define([
     } else {
       return true;
     }
+  },
+
+  // Checks if geometry (point or extent) intersects or falls 
+  // in the polar regions (north or south)
+  grg.isGeomInPolarRegions = function (inputGeom) {
+    var inPolarRegions = false, northernPolar = 66.0, southernPolar = -66.0;
+    if (inputGeom) {
+      var clonedGeom;
+      //Project to 4326
+      if (inputGeom.spatialReference.wkid !== 4326) {
+        clonedGeom = lang.clone(inputGeom);
+        clonedGeom = webMercatorUtils.webMercatorToGeographic(clonedGeom);
+      }
+      //Get the extent
+      var ext = clonedGeom.getExtent();
+      //Check if it's not a point
+      if (clonedGeom.type !== 'point') {
+        //Check if we're in the northern hemisphere
+        if (ext.ymax > 0) {
+          //Check if we're in the northern polar region
+          if (ext.ymax > northernPolar) {
+            inPolarRegions = true;  
+          }
+        } else {
+          //Check if we're in the southern polar region
+          if (ext.ymin < southernPolar) {
+            inPolarRegions = true;
+          }
+        }
+      } else {
+        //Check if we're in the northern hemisphere
+        if (clonedGeom.y > 0) {
+          //Check if we're in the northere polar region
+          if (clonedGeom.y > northernPolar) {
+            inPolarRegions = true;
+          }
+        } else {
+          //Check if we're in the southern polar region
+          if (clonedGeom.y < southernPolar) {
+            inPolarRegions = true;
+          }
+        }
+      }
+    }//if (inputGeom)
+    return inPolarRegions;
   },
   
   grg.getFeatureServiceParams = function (featureServiceName, map) {

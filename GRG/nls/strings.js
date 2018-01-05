@@ -159,7 +159,7 @@ define({
     "invalidHorizontalVerticalParametersMessage": '<p>The GRG creation form has missing or invalid parameters. Please ensure the number of cells horizontal and vertical inputs contain valid values.</p>',
     "drawPointToolTip": 'Click to add GRG origin point', // Shown as tooltip help on the cursor when using the draw point tool
     "missingLayerNameMessage": 'You must enter a valid layer name before you can publish', //shown as error message for invalid layer name     
-    "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.' //Shown as error message for unknown coordinates
-    
+    "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.', //Shown as error message for unknown coordinates
+    "grgPolarRegionError" :"GRGs cannot be created in the polar regions" //GRGs cannot be created in polar regions
   })
 });
