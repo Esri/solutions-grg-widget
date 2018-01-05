@@ -11,6 +11,7 @@ define({
     "newGRGFromPointTitle": 'Define a Grid from a Point', // Shown as Title on Area Menu
     "newGRGBySizeButtonLabel": 'By Dimension', // Shown as label to start new GRG by size button on Area Menu or Point Menu
     "newGRGFromRefSystemButtonLabel": 'By Reference System', // Shown as label to start new from reference system button on Area Menu or Point Menu
+    "newGRGByTimeLabel": 'By Time and Speed', // Shown as label to start new GRG from Time and Rate
     "newGRGFromNonStandardButtonLabel": 'Define Non-Standard Grid', // Shown as label to start new GRG from non standard button on Area Menu or Point Menu
     
     //Area GRG By Size Panel    
@@ -40,6 +41,24 @@ define({
     
     //Point GRG By Reference System Panel    
     "newGRGPointByRefSystemTitle": "GRG from Point by Reference System", // Shown as title for new GRG from reference system panel
+    
+    //Point GRG By Time and Speed Panel    
+    "newGRGPointByTimeTitle": "GRG from Point using Time and Speed", // Shown as title for new GRG from reference system panel
+    "time": 'Time', // Shown as label for Time input
+    "rate": 'Speed', // Shown as label for Rate input
+    "hours": 'Hours', // Shown as label for hours in time units dropdown
+    "minutes": 'Minutes', // Shown as label for minutes in time units dropdown
+    "seconds": 'Seconds', // Shown as label for seconds in time units dropdown
+    "ftPerSec": 'Feet / second', // Shown as label for ftPerSec in rate units dropdown
+    "ftPerHour": 'Feet / hour', // Shown as label for ftPerHour in rate units dropdown
+    "kmPerSec": 'Kilometers / second', // Shown as label for kmPerSec in rate units dropdown
+    "kmPerHour": 'Kilometers / hour', // Shown as label for kmPerHour in rate units dropdown
+    "mPerSec": 'Meters / second', // Shown as label for mPerSec in rate units dropdown
+    "mPerHour": 'Meters / hour', // Shown as label for mPerHour in rate units dropdown
+    "miPerSec": 'Miles / second', // Shown as label for miPerSec in rate units dropdown
+    "miPerHour": 'Miles / hour', // Shown as label for miPerHour in rate units dropdown
+    "nMPerSec": 'Nautical Miles / second', // Shown as label for nMPerSec in rate units dropdown
+    "nMPerHour": 'Nautical Miles / hour', // Shown as label for nMPerHour in rate units dropdown
 
     //Settings Panel
     "settingsTitle": "Settings", // Shown as Title for Grid Settings page and label on settings buttons
@@ -135,6 +154,9 @@ define({
     "numberOfCellsVertical": '# Vertical Cells', // Shown as label for number of Vertical cells
     "gridAngle": 'Grid Rotation', // Shown as label for grid angle
     "missingParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG area has been drawn.</li><li>The cell width and height contain valid values.</li></ul>',
+    "missingOriginParametersMessage": '<p>The GRG creation form has missing or invalid parameters, Please ensure:</p><ul><li>A GRG origin has been set.</li><li>The time, speed and angle inputs contain valid values.</li></ul>',
+    "invalidWidthHeightParametersMessage": '<p>The GRG creation form has missing or invalid parameters. Please ensure the cell width and height inputs contain valid values.</p>',
+    "invalidHorizontalVerticalParametersMessage": '<p>The GRG creation form has missing or invalid parameters. Please ensure the number of cells horizontal and vertical inputs contain valid values.</p>',
     "drawPointToolTip": 'Click to add GRG origin point', // Shown as tooltip help on the cursor when using the draw point tool
     "missingLayerNameMessage": 'You must enter a valid layer name before you can publish', //shown as error message for invalid layer name     
     "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.' //Shown as error message for unknown coordinates

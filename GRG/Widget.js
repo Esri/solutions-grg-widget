@@ -330,6 +330,20 @@ define([
         {
           domClass.add(this.grgPointByRefSystemCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
         }
+
+        //set up coordinate input dijit for GRG Point by Time
+        this.grgPointByTimeCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointByTimeOriginCoords);      
+        this.grgPointByTimeCoordTool.inputCoordinate.formatType = 'DD';
+        this.grgPointByTimeCoordinateFormat = new dijitTooltipDialog({
+          content: new editOutputCoordinate({nls: this.nls}),
+          style: 'width: 400px'
+        });
+        
+        //we need an extra class added the the coordinate format node for the Dart theme
+        if(this.appConfig.theme.name === 'DartTheme')
+        {
+          domClass.add(this.grgPointByTimeCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
+        }
         
         // add toolbar for drawing GRG Area by Extent
         this.dt_AreaBySize  = new Draw(this.map);
@@ -340,6 +354,9 @@ define([
         // add extended toolbar for drawing GRG Point by Reference System
         this.dt_PointByRefSystem = new drawFeedBackPoint(this.map,this.grgPointByRefSystemCoordTool.inputCoordinate.util);
         
+        // add extended toolbar for drawing GRG Point by Time
+        this.dt_PointByTime = new drawFeedBackPoint(this.map,this.grgPointByTimeCoordTool.inputCoordinate.util);
+
         // add toolbar for drawing GRG MGRS
         this.dt_AreaByRefSystem = new Draw(this.map);
         
@@ -456,6 +473,11 @@ define([
             //Handle click event new GRG by reference system button
             this.own(on(this.newPointGRGFromRefSystemButton, 'click', lang.hitch(this, function () {
               this._showPanel("grgPointByRefSystem");
+            })));
+            
+            //Handle click event new GRG by time and speed button
+            this.own(on(this.newPointGRGFromTimeButton, 'click', lang.hitch(this, function () {
+              this._showPanel("grgPointByTime");
             })));
         
         /**
@@ -780,6 +802,83 @@ define([
             })));
         
         /**
+        * GRG from Point by Time and Speed panel
+        **/        
+            //Handle click event of back button
+            this.own(on(this.grgPointByTimeBackButton, 'click', lang.hitch(this, function () {
+              this._resetOnBackToMainPage();
+            })));
+
+            //handle Grid Settings button
+            if(!this.config.grg.lockSettings) {
+              //handle Grid Settings button
+              this.own(on(this.grgPointByTimeSettingsButton, "click", lang.hitch(this, function () {
+                this._updateSettingsPage(this._currentOpenPanel);
+                this._showPanel("settingsPage");
+              })));
+            } else {
+              this.grgPointByTimeSettingsButton.title = this.nls.lockSettings;
+              //html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
+            }
+            
+            //Handle click event of create GRG point button        
+            this.own(on(this.grgPointByTimeCreateGRGButton, 'click', lang.hitch(this, 
+              this._grgPointByTimeCreateGRGButtonClicked)));
+              
+            //Handle click event of clear GRG Point button        
+            this.own(on(this.grgPointByTimeClearGRGButton, 'click', lang.hitch(this, function () {
+              this._clearLayers(true);
+            })));
+
+            //Handle click event of Add GRG Point draw button
+            this.own(on(this.grgPointByTimeAddPointBtn, 'click', lang.hitch(this, 
+              this._grgPointByTimeDrawButtonClicked)));
+              
+            //Handle completion of GRG point drawing
+            this.own(on(this.dt_PointByTime, 'draw-complete', lang.hitch(this,
+              this._dt_PointByTimeComplete)));
+            
+            //Handle change in coord input      
+            this.own(this.grgPointByTimeCoordTool.inputCoordinate.watch('outputString', lang.hitch(this,
+              function (r, ov, nv) {
+                if(!this.grgPointByTimeCoordTool.manualInput){
+                  this.grgPointByTimeCoordTool.set('value', nv);
+                }
+              }
+            )));
+            
+            //Handle change in start point and update coord input
+            this.own(this.dt_PointByTime.watch('startPoint', lang.hitch(this, 
+              function (r, ov, nv) {
+                this.grgPointByTimeCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
+                this.dt_PointByTime.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
+              }
+            )));
+            
+            //Handle key up events in coord input
+            this.own(on(this.grgPointByTimeCoordTool, 'keyup', lang.hitch(this, 
+              this._grgPointByTimeCoordToolKeyWasPressed)));
+            
+            //Handle click event on coord format button
+            this.own(on(this.grgPointByTimeCoordFormatButton, 'click', lang.hitch(this, 
+              this._grgPointByTimeCoordFormatButtonClicked)));
+            
+            //Handle click event on apply button of the coord format popup        
+            this.own(on(this.grgPointByTimeCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
+              this._grgPointByTimeCoordFormatPopupApplyButtonClicked)));
+            
+            //Handle click event on cancel button of the coord format popup         
+            this.own(on(this.grgPointByTimeCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
+              function () {
+                dijitPopup.close(this.grgPointByTimeCoordinateFormat);
+              }
+            )));
+            
+            //Handle click event of number of row / columns checkbox        
+            this.own(on(this.setNumberRowsColumnsTime, 'click', lang.hitch(this, 
+            this._setNumberRowsColumnsTimeCheckBoxChanged)));            
+        
+        /**
         * Settings panel
         **/        
             //Handle click event of Grid settings back button
@@ -889,6 +988,8 @@ define([
             html.removeClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
             html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer, 'controlGroupHidden');          
             break;
+          case "grgPointByTime":
+            break;
         }
       },
       
@@ -917,6 +1018,9 @@ define([
             break;
           case "grgPointByRefSystem":
             node = this.grgPointByRefSystemPageNode;
+            break;
+          case "grgPointByTime":
+            node = this.grgPointByTimePageNode;
             break;
           case "settingsPage":
             node = this.settingsPageNode;
@@ -1230,6 +1334,30 @@ define([
       },
       
       /**
+      * Handle the draw point icon being clicked on the GRG Point by Time and Speed
+      * @memberOf widgets/GRG/Widget
+      **/
+      _grgPointByTimeDrawButtonClicked: function () {
+        if(domClass.contains(this.grgPointByTimeAddPointBtn,'jimu-edit-active')) {
+          //already selected so deactivate draw tool
+          this.dt_PointByTime.deactivate();
+          this.map.enableMapNavigation();
+        } else {
+          this.dt_PointByTime.removeStartGraphic(this._graphicsLayerGRGExtent);
+          this._clearLayers(true); 
+          this.grgPointByTimeCoordTool.manualInput = false;        
+          this.dt_PointByTime._setTooltipMessage(0);        
+          this.map.disableMapNavigation();          
+          this.dt_PointByTime.activate('point');
+          var tooltip = this.dt_PointByTime._tooltip;
+          if (tooltip) {
+            tooltip.innerHTML = this.nls.drawPointToolTip;
+          }          
+        }
+        domClass.toggle(this.grgPointByTimeAddPointBtn, 'jimu-edit-active');
+      },
+      
+      /**
       * Handle the draw extent icon being clicked on the GRG Area by Reference System
       * @memberOf widgets/GRG/Widget
       **/
@@ -1337,6 +1465,16 @@ define([
         this.dt_PointByRefSystem.deactivate();
         this.map.enableMapNavigation();
       },
+
+      /**
+      * Handle the completion of the draw point tool on the GRG Point by Reference System
+      * @memberOf widgets/GRG/Widget
+      **/
+      _dt_PointByTimeComplete: function () {          
+        domClass.remove(this.grgPointByTimeAddPointBtn, 'jimu-edit-active');
+        this.dt_PointByTime.deactivate();
+        this.map.enableMapNavigation();
+      },
       
       /**
       * Handle the completion of the draw extent tool on the GRG Area by Reference System
@@ -1398,10 +1536,39 @@ define([
                   this.grgPointByRefSystemCoordTool.inputCoordinate.coordinateEsriGeometry
                 );
                 this._grgPointByRefSystemSetCoordLabel(r.inputType);
-                var fs = this.grgPointBySizeCoordinateFormat.content.formats[r.inputType];
+                var fs = this.grgPointByRefSystemCoordinateFormat.content.formats[r.inputType];
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatType', r.inputType);
                 this.dt_PointByRefSystem.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
+              }
+            }
+          ));
+        }
+      },
+      
+      /**
+      * catch key press in start point for GRG Point by Time
+      **/
+      _grgPointByTimeCoordToolKeyWasPressed: function (evt) {
+        this.grgPointByTimeCoordTool.manualInput = true;
+        if (evt.keyCode === keys.ENTER) {
+          this.grgPointByTimeCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
+            function (r) {
+              if(r.inputType === "UNKNOWN"){
+                var alertMessage = new Message({
+                  message: this.nls.parseCoordinatesError
+                });
+              } else {
+                this._reset();
+                topic.publish(
+                  'grg-center-point-input',
+                  this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry
+                );
+                this._grgPointByTimeSetCoordLabel(r.inputType);
+                var fs = this.grgPointByTimeCoordinateFormat.content.formats[r.inputType];
+                this.grgPointByTimeCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
+                this.grgPointByTimeCoordTool.inputCoordinate.set('formatType', r.inputType);
+                this.dt_PointByTime.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1431,6 +1598,17 @@ define([
       },
       
       /**
+      * Reformat coordinate label depend on what reference system is chosen
+      * Point by Time and Speed Panel
+      **/
+      _grgPointByTimeSetCoordLabel: function (toType) {
+        this.grgPointByTimeCoordInputLabel.innerHTML = dojoString.substitute(
+          'GRG Origin (${crdType})', {
+              crdType: toType
+          });
+      },
+      
+      /**
       * Handle the format coordinate input popup opening
       * Point by Size Panel
       **/
@@ -1451,6 +1629,18 @@ define([
         dijitPopup.open({
             popup: this.grgPointByRefSystemCoordinateFormat,
             around: this.grgPointByRefSystemCoordFormatButton
+        });
+      },
+      
+      /**
+      * Handle the format coordinate input popup opening
+      * Point by Time Panel
+      **/
+      _grgPointByTimeCoordFormatButtonClicked: function () {
+        this.grgPointByTimeCoordinateFormat.content.set('ct', this.grgPointByTimeCoordTool.inputCoordinate.formatType);
+        dijitPopup.open({
+            popup: this.grgPointByTimeCoordinateFormat,
+            around: this.grgPointByTimeCoordFormatButton
         });
       },
       
@@ -1497,6 +1687,27 @@ define([
       },
       
       /**
+      * Handle the format coordinate input being applied
+      * Point by Time Panel
+      **/
+      _grgPointByTimeCoordFormatPopupApplyButtonClicked: function () {
+        var fs = this.grgPointByTimeCoordinateFormat.content.formats[this.grgPointByTimeCoordinateFormat.content.ct];
+        var cfs = fs.defaultFormat;
+        var fv = this.grgPointByTimeCoordinateFormat.content.frmtSelect.get('value');
+        if (fs.useCustom) {
+            cfs = fs.customFormat;
+        }
+        this.grgPointByTimeCoordTool.inputCoordinate.set(
+          'formatPrefix',
+          this.grgPointByTimeCoordinateFormat.content.addSignChkBox.checked
+        );
+        this.grgPointByTimeCoordTool.inputCoordinate.set('formatString', cfs);
+        this.grgPointByTimeCoordTool.inputCoordinate.set('formatType', fv);
+        this._grgPointByTimeSetCoordLabel(fv);
+        dijitPopup.close(this.grgPointByTimeCoordinateFormat);        
+      },
+      
+      /**
       * Handle the toggle for set number of row / columns changing
       **/
       _setNumberRowsColumnsCheckBoxChanged: function () {
@@ -1508,6 +1719,24 @@ define([
         } else {
           this.cellHorizontal.set('disabled', true);
           this.cellVertical.set('disabled', true);
+        }
+        this._clearLayers(true);
+      },
+      
+      /**
+      * Handle the toggle for set number of row / columns changing
+      **/
+      _setNumberRowsColumnsTimeCheckBoxChanged: function () {
+        if(this.setNumberRowsColumnsTime.checked) {
+          this.grgPointByTimeCellWidth.set('disabled', true);
+          this.grgPointByTimeCellHeight.set('disabled', true);
+          this.grgPointByTimeCellHorizontal.set('disabled', false);
+          this.grgPointByTimeCellVertical.set('disabled', false);
+        } else {
+          this.grgPointByTimeCellHorizontal.set('disabled', true);
+          this.grgPointByTimeCellVertical.set('disabled', true);
+          this.grgPointByTimeCellWidth.set('disabled', false);
+          this.grgPointByTimeCellHeight.set('disabled', false);
         }
         this._clearLayers(true);
       },
@@ -1637,6 +1866,122 @@ define([
             message: this.nls.missingParametersMessage
           });          
         }
+      },
+      
+      /**
+      * Handle create GRG button being clicked on the GRG Point by Time Panel
+      **/
+      _grgPointByTimeCreateGRGButtonClicked: function () {
+        //check there is a origin point set and the time and speed values are valid
+        if (this.dt_PointByTime.startGraphic && this.grgPointByTimeTime.isValid() && this.grgPointByTimeRate.isValid() && this.grgPointByTimeRotation.isValid()) {
+          
+          // from the time and spped settings work out the radius in meters
+          var timeInSeconds = this.grgPointByTimeTime.get('value') * this.grgPointByTimeTimeUnits.get('value');
+          var rateInMetersPerSecond = (this.grgPointByTimeRate.get('value') * this.grgPointByTimeRateUnits.value.split(';')[0]) / this.grgPointByTimeRateUnits.value.split(';')[1];
+          var calculatedRadiusInMeters = timeInSeconds * rateInMetersPerSecond;
+          
+          // now we have the radius in meters we can create a polygon of the grg area from the origin point         
+          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);  
+          
+          console.log(calculatedRadiusInMeters);
+          
+          // if the radius to large we need to create the grid in planar measurements otherwise geodesic
+          if(calculatedRadiusInMeters < 200000) {
+            this.geodesicGrid = true;
+            var buffer = GeometryEngine.geodesicBuffer(centerPoint, calculatedRadiusInMeters, 9001);
+            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            // as we have created a circle the grg area and width should be uniform so we only need to calculate one of them
+            var GRGAreaWidthHeight = GeometryEngine.geodesicLength(new Polyline({
+                paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
+                spatialReference: geom.spatialReference
+              }), 'meters');            
+          } else {
+            this.geodesicGrid = false;
+            var buffer = GeometryEngine.buffer(centerPoint, calculatedRadiusInMeters, 9001);
+            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            var GRGAreaWidthHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,1), 'meters');
+          }          
+          
+          // add the buffer to the graphics layer
+          var graphic = new Graphic(buffer, this._extentSym);
+          this._graphicsLayerGRGExtent.add(graphic);        
+                    
+          // the required cell width and height to be used depends on the setting of the define rows and columns toggle
+          if(this.setNumberRowsColumnsTime.checked) {
+            // check validity of the number of horizontal and vertical cell values
+            if(this.grgPointByTimeCellHorizontal.isValid() && this.grgPointByTimeCellVertical.isValid()) {
+              var cellWidthMeters = GRGAreaWidthHeight / this.grgPointByTimeCellHorizontal.value;
+              var cellHeightMeters = GRGAreaWidthHeight / this.grgPointByTimeCellVertical.value; 
+            } else {
+              // Invalid values
+              var alertMessage = new Message({
+                message: this.nls.invalidHorizontalVerticalParametersMessage
+              });
+              return;
+            }
+          } else {            
+            // check validity of the cell width and height values
+            if(this.grgPointByTimeCellWidth.isValid() && this.grgPointByTimeCellHeight.isValid()) {
+              var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellWidth.value, this._cellUnits);
+              var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellHeight.value,this._cellUnits);              
+            } else {
+             // Invalid values
+              var alertMessage = new Message({
+                message: this.nls.invalidWidthHeightParametersMessage
+              });
+              return;              
+            }
+          }
+          
+          //work out how many cells are needed horizontally & Vertically to cover the whole canvas area
+          var numCellsHorizontal = Math.round(GRGAreaWidthHeight/cellWidthMeters);
+            
+          var numCellsVertical;
+          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaWidthHeight/cellHeightMeters):numCellsVertical = Math.round(GRGAreaWidthHeight/(cellWidthMeters)/Math.cos(30* Math.PI/180)) + 1;
+          
+          // there is a possibility that the cell width and height already cover the whole GRG area in this case just set the number of cells horizontal and vertical to 1
+          if(numCellsHorizontal < 1) {
+            numCellsHorizontal = 1;
+          }
+          if(numCellsVertical < 1) {
+            numCellsVertical = 1;
+          }
+          
+          if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical))
+          {
+            var features = drawGRG.createGRG(
+              numCellsHorizontal,
+              numCellsVertical,
+              centerPoint,
+              cellWidthMeters,
+              cellHeightMeters,
+              this.grgPointByTimeRotation.value,
+              this._labelStartPosition,
+              this._labelType,
+              this._labelDirection,
+              this._cellShape,
+              this._gridOrigin,
+              this.geodesicGrid,
+              this.map,
+              esriConfig.defaults.geometryService); 
+            //apply the edits to the feature layer
+            this.GRGArea.applyEdits(features, null, null);
+            this.createGraphicDeleteMenu();
+            this.dt_PointByTime.removeStartGraphic(this._graphicsLayerGRGExtent);
+            var geomArray = [];
+            for(var i = 0;i < features.length;i++){
+              geomArray.push(features[i].geometry);
+            }
+            var union = GeometryEngine.union(geomArray)
+            this.map.setExtent(union.getExtent().expand(2),false);
+            this._showPanel("publishPage");
+          }          
+        } else {
+          // Invalid entry
+          var alertMessage = new Message({
+            message: this.nls.missingOriginParametersMessage
+          });
+        }        
       },
       
       /**
