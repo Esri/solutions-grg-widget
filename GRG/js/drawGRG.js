@@ -778,6 +778,16 @@ define([
     }
     graphic.setAttributes(attr);
     return graphic;    
+  },
+  
+  
+  grg.checkPolarRegion = function(geometry) {
+    var polarRegions = new Polygon({"rings":[
+                             [[-180,84],[-180,90],[180,90],[180,84],[-180,84]],
+                             [[-180,-90],[-180,-80],[180,-80],[180,-90],[-180,-90]]],
+                             "spatialReference":{"wkid":4326}}); //used to check if GRG from Ref System falls within Polar Regions
+                             
+    return geometryEngine.intersects(geometry,polarRegions);
   }
   
   return grg;
