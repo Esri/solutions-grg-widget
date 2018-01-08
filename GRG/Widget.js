@@ -167,10 +167,8 @@ define([
       featureLayerInfo: null,
       centerPoint: [], //Current center point of the GRG extent
       geodesicGrid: true, //Flag for if the GRG is to be created geodesically
-      polarRegions: new Polygon({"rings":[
-                             [[-180,84],[-180,90],[180,90],[180,84],[-180,84]],
-                             [[-180,-90],[-180,-80],[180,-80],[180,-90],[-180,-90]]],
-                             "spatialReference":{"wkid":4326}}), //used to check if GRG from Ref System falls within Polar Regions
+      polarRegions: null,
+    } 
       
       postMixInProperties: function () {
         //mixin default nls with widget nls
@@ -180,6 +178,10 @@ define([
       
       constructor: function (args) {
         declare.safeMixin(this, args);
+        polarRegions = new Polygon({"rings":[
+                             [[-180,84],[-180,90],[180,90],[180,84],[-180,84]],
+                             [[-180,-90],[-180,-80],[180,-80],[180,-90],[-180,-90]]],
+                             "spatialReference":{"wkid":4326}}), //used to check if GRG from Ref System falls within Polar Regions
       },
 
       postCreate: function () {
