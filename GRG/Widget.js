@@ -167,9 +167,7 @@ define([
       featureLayerInfo: null,
       centerPoint: [], //Current center point of the GRG extent
       geodesicGrid: true, //Flag for if the GRG is to be created geodesically
-      polarRegions: null,
-    } 
-      
+          
       postMixInProperties: function () {
         //mixin default nls with widget nls
         this.nls.common = {};
@@ -177,11 +175,7 @@ define([
       },
       
       constructor: function (args) {
-        declare.safeMixin(this, args);
-        polarRegions = new Polygon({"rings":[
-                             [[-180,84],[-180,90],[180,90],[180,84],[-180,84]],
-                             [[-180,-90],[-180,-80],[180,-80],[180,-90],[-180,-90]]],
-                             "spatialReference":{"wkid":4326}}), //used to check if GRG from Ref System falls within Polar Regions
+        declare.safeMixin(this, args);       
       },
 
       postCreate: function () {
@@ -2060,7 +2054,7 @@ define([
               });
             }
             
-            if(GeometryEngine.intersects(extent,this.polarRegions)) {
+            if(drawGRG.checkPolarRegion(extent)) {
               new Message({
                 message: this.nls.grgPolarRegionError
               });
@@ -2149,13 +2143,13 @@ define([
           var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
             if (this.map.spatialReference.wkid !== 4326) {          
-              if(GeometryEngine.intersects(WebMercatorUtils.webMercatorToGeographic(this._graphicsLayerGRGExtent.graphics[0].geometry),this.polarRegions)) {
+              if(drawGRG.checkPolarRegion(WebMercatorUtils.webMercatorToGeographic(this._graphicsLayerGRGExtent.graphics[0].geometry))) {
                   new Message({
                     message: this.nls.grgPolarRegionError
                   });
-                }
+                } 
             } else {
-              if(GeometryEngine.intersects(this._graphicsLayerGRGExtent.graphics[0].geometry),this.polarRegions) {
+              if(drawGRG.checkPolarRegion(this._graphicsLayerGRGExtent.graphics[0].geometry)) {
                   new Message({
                     message: this.nls.grgPolarRegionError
                   });
