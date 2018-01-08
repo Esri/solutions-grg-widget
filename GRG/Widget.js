@@ -55,6 +55,7 @@ define([
   'esri/geometry/Extent',
   'esri/geometry/Point',  
   'esri/geometry/Polyline',
+  'esri/geometry/Polygon',
   'esri/geometry/webMercatorUtils',
   'esri/layers/FeatureLayer',
   'esri/layers/GraphicsLayer',
@@ -121,6 +122,7 @@ define([
     Extent,
     Point,
     Polyline,
+    Polygon,
     WebMercatorUtils,
     FeatureLayer,
     GraphicsLayer,
@@ -165,6 +167,10 @@ define([
       featureLayerInfo: null,
       centerPoint: [], //Current center point of the GRG extent
       geodesicGrid: true, //Flag for if the GRG is to be created geodesically
+      polarRegions: new Polygon({"rings":[
+                             [[-180,84],[-180,90],[180,90],[180,84],[-180,84]],
+                             [[-180,-90],[-180,-80],[180,-80],[180,-90],[-180,-90]]],
+                             "spatialReference":{"wkid":4326}}), //used to check if GRG from Ref System falls within Polar Regions
       
       postMixInProperties: function () {
         //mixin default nls with widget nls
@@ -1749,11 +1755,9 @@ define([
         if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
           this._clearLayers(false);
           
-          if(this.angle === 0) {
-            var geom = gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
-          } else {          
-            var geom = this._graphicsLayerGRGExtent.graphics[0].geometry;
-          }
+          var geom = (this.angle === 0) ?
+            gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()):
+            this._graphicsLayerGRGExtent.graphics[0].geometry;
           
           //if the input is geographics project the geometry to WMAS
           if (geom.spatialReference.wkid === 4326) {
@@ -1763,7 +1767,7 @@ define([
           
           var GRGAreaWidth, GRGAreaHeight;
           //work out width and height of AOI, method depends on if the grid is to be geodesic
-          if(this.geodesicGrid) {
+          if (this.geodesicGrid) {
             GRGAreaWidth = GeometryEngine.geodesicLength(new Polyline({
               paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
               spatialReference: geom.spatialReference
@@ -2032,8 +2036,7 @@ define([
               extent = new Extent({
                 "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellBLPoint.x + width,"ymax":cellBLPoint.y + height,
                 "spatialReference":{"wkid":4326}
-              });
-              extent = WebMercatorUtils.geographicToWebMercator(extent);              
+              });                          
             } else {
               cellBLPoint = mgrs.USNGtoPoint(MGRS);
               
@@ -2053,10 +2056,16 @@ define([
                 "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellTLPoint.x,"ymax":cellTLPoint.y,
                 "spatialReference":{"wkid":4326}
               });
-              
-              extent = WebMercatorUtils.geographicToWebMercator(extent);
             }
             
+            if(GeometryEngine.intersects(extent,this.polarRegions)) {
+              new Message({
+                message: this.nls.grgPolarRegionError
+              });
+            }
+            
+            extent = WebMercatorUtils.geographicToWebMercator(extent);
+              
             var zones = mgrsUtils.zonesFromExtent(extent,this.map); 
             
             var features = [];
@@ -2108,8 +2117,10 @@ define([
                 break;          
             }
             // change map scale to extent of grg
-            var union = GeometryEngine.union(geomArray)
-            this.map.setExtent(union.getExtent().expand(2),false);
+            if(geomArray.length > 0) {
+              var union = GeometryEngine.union(geomArray)
+              this.map.setExtent(union.getExtent().expand(2),false);
+            }
             
             if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
               features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgPointByRefSystemGridSize.getValue());
@@ -2135,6 +2146,19 @@ define([
           var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
           var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
+            if (this.map.spatialReference.wkid !== 4326) {          
+              if(GeometryEngine.intersects(WebMercatorUtils.webMercatorToGeographic(this._graphicsLayerGRGExtent.graphics[0].geometry),this.polarRegions)) {
+                  new Message({
+                    message: this.nls.grgPolarRegionError
+                  });
+                }
+            } else {
+              if(GeometryEngine.intersects(this._graphicsLayerGRGExtent.graphics[0].geometry),this.polarRegions) {
+                  new Message({
+                    message: this.nls.grgPolarRegionError
+                  });
+                }
+            }
             var TRString, BRString;
             var geomArray = [];
             this._clearLayers(false);           
@@ -2208,8 +2232,10 @@ define([
                 break;            
             }
             // change map scale to extent of grg
-            var union = GeometryEngine.union(geomArray)
-            this.map.setExtent(union.getExtent().expand(2),false)
+            if(geomArray.length > 0) {
+              var union = GeometryEngine.union(geomArray)
+              this.map.setExtent(union.getExtent().expand(2),false)
+            }
             
             if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
               features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgAreaByRefSystemGridSize.getValue());
