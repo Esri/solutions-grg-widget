@@ -284,7 +284,7 @@ define([
         });   
         
         //add the GRG feature layer and the GRG extent graphics layer to the map 
-        this.map.addLayers([this.GRGArea,this._graphicsLayerGRGExtent]);
+        this.map.addLayers([this._graphicsLayerGRGExtent,this.GRGArea]);
         
         //must ensure the layer is loaded before we can access it to turn on the labels if required
         if(this.GRGArea.loaded){

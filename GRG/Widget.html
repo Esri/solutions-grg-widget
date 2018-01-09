@@ -410,7 +410,7 @@
         </div>
         
         <!---------------------
-          GRG From Point By Reference System
+          GRG From Point By Time and Speed
         ---------------------->
         
         <div class="GRGDrafterFullHeight GRGDrafterHidden" data-dojo-attach-point="grgPointByTimePageNode">
@@ -482,7 +482,7 @@
                   
                   <!-- Set number of cells checkbox -->
                   <div class="GRGDrafterFullWidthAndPadding">
-                    <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="setNumberRowsColumnsTime" checked="false" />
+                    <input class="switch-toggle" data-dojo-type="dijit/form/CheckBox" data-dojo-attach-point="setNumberRowsColumnsTime" checked="true" />
                     <label data-dojo-attach-point="interactiveLabel">${nls.numberRowsColumnsLabel}</label>                
                   </div>                  
                   <!-- Number of Cells Horizontal and Vertical -->
@@ -491,13 +491,13 @@
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis"  title="${nls.numberOfCellsHorizontal}">${nls.numberOfCellsHorizontal}</div>
                       <input class="jimu-input textInput" style="width: 100%" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props='constraints:{min:1,places:0},
                           invalidMessage:"${nls.invalidNumberMessage}",
-                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellHorizontal" value="10" disabled='true'></input>
+                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellHorizontal" value="10" disabled='false'></input>
                     </div>
                     <div class="GRGDrafterHalfWidthRight GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis"  title="${nls.numberOfCellsVertical}">${nls.numberOfCellsVertical}</div>
                       <input class="jimu-input textInput" style="width: 100%" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props='constraints:{min:1,places:0},
                           invalidMessage:"${nls.invalidNumberMessage}",
-                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellVertical" value="10" disabled='true'></input>                      
+                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellVertical" value="10" disabled='false'></input>                      
                     </div>
                   </div>
                   <!-- GRG Cell Width & Height -->
@@ -508,7 +508,7 @@
                         <input class="jimu-input dijitNumberTextBox" style="width: 100%" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props='constraints:{min:0,places:2},
                           invalidMessage:"${nls.invalidNumberMessage}",
                           required: true,
-                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellWidth" value="1000" disabled='false'></input>
+                          rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellWidth" value="1000" disabled='true'></input>
                     </div>
                     <!-- GRG Cell Height -->
                     <div class="GRGDrafterHalfWidthRight GRGDrafterSettingRow">
@@ -516,7 +516,7 @@
                         <input class="jimu-input dijitNumberTextBox" style="width: 100%" data-dojo-type="dijit/form/NumberTextBox" data-dojo-props='constraints:{min:0,places:2},
                         invalidMessage:"${nls.invalidNumberMessage}",          
                         required: true,
-                        rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellHeight" value="1000" disabled='false'></input>
+                        rangeMessage:"${nls.invalidRangeMessage}"' data-dojo-attach-point="grgPointByTimeCellHeight" value="1000" disabled='true'></input>
                     </div>
                   </div>
                   <!-- Rotation -->
