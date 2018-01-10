@@ -221,8 +221,11 @@ define([
           }
         };        
         
-        //create graphics layer for grid extent and add to map
+        //create graphics layer for grid extent
         this._graphicsLayerGRGExtent = new GraphicsLayer({id: "graphicsLayerGRGExtent"});
+        
+        //create graphics layer for GRG from time and speed extent
+        this._graphicsLayerGRGTimeExtent = new GraphicsLayer({id: "graphicsLayerGRGTimeExtent"});
         
         //set up symbology for polygon input
         this._extentSym = new SimpleFillSymbol(this.extentAreaFillSymbol);        
@@ -284,7 +287,7 @@ define([
         });   
         
         //add the GRG feature layer and the GRG extent graphics layer to the map 
-        this.map.addLayers([this._graphicsLayerGRGExtent,this.GRGArea]);
+        this.map.addLayers([this._graphicsLayerGRGTimeExtent,this.GRGArea,this._graphicsLayerGRGExtent]);
         
         //must ensure the layer is loaded before we can access it to turn on the labels if required
         if(this.GRGArea.loaded){
@@ -892,13 +895,14 @@ define([
         /**
         * Publish panel
         **/
-            //Handle click event of Grid settings back button
+            //Handle click event of panel back button
             this.own(on(this.publishPanelBackButton, "click", lang.hitch(this, function () {
               //remove any messages
               this.publishMessage.innerHTML = '';
               //clear layer name
               this.addGRGNameArea.setValue('');
               this._graphicsLayerGRGExtent.show();
+              this._graphicsLayerGRGTimeExtent.clear();
               this._showPanel(this._lastOpenPanel);              
             })));
             
@@ -1883,8 +1887,6 @@ define([
           // now we have the radius in meters we can create a polygon of the grg area from the origin point         
           var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);  
           
-          console.log(calculatedRadiusInMeters);
-          
           // if the radius to large we need to create the grid in planar measurements otherwise geodesic
           if(calculatedRadiusInMeters < 200000) {
             this.geodesicGrid = true;
@@ -1904,7 +1906,7 @@ define([
           
           // add the buffer to the graphics layer
           var graphic = new Graphic(buffer, this._extentSym);
-          this._graphicsLayerGRGExtent.add(graphic);        
+          this._graphicsLayerGRGTimeExtent.add(graphic);        
                     
           // the required cell width and height to be used depends on the setting of the define rows and columns toggle
           if(this.setNumberRowsColumnsTime.checked) {
@@ -2035,6 +2037,13 @@ define([
               });                          
             } else {
               cellBLPoint = mgrs.USNGtoPoint(MGRS);
+              //if the origin point is in a polar region cellBLPoint x and y will be NaN display error to user and break out of function
+              if(isNaN(cellBLPoint.x) || isNaN(cellBLPoint.y)) {
+                new Message({
+                  message: this.nls.grgPolarOriginError
+                });
+                return;
+              }
               
               width =  this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellHorizontal.getValue());          
               height = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellVertical.getValue());
@@ -2052,6 +2061,7 @@ define([
                 "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellTLPoint.x,"ymax":cellTLPoint.y,
                 "spatialReference":{"wkid":4326}
               });
+              
             }
             
             if(drawGRG.checkPolarRegion(extent)) {
