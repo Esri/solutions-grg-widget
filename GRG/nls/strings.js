@@ -160,6 +160,8 @@ define({
     "drawPointToolTip": 'Click to add GRG origin point', // Shown as tooltip help on the cursor when using the draw point tool
     "missingLayerNameMessage": 'You must enter a valid layer name before you can publish', //shown as error message for invalid layer name     
     "parseCoordinatesError": 'Unable to parse coordinates. Please check your input.', //Shown as error message for unknown coordinates
-    "grgPolarRegionError" :"The GRG extent is within a polar region. Cells that fall within the polar region will not be created." //Shown as warning message for GRG overlapping polar region
+    "grgPolarRegionError" :"The GRG extent is within a polar region. Cells that fall within the polar region will not be created.", //Shown as warning message for GRG overlapping polar region
+    "grgPolarOriginError" :"The GRG origin point cannot be within a polar region when creating a GRG by Reference System." //Shown as warning message for GRG origin in polar region
+  
   })
 });
