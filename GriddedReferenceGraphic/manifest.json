@@ -1,10 +1,11 @@
 {
-  "name": "GRG",
+  "name": "GriddedReferenceGraphic",
+	"label": "Gridded Reference Graphic",
   "platform": "HTML",
-  "version": "2.5",
-  "wabVersion": "2.5",
+  "version": "2.6",
+  "wabVersion": "2.6",
   "author": "Esri",
-  "description": "Grided Reference Graphic Widget",
+  "description": "Gridded Reference Graphic Widget",
   "copyright": "",
   "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "properties": {
