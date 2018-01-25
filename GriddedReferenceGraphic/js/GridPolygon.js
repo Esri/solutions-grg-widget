@@ -22,7 +22,7 @@
 
 define([
   "dojo/_base/declare"
-], function(
+], function (
   declare
 ) {
 
@@ -71,99 +71,100 @@ define([
    *
    * @todo  Review, add and cleanup the code comments (including JSDoc comments)
    */
-  return declare(null, {    
+  return declare(null, {
     /** A geometry Polygon object that represents the clipped geometry of the grid polygon
      * @type external:Polygon
      */
     "clippedPolygon": null,
-    
+
     /** A geometry Polygon object that represents the visible portion of the unclipped polygon
      * @type external:Polygon
      */
     "unclippedPolygon": null,
-    
-    /** A geometry Polygon object that represents the visible portion of the clipped polygon to the full utm zone
+
+    /** A geometry Polygon object that represents the visible portion of 
+     * the clipped polygon to the full utm zone
      * @type external:Polygon
      */
      "clippedPolyToUTMZone": null,
-    
+
     /** The Map object that is tied to the Grid Overlay
      * @type external:Polygon
      */
     "utmZonePoly": null,
-    
+
     /** A geometry Polygon object that represents the full utm zone geometry
      * @type external:Polygon
      */
-    "fullZoneGeometry": null,    
-    
+    "fullZoneGeometry": null,
+
     /** A geometry Polygon object that represents utm zone
      * @type external:Map
      */
     "map": null,
-    
+
     /** The minimum x-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type Number
      */
     "xmin": 0,
-    
+
     /** The minimum y-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type Number
      */
     "ymin": 0,
-    
+
     /** The minimum x-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type string
      */
-    "x": '',
-    
+    "x": "",
+
     /** The minimum y-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type string
      */
-    "y": '',
-    
+    "y": "",
+
     /** The maximum x-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type Number
      */
     "xmax": 0,
-    
+
     /** The maximum y-coordinate value of the unclipped polygon
     (the coordinate units are specified in the minMaxType property)
      * @type Number
      */
     "ymax": 0,
-    
+
     /** The type of unit for the min and max coordinate values "<degrees | utm>"
      * @type String
      */
     "minMaxType": "",
-    
+
     /** If minMaxType is "utm", then this poperty holds the utm zone number
      * @type Number
      */
     "utmZone": 0,
-    
+
     /** If grid is 100k or less then this property holds the 100k GZD
      * @type String
      */
     "latitudeZone": "",
-    
+
     /** If grid is 100k or less then this property holds the latitude zone
      * @type String
      */
     "GZD": "",
-    
+
     /** The label text for the polygon
      * @type String
      */
     "text": "",
-    
-    constructor: function(args) {
+
+    constructor: function (args) {
       this.unclippedPolygon = args.unclippedPolygon;
       this.clippedPolygon = args.clippedPolygon;
       this.utmZonePoly = args.utmZonePoly;

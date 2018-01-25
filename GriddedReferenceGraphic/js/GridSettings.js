@@ -15,21 +15,19 @@
 ///////////////////////////////////////////////////////////////////////////
 
 define([
-  'dojo/_base/declare',
-  'dojo/_base/array',
-  'dojo/_base/html',
-  'dojo/on',
-  './ColorPickerEditor',
-  './FontSetting',
-  'jimu/BaseWidget',
-  'dijit/_WidgetsInTemplateMixin',
-  'dojo/text!../templates/GridSettings.html',
-  'dojo/_base/lang',
-  'dojo/Evented',
-  'dojo/dom-class',
-  'dojo/query',
-  'dijit/registry',
-  'dijit/form/Select'  
+  "dojo/_base/declare",
+  "dojo/_base/array",
+  "dojo/_base/html",
+  "dojo/on",
+  "./ColorPickerEditor",
+  "./FontSetting",
+  "jimu/BaseWidget",
+  "dijit/_WidgetsInTemplateMixin",
+  "dojo/text!../templates/GridSettings.html",
+  "dojo/_base/lang",
+  "dojo/Evented",
+  "dojo/dom-class",
+  "dijit/form/Select"
 ],
   function (
     declare,
@@ -43,21 +41,27 @@ define([
     GridSettingsTemplate,
     lang,
     Evented,
-    domClass,
-    query,
-    dijitRegistry
+    domClass
   ) {
     return declare([BaseWidget, _WidgetsInTemplateMixin, Evented], {
-      baseClass: 'jimu-widget-GRGDrafter-Settings',
+      baseClass: "jimu-widget-GRGDrafter-Settings",
       templateString: GridSettingsTemplate,
       selectedGridSettings: {}, //Holds selected Settings
-      _defaultColor: '#1a299c',
+      _defaultColor: "#1a299c",
       _defaultTextSize: 12,
-      _defaultFont: {"font": {"fontFamily": "Arial","bold": false,"italic": false,"underline": false},"fontSize": 12,"textColor": "#2f4f4f"},
+      _defaultFont: {
+        "font": {
+          "fontFamily": "Arial",
+          "bold": false,
+          "italic": false,
+          "underline": false
+        },
+        "fontSize": 12,
+        "textColor": "#2f4f4f"},
       gridSettingsOptions:  {
           "cellShape": ["default", "hexagon"],
           "cellUnits": ["meters", "kilometers", "miles", "nautical-miles", "yards", "feet"],
-          "labelStartPosition": ["lowerLeft", "lowerRight", "upperLeft", "upperRight"],      
+          "labelStartPosition": ["lowerLeft", "lowerRight", "upperLeft", "upperRight"],
           "labelType": ["alphaNumeric", "alphaAlpha", "numeric"],
           "labelTypeWithRefSys": ["gridReferenceSystem","alphaNumeric", "alphaAlpha", "numeric"],
           "labelDirection": ["horizontal", "vertical"],
@@ -71,41 +75,48 @@ define([
 
       //Load all the options on startup
       startup: function () {
-        
-        this.gridOutlineColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
+
+        this.gridOutlineColorPicker = 
+          new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
         this.gridOutlineColorPicker.setValues({
             "color": this.config.grg.cellOutline.color,
             "transparency": this.config.grg.cellOutline.transparency
           });
         this.gridOutlineColorPicker.startup();
-        
-          
+
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
         this.gridFillColorPicker.setValues({
             "color": this.config.grg.cellFill.color,
             "transparency": this.config.grg.cellFill.transparency
           });
         this.gridFillColorPicker.startup();
-        
-          
+
         this.fontSetting = new FontSetting({
             config: this.config.grg.font || this._defaultFont,
             nls: this.nls
           }, this.fontSettingNode);
-        
+
         this.fontSetting.startup();
-          
+
         //load options for all drop downs
-        this._loadOptionsForDropDown(this.cellShape, this.gridSettingsOptions.cellShape);
-        this._loadOptionsForDropDown(this.labelStartPosition, this.gridSettingsOptions.labelStartPosition);
-        this._loadOptionsForDropDown(this.cellUnits, this.gridSettingsOptions.cellUnits);
-        this._loadOptionsForDropDown(this.labelType, this.gridSettingsOptions.labelType);
-        this._loadOptionsForDropDown(this.labelTypeWithRefSys, this.gridSettingsOptions.labelTypeWithRefSys);
-        this._loadOptionsForDropDown(this.labelDirection, this.gridSettingsOptions.labelDirection);
-        this._loadOptionsForDropDown(this.gridOrigin, this.gridSettingsOptions.gridOrigin);
-        this._loadOptionsForDropDown(this.referenceSystem, this.gridSettingsOptions.referenceSystem);
-        
-        if(this.config.grg) {          
+        this._loadOptionsForDropDown(this.cellShape, 
+          this.gridSettingsOptions.cellShape);
+        this._loadOptionsForDropDown(this.labelStartPosition, 
+          this.gridSettingsOptions.labelStartPosition);
+        this._loadOptionsForDropDown(this.cellUnits, 
+          this.gridSettingsOptions.cellUnits);
+        this._loadOptionsForDropDown(this.labelType, 
+          this.gridSettingsOptions.labelType);
+        this._loadOptionsForDropDown(this.labelTypeWithRefSys, 
+          this.gridSettingsOptions.labelTypeWithRefSys);
+        this._loadOptionsForDropDown(this.labelDirection, 
+          this.gridSettingsOptions.labelDirection);
+        this._loadOptionsForDropDown(this.gridOrigin, 
+          this.gridSettingsOptions.gridOrigin);
+        this._loadOptionsForDropDown(this.referenceSystem, 
+          this.gridSettingsOptions.referenceSystem);
+
+        if(this.config.grg) {
           this.cellShape.setValue(this.config.grg.cellShape);
           this.cellUnits.setValue(this.config.grg.cellUnits);
           this.gridOrigin.setValue(this.config.grg.gridOrigin);
@@ -114,18 +125,16 @@ define([
           this.labelStartPosition.setValue(this.config.grg.labelOrigin);
           this.referenceSystem.setValue(this.config.grg.referenceSystem);
 
-          if(this.cellShape.get('value') == 'hexagon') {
-            this.labelDirection.set('disabled',true);
-            this.labelDirection.setValue('horizontal');
+          if(this.cellShape.get("value") === "hexagon") {
+            this.labelDirection.set("disabled",true);
+            this.labelDirection.setValue("horizontal");
           } else {
-            this.labelDirection.set('disabled',false);
-          }          
+            this.labelDirection.set("disabled",false);
+          }
         }
-        
+
         //send by default updated parameters
         this.onGridsettingsChanged();
-
-          
       },
 
       postCreate: function () {
@@ -134,56 +143,56 @@ define([
         domClass.add(this.domNode, "GRGDrafterSettingsContainer GRGDrafterFullWidth");
         this._handleClickEvents();
       },
-      
+
       /**
       * Handle click events for different controls
       * @memberOf widgets/GRG/Widget
       **/
-      _handleClickEvents: function () {        
+      _handleClickEvents: function () {
         //handle grid settings button clicked
         this.own(on(this.gridSettingsButton, "click", lang.hitch(this, function () {
-          if(domClass.contains(this.gridSettingsButton,'GRGDrafterLabelSettingsDownButton')) {
+          if(domClass.contains(this.gridSettingsButton,"GRGDrafterLabelSettingsDownButton")) {
             //in closed state - so open and change arrow to up
-            html.removeClass(this.gridSettingsContainer, 'controlGroupHidden');
-            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.removeClass(this.gridSettingsContainer, "controlGroupHidden");
+            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
+            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
             //close label settings if open
-            html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
-            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
-            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.addClass(this.labelSettingsContainer, "controlGroupHidden");
+            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
+            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
           } else {
             //in open state - so close and change arrow to down
-            html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
-            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.addClass(this.gridSettingsContainer, "controlGroupHidden");
+            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
+            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
           }
         })));
-        
+
         //handle label settings button clicked
         this.own(on(this.labelSettingsButton, "click", lang.hitch(this, function () {
-          if(domClass.contains(this.labelSettingsButton,'GRGDrafterLabelSettingsDownButton')) {
+          if(domClass.contains(this.labelSettingsButton,"GRGDrafterLabelSettingsDownButton")) {
             //in closed state - so open and change arrow to up
-            html.removeClass(this.labelSettingsContainer, 'controlGroupHidden');
-            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.removeClass(this.labelSettingsContainer, "controlGroupHidden");
+            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
+            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
             //close label settings if open
-            html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
-            html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
-            html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
+            html.addClass(this.gridSettingsContainer, "controlGroupHidden");
+            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
+            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
           } else {
             //in open state - so close and change arrow to down
-            html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
-            html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-            html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+            html.addClass(this.labelSettingsContainer, "controlGroupHidden");
+            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
+            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
           }
         })));
-        
-        this.own(on(this.cellShape, 'change', lang.hitch(this, function () {
-          if(this.cellShape.get('value') == 'hexagon') {
-            this.labelDirection.set('disabled',true);
-            this.labelDirection.setValue('horizontal');
+
+        this.own(on(this.cellShape, "change", lang.hitch(this, function () {
+          if(this.cellShape.get("value") === "hexagon") {
+            this.labelDirection.set("disabled",true);
+            this.labelDirection.setValue("horizontal");
           } else {
-            this.labelDirection.set('disabled',false);
+            this.labelDirection.set("disabled",false);
           }
         })));
       },
@@ -215,34 +224,34 @@ define([
         var isDataChanged = false;
         //check if cellShape is changed
         if (this.selectedGridSettings.cellShape !==
-          this.cellShape.get('value')) {
+          this.cellShape.get("value")) {
           isDataChanged = true;
         } else if (this.selectedGridSettings.labelStartPosition !==
-          this.labelStartPosition.get('value')) {
+          this.labelStartPosition.get("value")) {
           //check if labelStartPosition is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.cellUnits !==
-          this.cellUnits.get('value')) {
+          this.cellUnits.get("value")) {
           //check if cellUnits is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.labelType !==
-          this.labelType.get('value')) {
+          this.labelType.get("value")) {
           //check if labelType is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.labelTypeWithRefSys !==
-          this.labelTypeWithRefSys.get('value')) {
+          this.labelTypeWithRefSys.get("value")) {
           //check if labelType is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.labelDirection !==
-          this.labelDirection.get('value')) {
+          this.labelDirection.get("value")) {
           //check if labelDirection is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.gridOrigin !==
-          this.gridOrigin.get('value')) {
+          this.gridOrigin.get("value")) {
           //check if gridOrigin is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.referenceSystem !==
-          this.referenceSystem.get('value')) {
+          this.referenceSystem.get("value")) {
           //check if reference system is changed
           isDataChanged = true;
         } else if (this.selectedGridSettings.gridOutlineColor !==
@@ -277,12 +286,12 @@ define([
         if (this._isSettingsChanged()) {
           this.onGridsettingsChanged();
         }
-        html.addClass(this.gridSettingsContainer, 'controlGroupHidden');
-        html.addClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-        html.removeClass(this.labelSettingsButton, 'GRGDrafterLabelSettingsUpButton');
-        html.addClass(this.labelSettingsContainer, 'controlGroupHidden');
-        html.addClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsDownButton');
-        html.removeClass(this.gridSettingsButton, 'GRGDrafterLabelSettingsUpButton');
+        html.addClass(this.gridSettingsContainer, "controlGroupHidden");
+        html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
+        html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
+        html.addClass(this.labelSettingsContainer, "controlGroupHidden");
+        html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
+        html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
       },
 
       /**
@@ -291,19 +300,19 @@ define([
       **/
       onGridsettingsChanged: function () {
         this.selectedGridSettings = {
-          "cellShape": this.cellShape.get('value'),
-          "labelStartPosition": this.labelStartPosition.get('value'),
-          "cellUnits": this.cellUnits.get('value'),
-          "labelType": this.labelType.get('value'),
-          "labelTypeWithRefSys": this.labelTypeWithRefSys.get('value'),
-          "labelDirection": this.labelDirection.get('value'),
-          "gridOrigin": this.gridOrigin.get('value'),
-          "referenceSystem": this.referenceSystem.get('value'),
+          "cellShape": this.cellShape.get("value"),
+          "labelStartPosition": this.labelStartPosition.get("value"),
+          "cellUnits": this.cellUnits.get("value"),
+          "labelType": this.labelType.get("value"),
+          "labelTypeWithRefSys": this.labelTypeWithRefSys.get("value"),
+          "labelDirection": this.labelDirection.get("value"),
+          "gridOrigin": this.gridOrigin.get("value"),
+          "referenceSystem": this.referenceSystem.get("value"),
           "gridOutlineColor": this.gridOutlineColorPicker.getValues().color,
           "gridOutlineTransparency": this.gridOutlineColorPicker.getValues().transparency,
           "gridFillColor": this.gridFillColorPicker.getValues().color,
           "gridFillTransparency": this.gridFillColorPicker.getValues().transparency,
-          "fontSettings": lang.clone(this.fontSetting.getConfig()),
+          "fontSettings": lang.clone(this.fontSetting.getConfig())
         };
         this.emit("gridSettingsChanged", this.selectedGridSettings);
       }

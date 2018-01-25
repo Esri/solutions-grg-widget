@@ -32,7 +32,7 @@
 //
 //*****************************************************************************
 define([
-  'esri/geometry/Point'
+  "esri/geometry/Point"
 ], function(
   Point
 ) {
@@ -171,7 +171,7 @@ define([
         while (lon > 180) {lon -= 360;}
       }
       if (lon > 360 || lon < -180 || lat > 90 || lat < -90) {
-        console.error('Bad input. lat: ' + lat + ' lon: ' + lon);
+        console.error("Bad input. lat: " + lat + " lon: " + lon);
         //debugger;
       }
       // convert 0-360 to [-180 to 180] range
@@ -231,7 +231,7 @@ define([
         while (lon > 180) {lon -= 360;}
       }
       if (lon > 360 || lon < -180 || lat > 90 || lat < -90) {
-        console.error('Bad input. lat: ' + lat + ' lon: ' + lon);
+        console.error("Bad input. lat: " + lat + " lon: " + lon);
         //debugger;
       }
       // Make sure the longitude is between -180.00 .. 179.99..
@@ -305,8 +305,8 @@ define([
       // added... truncate digits to achieve specified precision
       USNGNorthing = Math.floor(USNGNorthing / Math.pow(10, (5 - precision)));
       USNGEasting = Math.floor(USNGEasting / Math.pow(10, (5 - precision)));
-      var USNG = this.getZoneNumber(lat, lon) + this.UTMLetterDesignator(lat) +
-      " " + USNGLetters + " ";
+      var USNG = this.getZoneNumber(lat, lon) + 
+        this.UTMLetterDesignator(lat) + " " + USNGLetters + " ";
       // REVISIT: Modify to incorporate dynamic precision ?
       for (var i = String(USNGEasting).length; i < precision; i++) {
         USNG += "0";
@@ -324,67 +324,47 @@ define([
       lat = parseFloat(lat);
       var letterDesignator;
       if ((84 >= lat) && (lat >= 72)) {
-        letterDesignator = 'X';
-      }
-      else if ((72 > lat) && (lat >= 64)) {
-        letterDesignator = 'W';
-      }
-      else if ((64 > lat) && (lat >= 56)) {
-        letterDesignator = 'V';
-      }
-      else if ((56 > lat) && (lat >= 48)) {
-        letterDesignator = 'U';
-      }
-      else if ((48 > lat) && (lat >= 40)) {
-        letterDesignator = 'T';
-      }
-      else if ((40 > lat) && (lat >= 32)) {
-        letterDesignator = 'S';
-      }
-      else if ((32 > lat) && (lat >= 24)) {
-        letterDesignator = 'R';
-      }
-      else if ((24 > lat) && (lat >= 16)) {
-        letterDesignator = 'Q';
-      }
-      else if ((16 > lat) && (lat >= 8)) {
-        letterDesignator = 'P';
-      }
-      else if ((8 > lat) && (lat >= 0)) {
-        letterDesignator = 'N';
-      }
-      else if ((0 > lat) && (lat >= -8)) {
-        letterDesignator = 'M';
-      }
-      else if ((-8 > lat) && (lat >= -16)) {
-        letterDesignator = 'L';
-      }
-      else if ((-16 > lat) && (lat >= -24)) {
-        letterDesignator = 'K';
-      }
-      else if ((-24 > lat) && (lat >= -32)) {
-        letterDesignator = 'J';
-      }
-      else if ((-32 > lat) && (lat >= -40)) {
-        letterDesignator = 'H';
-      }
-      else if ((-40 > lat) && (lat >= -48)) {
-        letterDesignator = 'G';
-      }
-      else if ((-48 > lat) && (lat >= -56)) {
-        letterDesignator = 'F';
-      }
-      else if ((-56 > lat) && (lat >= -64)) {
-        letterDesignator = 'E';
-      }
-      else if ((-64 > lat) && (lat >= -72)) {
-        letterDesignator = 'D';
-      }
-      else if ((-72 > lat) && (lat >= -80)) {
-        letterDesignator = 'C';
-      }
-      else {
-        letterDesignator = 'Z'; // error flag
+        letterDesignator = "X";
+      } else if ((72 > lat) && (lat >= 64)) {
+        letterDesignator = "W";
+      } else if ((64 > lat) && (lat >= 56)) {
+        letterDesignator = "V";
+      } else if ((56 > lat) && (lat >= 48)) {
+        letterDesignator = "U";
+      } else if ((48 > lat) && (lat >= 40)) {
+        letterDesignator = "T";
+      } else if ((40 > lat) && (lat >= 32)) {
+        letterDesignator = "S";
+      } else if ((32 > lat) && (lat >= 24)) {
+        letterDesignator = "R";
+      } else if ((24 > lat) && (lat >= 16)) {
+        letterDesignator = "Q";
+      } else if ((16 > lat) && (lat >= 8)) {
+        letterDesignator = "P";
+      } else if ((8 > lat) && (lat >= 0)) {
+        letterDesignator = "N";
+      } else if ((0 > lat) && (lat >= -8)) {
+        letterDesignator = "M";
+      } else if ((-8 > lat) && (lat >= -16)) {
+        letterDesignator = "L";
+      } else if ((-16 > lat) && (lat >= -24)) {
+        letterDesignator = "K";
+      } else if ((-24 > lat) && (lat >= -32)) {
+        letterDesignator = "J";
+      } else if ((-32 > lat) && (lat >= -40)) {
+        letterDesignator = "H";
+      } else if ((-40 > lat) && (lat >= -48)) {
+        letterDesignator = "G";
+      } else if ((-48 > lat) && (lat >= -56)) {
+        letterDesignator = "F";
+      } else if ((-56 > lat) && (lat >= -64)) {
+        letterDesignator = "E";
+      } else if ((-64 > lat) && (lat >= -72)) {
+        letterDesignator = "D";
+      } else if ((-72 > lat) && (lat >= -80)) {
+        letterDesignator = "C";
+      } else {
+        letterDesignator = "Z"; // error flag
       }
       return letterDesignator;
     },
@@ -566,7 +546,7 @@ define([
       var coords = this.USNGtoUTM(usngp.zone, usngp.ltr,
         usngp.sq1, usngp.sq2, usngp.east, usngp.north);
       // southern hemisphere case
-      if (usngp.ltr < 'N') {
+      if (usngp.ltr < "N") {
         coords.N -= 10000000.0;
       }
       coords = this.UTMtoLL(coords.N, coords.E, usngp.zone);
@@ -594,8 +574,8 @@ define([
       parts.sq1 = usngStr.charAt(j++);
       parts.sq2 = usngStr.charAt(j++);
       parts.precision = (usngStr.length - j) / 2;
-      parts.east = '';
-      parts.north = '';
+      parts.east = "";
+      parts.north = "";
       for (var k = 0; k < parts.precision; k++) {
         parts.east += usngStr.charAt(j++);
       }
