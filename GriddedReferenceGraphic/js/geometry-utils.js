@@ -28,7 +28,7 @@ define([
   "esri/geometry/webMercatorUtils",
   "esri/geometry/Polyline",
   "esri/geometry/Polygon"
-], function(
+], function (
   constants,
   webMercatorUtils,
   Polyline,
@@ -43,7 +43,7 @@ define([
      * @param  {external:Geometry} geometry   An esri geometry object
      * @return {external:Geometry}            A geometry oject that is Geographic
      */
-    toGeographic: function(geometry) {
+    toGeographic: function (geometry) {
       if (geometry.spatialReference.isWebMercator()) {
         return webMercatorUtils.webMercatorToGeographic(geometry);
       }
@@ -56,7 +56,7 @@ define([
      * @param  {external:Geometry} geometry   An esri geometry object
      * @return {external:Geometry}            A geometry oject that is WebMercator
      */
-    toWebMercator: function(geometry) {
+    toWebMercator: function (geometry) {
       if (!geometry.spatialReference.isWebMercator()) {
         return webMercatorUtils.geographicToWebMercator(geometry);
       }
@@ -70,7 +70,7 @@ define([
      * @return {Number} A WGS84 Web Mercator <em>y</em>
      * @private
      */
-    _latitudeToWebMercatorY: function(latitude) {
+    _latitudeToWebMercatorY: function (latitude) {
       var y = latitude;
       var deg180 = constants.GEOGRAPHIC_360 / 2;
       var eRadius = constants.WGS84_EQUATORIAL_RADIUS;
@@ -85,7 +85,7 @@ define([
      * @return {Number} A WGS84 Web Mercator <em>x</em>
      * @private
      */
-    _longitudeToWebMercatorX: function(longitude) {
+    _longitudeToWebMercatorX: function (longitude) {
       var x = longitude;
       var deg360 = constants.GEOGRAPHIC_360;
       var deg180 = constants.GEOGRAPHIC_360 / 2;
@@ -110,22 +110,20 @@ define([
      * @param  {external:Point} point A geometry Point object
      * @return {module:geometry-utils~GeogprahicPoint} A geographic point object
      */
-    pointToGeographic: function(point) {
+    pointToGeographic: function (point) {
       var x = point.x;
       var y = point.y;
       var isWebMercator = point.spatialReference.isWebMercator();
 
       // Set the limits based on whether or not the point is WebMercator or Geographic
       // This is used to calculate the x_offset value
-      var westernLimit = isWebMercator ?
-        constants.WEST_WEBMERCATOR_LIMIT :
+      var westernLimit = isWebMercator? 
+        constants.WEST_WEBMERCATOR_LIMIT: 
         constants.WEST_GEOGRAPHIC_LIMIT;
-      var easternLimit = isWebMercator ?
-        constants.EAST_WEBMERCATOR_LIMIT :
+      var easternLimit = isWebMercator? 
+        constants.EAST_WEBMERCATOR_LIMIT: 
         constants.EAST_GEOGRAPHIC_LIMIT;
-      var span360 = isWebMercator ?
-        constants.WEBMERCATOR_360 :
-        constants.GEOGRAPHIC_360;
+      var span360 = isWebMercator? constants.WEBMERCATOR_360: constants.GEOGRAPHIC_360;
 
       // retain how far left/right of int'l dateline the original point is
       var x_offset = 0;
@@ -162,7 +160,7 @@ define([
      * @param  {external:Extent}   extent  A geometry Extent object
      * @return {external:Polygon}          A geometry Polygon object
      */
-    extentToPolygon: function(extent) {
+    extentToPolygon: function (extent) {
       return new Polygon({
         rings: [[
           [extent.xmin, extent.ymin],
@@ -181,7 +179,7 @@ define([
      * @param  {external:Polygon} polygon   A geometry Polygon object
      * @return {external:Polyline}          A geometry Polyline object
      */
-    polygonToPolyline: function(polygon) {
+    polygonToPolyline: function (polygon) {
       return new Polyline({
         "paths": polygon.rings,
         "spatialReference":{"wkid": polygon.spatialReference.wkid}

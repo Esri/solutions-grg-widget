@@ -24,7 +24,7 @@
  *  @author Esri
  */
 
-define([], function() {
+define([], function () {
 
   /** @namespace */
   return {
@@ -155,6 +155,5 @@ define([], function() {
      * @default
      */
     "HALF_PI": 1.5707963267948966
-
   };
 });

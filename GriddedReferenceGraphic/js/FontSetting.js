@@ -15,23 +15,23 @@
 ///////////////////////////////////////////////////////////////////////////
 
 define([
-  'dojo/_base/declare',
+  "dojo/_base/declare",
   "dojo/_base/lang",
-  'dojo/on',
-  'dojo/_base/html',
-  'dojo/_base/array',
-  'dojo/Evented',
-  'dijit/_WidgetBase',
-  'dijit/_TemplatedMixin',
-  'dijit/_WidgetsInTemplateMixin',
-  'dojo/text!../templates/FontSetting.html',
-  'jimu/dijit/ColorPickerPopup',
+  "dojo/on",
+  "dojo/_base/html",
+  "dojo/_base/array",
+  "dojo/Evented",
+  "dijit/_WidgetBase",
+  "dijit/_TemplatedMixin",
+  "dijit/_WidgetsInTemplateMixin",
+  "dojo/text!../templates/FontSetting.html",
+  "jimu/dijit/ColorPickerPopup",
   "dijit/form/HorizontalSlider",
-  './TransparencyEditor',
+  "./TransparencyEditor",
   "dojo/store/Memory",
   "dijit/form/ComboBox",
-  'jimu/dijit/CheckBox',
-  'jimu/dijit/ImageChooser'
+  "jimu/dijit/CheckBox",
+  "jimu/dijit/ImageChooser"
 ],
   function (declare, lang, on, html, array,
     Evented, _WidgetBase, _TemplatedMixin, _WidgetsInTemplateMixin, template,
@@ -48,7 +48,8 @@ define([
 
       postCreate: function () {
         this.inherited(arguments);
-        this._FONTS = "Arial;Comic Sans MS;Courier New;Garamond;Tahoma;Times New Roman;Verdana".split(";");
+        this._FONTS = 
+          "Arial;Comic Sans MS;Courier New;Garamond;Tahoma;Times New Roman;Verdana".split(";");
         this._DEFAULT_CONFIG = {
           font: {
             fontFamily: this._FONTS[0],//first one
@@ -61,7 +62,7 @@ define([
           haloSize: 1,
           haloColor: "#FFFFFF",
           haloOn: true,
-          labelTransparency: 1,
+          labelTransparency: 1
         };
         this.config = lang.mixin(lang.clone(this._DEFAULT_CONFIG), this.config);
 
@@ -71,7 +72,8 @@ define([
         }));
         //text size
         var textSizeStore = new Memory({});
-        for (var i = this._MIN_TEXT_SIZE, max = this._MAX_TEXT_SIZE; i < max; i += this._INTERVAL_TEXT_SIZE) {
+        for (var i = this._MIN_TEXT_SIZE, max = this._MAX_TEXT_SIZE; 
+          i < max; i += this._INTERVAL_TEXT_SIZE) {
           textSizeStore.put({ id: i, name: i });
         }
         this.textSizeSelect.store = textSizeStore;
@@ -105,17 +107,15 @@ define([
         });
         this.textColorPicker.placeAt(this.textColorBtn);
         this.textColorPicker.startup();
-        
+
         //transparency
         this.labelTransparency = new TransparencyEditor({}, this.transparencySlider);
         this.labelTransparency.startup();
-        
-        
-        
+
         //halo
         //halo size
         var haloSizeStore = new Memory({});
-        for (var i = 1, max = 10; i <= max; i += 1) {
+        for (i = 1, max = 10; i <= max; i += 1) {
           haloSizeStore.put({ id: i, name: i });
         }
         this.haloSizeSelect.store = haloSizeStore;
@@ -126,8 +126,7 @@ define([
           }
           return false;
         });
-        
-        
+
         //halo color picker
         this.haloColorPicker = new ColorPickerPopup({
           appearance: {
@@ -135,13 +134,13 @@ define([
             showColorPalette: true,
             showCoustom: true,
             showCoustomRecord: true
-          },
+          }
         });
         this.haloColorPicker.placeAt(this.haloColorBtn);
         this.haloColorPicker.startup();
-               
+
         //font
-        this.own(on(this.fontSelect, 'change', lang.hitch(this, function (value) {
+        this.own(on(this.fontSelect, "change", lang.hitch(this, function (value) {
           if(this.config.font.fontFamily === value){
             return;
           }
@@ -155,7 +154,7 @@ define([
           });
         })));
         this._initAppearance();
-        this.own(on(this.bold, 'click', lang.hitch(this, function (/*value*/) {
+        this.own(on(this.bold, "click", lang.hitch(this, function (/*value*/) {
           var isClick = !html.hasClass(this.bold, "selected");
           this.fontBtnClickd({ bold: isClick });
           this.onSettingChange({
@@ -167,7 +166,7 @@ define([
             }
           });
         })));
-        this.own(on(this.italic, 'click', lang.hitch(this, function (/*value*/) {
+        this.own(on(this.italic, "click", lang.hitch(this, function (/*value*/) {
           var isClick = !html.hasClass(this.italic, "selected");
           this.fontBtnClickd({ italic: isClick });
           this.onSettingChange({
@@ -179,7 +178,7 @@ define([
             }
           });
         })));
-        this.own(on(this.underline, 'click', lang.hitch(this, function (/*value*/) {
+        this.own(on(this.underline, "click", lang.hitch(this, function (/*value*/) {
           var isClick = !html.hasClass(this.underline, "selected");
           this.fontBtnClickd({ underline: isClick });
           this.onSettingChange({
@@ -192,7 +191,7 @@ define([
           });
         })));
         //text size
-        this.own(on(this.textSizeSelect, 'change', lang.hitch(this, function (value) {
+        this.own(on(this.textSizeSelect, "change", lang.hitch(this, function (value) {
           if(this.config.fontSize === value || false === this.textSizeSelect.isValid()){
             return;
           }
@@ -201,7 +200,7 @@ define([
             fontSize: value
           });
         })));
-        this.own(on(this.textSizeSlider, 'change', lang.hitch(this, function (value) {
+        this.own(on(this.textSizeSlider, "change", lang.hitch(this, function (value) {
           if(this.config.fontSize === value){
             return;
           }
@@ -211,7 +210,7 @@ define([
           });
         })));
         //.textColor
-        this.own(on(this.textColorPicker, 'change', lang.hitch(this, function (color) {
+        this.own(on(this.textColorPicker, "change", lang.hitch(this, function (color) {
           if(this.config.textColor === color){
             return;
           }
@@ -219,14 +218,14 @@ define([
             textColor: color.toHex()
           });
         })));
-        //transparency slider        
-        this.own(this.labelTransparency.watch('transparency', lang.hitch(this, function () {
+        //transparency slider
+        this.own(this.labelTransparency.watch("transparency", lang.hitch(this, function () {
           this.onSettingChange({
             labelTransparency: this.labelTransparency.getValues().transparency
           });
         })));
         //halo size
-        this.own(on(this.haloSizeSelect, 'change', lang.hitch(this, function (value) {
+        this.own(on(this.haloSizeSelect, "change", lang.hitch(this, function (value) {
           if(this.config.haloSize === value || false === this.haloSizeSelect.isValid()){
             return;
           }
@@ -235,7 +234,7 @@ define([
           });
         })));
         //.haloColor
-        this.own(on(this.haloColorPicker, 'change', lang.hitch(this, function (color) {
+        this.own(on(this.haloColorPicker, "change", lang.hitch(this, function (color) {
           if(this.config.haloColor === color){
             return;
           }
@@ -244,7 +243,7 @@ define([
           });
         })));
         //halo toggle switch
-        this.own(on(this.showHalo, 'change', lang.hitch(this, function () {          
+        this.own(on(this.showHalo, "change", lang.hitch(this, function () {
           this.onSettingChange({
             haloOn: this.showHalo.checked
           });
@@ -285,7 +284,7 @@ define([
           return false;
         }
       },
-      
+
       setConfig: function (configObj) {
         if ("undefined" === configObj) {
           return;
@@ -294,7 +293,7 @@ define([
         if ("undefined" !== typeof configObj.font) {
           this.config.font = configObj.font;
           if (this.config.font.fontFamily) {
-            this.fontSelect.set('value', this.config.font.fontFamily);
+            this.fontSelect.set("value", this.config.font.fontFamily);
           }
           this.fontBtnClickd(this.config.font);
         }
@@ -306,42 +305,43 @@ define([
           configObj.textColor = this._DEFAULT_CONFIG.textColor;//"#000001";
         }
         this.config.textColor = configObj.textColor;
-        
-        if ("undefined" === typeof configObj.labelTransparency || "" === configObj.labelTransparency) {
+
+        if ("undefined" === typeof configObj.labelTransparency || 
+          "" === configObj.labelTransparency) {
           configObj.labelTransparency = this._DEFAULT_CONFIG.labelTransparency;//"1";
         }
         this.config.labelTransparency = configObj.labelTransparency;
         this.labelTransparency.setValues({"transparency": this.config.labelTransparency});
-        
+
         if ("undefined" === typeof configObj.haloSize || "" === configObj.haloSize) {
           configObj.haloSize = this._DEFAULT_CONFIG.haloSize;//"1";
-          
+
         }
         this.config.haloSize = configObj.haloSize;
-        this.haloSizeSelect.set('value', configObj.haloSize);
-        
+        this.haloSizeSelect.set("value", configObj.haloSize);
+
         if ("undefined" === typeof configObj.haloColor || "" === configObj.haloColor) {
           configObj.haloColor = this._DEFAULT_CONFIG.haloColor;//"#FFFFFF";
         }
         this.config.haloColor = configObj.haloColor;
 
-        html.setStyle(this.textColorPicker.domNode, 'backgroundColor', this.config.textColor);
+        html.setStyle(this.textColorPicker.domNode, "backgroundColor", this.config.textColor);
         this.textColorPicker.picker.refreshRecords();
         this.textColorPicker.picker.setColor(this.config.textColor, false, true);
-        
-        html.setStyle(this.haloColorPicker.domNode, 'backgroundColor', this.config.haloColor);
+
+        html.setStyle(this.haloColorPicker.domNode, "backgroundColor", this.config.haloColor);
         this.haloColorPicker.picker.refreshRecords();
         this.haloColorPicker.picker.setColor(this.config.haloColor, false, true);
-        
+
         if ("undefined" === typeof configObj.haloOn || "" === configObj.haloOn) {
           configObj.haloOn = this._DEFAULT_CONFIG.haloOn;//"#FFFFFF";
         }
         this.showHalo.set("checked",this.config.haloOn);
       },
-      
+
       setTextSize: function (size) {
         if (size !== this.textSizeSelect.getValue()) {
-          this.textSizeSelect.set('value', size);
+          this.textSizeSelect.set("value", size);
         }
 
         if (size !== this.textSizeSlider.getValue()) {
@@ -350,10 +350,10 @@ define([
           } else if (size < this._MIN_TEXT_SIZE) {
             size = this._MIN_TEXT_SIZE;
           }
-          this.textSizeSlider.set('value', size);
+          this.textSizeSlider.set("value", size);
         }
       },
-      
+
       fontBtnClickd: function (fontConfig) {
         if (true === fontConfig.bold) {
           html.addClass(this.bold, "selected");
@@ -373,7 +373,7 @@ define([
           html.removeClass(this.underline, "selected");
         }
       },
-      
+
       _initAppearance: function () {
         if (this.appearance) {
           if (false === this.appearance.bold) {

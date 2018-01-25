@@ -16,59 +16,59 @@
 ///////////////////////////////////////////////////////////////////////////
 
 define([
-  'dojo/_base/declare',
-  'dojo/_base/lang',
-  'dojo/topic',
-  './Feedback'
+  "dojo/_base/declare",
+  "dojo/_base/lang",
+  "dojo/topic",
+  "./Feedback"
 ], function (
   dojoDeclare,
   dojoLang,
-  dojoTopic,    
+  dojoTopic,
   drawFeedback
 ) {
   var clz = dojoDeclare([drawFeedback], {
     /**
      *
      **/
-    constructor: function (map,coordTool) {
+    constructor: function () {
       this.syncEvents();
-      this.inherited(arguments);            
+      this.inherited(arguments);
     },
-        
+
     syncEvents: function () {
       dojoTopic.subscribe(
-        'grg-center-point-input',
+        "grg-center-point-input",
         dojoLang.hitch(this, this.onCenterPointManualInputHandler)
       );
-  
+
       dojoTopic.subscribe(
-        'clear-points',
+        "clear-points",
         dojoLang.hitch(this, this.clearPoints)
-      ); 
+      );
     },
-        
+
     /*
     Handler for clearing out points
     */
-    clearPoints: function (centerPoint) {
+    clearPoints: function () {
       this._points = [];
       this.map.graphics.clear();
     },
-        
+
     /**
      *
      **/
-    clearGraphics: function (evt) {
+    clearGraphics: function () {
         this.map.graphics.clear();
     },
-    
+
     /*
     Handler for the manual input of a center point
     */
     onCenterPointManualInputHandler: function (centerPoint) {
       this._points = [];
       this._points.push(centerPoint.offset(0, 0));
-      this.set('startPoint', this._points[0]);
+      this.set("startPoint", this._points[0]);
       this.map.centerAt(centerPoint);
     },
 
@@ -82,16 +82,15 @@ define([
         snapPoint = this.map.snappingManager._snappingPoint;
       }
       var start = snapPoint || evt.mapPoint;
-      var map = this.map;
       this._points.push(start.offset(0, 0));
-      this.set('startPoint', this._points[0]);
-      this._drawEnd(start);            
+      this.set("startPoint", this._points[0]);
+      this._drawEnd(start);
     },
 
     /*
      *
      */
-    cleanup: function (evt) {
+    cleanup: function () {
         //do nothing yet
     }
   });

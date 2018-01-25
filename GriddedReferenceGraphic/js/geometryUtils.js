@@ -15,16 +15,16 @@
 ///////////////////////////////////////////////////////////////////////////
 
 define([
-  'esri/geometry/Point',
-  'esri/geometry/Polyline',
-  'esri/geometry/Polygon',
-  'esri/geometry/webMercatorUtils',
-  'dojo/Deferred',
-  'dojo/_base/array',
-  'dojo/_base/lang',
-  'esri/geometry/geometryEngine',
-  'esri/SpatialReference',
-  'esri/geometry/scaleUtils'
+  "esri/geometry/Point",
+  "esri/geometry/Polyline",
+  "esri/geometry/Polygon",
+  "esri/geometry/webMercatorUtils",
+  "dojo/Deferred",
+  "dojo/_base/array",
+  "dojo/_base/lang",
+  "esri/geometry/geometryEngine",
+  "esri/SpatialReference",
+  "esri/geometry/scaleUtils"
 ],
   function (
     Point,

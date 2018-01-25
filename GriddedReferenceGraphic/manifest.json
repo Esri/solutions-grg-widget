@@ -1,6 +1,6 @@
 {
   "name": "GriddedReferenceGraphic",
-	"label": "Gridded Reference Graphic",
+  "label": "Gridded Reference Graphic",
   "platform": "HTML",
   "version": "2.6",
   "wabVersion": "2.6",
@@ -9,7 +9,7 @@
   "copyright": "",
   "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "properties": {
-  	"keepConfigAfterMapSwithched": true,
+    "keepConfigAfterMapSwithched": true,
     "supportMultiInstance": false,
     "hasVersionManager": false,
     "hasSettingPage": true,

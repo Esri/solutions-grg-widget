@@ -17,10 +17,10 @@
 ///////////////////////////////////////////////////////////////////////////
 
 define([
-  'dojo/_base/declare',
-  'dojo/Stateful',
-  'esri/toolbars/draw',
-  'esri/graphic'
+  "dojo/_base/declare",
+  "dojo/Stateful",
+  "esri/toolbars/draw",
+  "esri/graphic"
 ], function (
   dojoDeclare,
   dojoStateful,
@@ -29,10 +29,10 @@ define([
   ) {
     var w = dojoDeclare([esriDraw,dojoStateful], {
     startPoint: null,
-    _setStartPoint: function (p){
-      this._set('startPoint', p);
+    _setStartPoint: function (p) {
+      this._set("startPoint", p);
     },
-    
+
     addStartGraphic: function (fromGeometry, withSym, targetLayer) {
       this.removeStartGraphic(targetLayer);
       this.startGraphic = new EsriGraphic(fromGeometry, withSym);

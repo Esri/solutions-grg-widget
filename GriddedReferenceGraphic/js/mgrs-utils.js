@@ -73,8 +73,8 @@ define([
       var zoneNum, zoneLtr, nonPolarGridZone;
       // Per MGRS definition, these are the valid grid zone letters
       var zoneLetters = [
-        'C','D','E','F','G','H','J','K','L','M','N',
-        'P','Q','R','S','T','U','V','W','X'
+        "C","D","E","F","G","H","J","K","L","M","N",
+        "P","Q","R","S","T","U","V","W","X"
       ];
       // A dictionary object containing all MGRS zones (excluding any zones that don't exist)
       // this is the object that will be returned (i.e. set as the _ZonesDictionary)
@@ -194,7 +194,7 @@ define([
           }
         }
       }
-            
+
       // Loop through all possible zone number/letter combinations,
       // and add the full utm zone geometry
       for (zoneNum = 1; zoneNum <= 60; zoneNum++) {
@@ -206,21 +206,21 @@ define([
             var polygon = new Polygon({
               rings: JSON.parse(JSON.stringify(nonPolarGridZone._rings))
             });
-            geometriesToUnion.push(polygon);            
+            geometriesToUnion.push(polygon);
           }
         }
         //union the geometries to create a single polygon
         var union = geometryEngine.union(geometriesToUnion);
-        // loop back through each letter combination add the single zone geometry 
+        // loop back through each letter combination add the single zone geometry
         for (zoneLtr = 0; zoneLtr < zoneLetters.length; zoneLtr++) {
           nonPolarGridZone = ltrZoneToExtent(zoneNum, zoneLtr);
           if (nonPolarGridZone) {
-            zonesDictionary[nonPolarGridZone.id]['fullZoneGeometry'] = union;
+            zonesDictionary[nonPolarGridZone.id.fullZoneGeometry] = union;
           }
-        } 
+        }
       }
       return zonesDictionary;
-    })(),    
+    })(),
 
     /**
      * Finds the intersecting MGRS grid zones from the input extent
@@ -229,17 +229,17 @@ define([
      */
     zonesFromExtent: function(extent,map) {
       var xmin, ymin, xmax, ymax, minLtr, maxLtr, minNum, maxNum,
-          ltr, idx, rings, polygon, polygon_i, polyline, polyline_i,
+          ltr, idx, rings, polygon, polygon_i, 
           minXOffset, maxXOffset;
       var mapExtent = extent;
       var deg360 = mapExtent.spatialReference.isWebMercator() ?
         constants.WEBMERCATOR_360 :
         constants.GEOGRAPHIC_360;
-            
+
       // per MGRS definition, these are the valid grid zone letters
       var zoneLetters = [
-        'C','D','E','F','G','H','J','K','L','M',
-        'N','P','Q','R','S','T','U','V','W','X'
+        "C","D","E","F","G","H","J","K","L","M",
+        "N","P","Q","R","S","T","U","V","W","X"
       ];
       // this will be the returned array (of VisibleGridZone objects)
       var visibleGridZones = [];
@@ -322,7 +322,7 @@ define([
             polygon = new Polygon({
               rings: rings
             });
-            
+
             // check if zone polygon intersects with the original mapextent
             polygon_i = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
@@ -332,7 +332,7 @@ define([
               visibleGridZones.push( new VisibleGridZone({
                 "map": map,
                 "polygon": polygon_i,
-                "fullZoneGeometry": this._ZonesDictionary[idx].fullZoneGeometry, 
+                "fullZoneGeometry": this._ZonesDictionary[idx].fullZoneGeometry,
                 "offset": x_offset,
                 "nonPolarGridZone": this._ZonesDictionary[idx],
                 "utmZone": this._ZonesDictionary[idx].utmZone,
@@ -350,26 +350,28 @@ define([
      * @param  {module:mgrs-utils~VisibleGridZone[]} visibleGridZone A VisibleGridZone object
      * @param  {object} grid The grid overlay object that is calling this method
      */
-    processZonePolygons: function(visibleGridZones, map, interval, extent) {
-     
-      var utmZonePolygons = {};
-      var intervalSpacing = interval;
+    processZonePolygons: function(visibleGridZones, map, extent) {
+
       var polys = [];
       extent = gridGeomUtils.toWebMercator(extent);
-      
+
       for (var i = 0; i < visibleGridZones.length; i++) {
         var visibleGridZone = visibleGridZones[i];
         if (visibleGridZone) {
-          
+
           var latitudeZone = visibleGridZone.nonPolarGridZone.latitudeZone;
-          
+
           var clippedExtent = gridGeomUtils.toGeographic(visibleGridZone.polygon.getExtent());
 
           // compute the UTM of each extent corner, as a basis for finding the min/max values
-          var lowerLeftUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmin, visibleGridZone.nonPolarGridZone.utmZone);
-          var lowerRightUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmax, visibleGridZone.nonPolarGridZone.utmZone);
-          var upperRightUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmax, visibleGridZone.nonPolarGridZone.utmZone);
-          var upperLeftUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmin, visibleGridZone.nonPolarGridZone.utmZone);
+          var lowerLeftUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmin,
+            visibleGridZone.nonPolarGridZone.utmZone);
+          var lowerRightUtm = mgrs.LLtoUTM(clippedExtent.ymin, clippedExtent.xmax,
+            visibleGridZone.nonPolarGridZone.utmZone);
+          var upperRightUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmax,
+            visibleGridZone.nonPolarGridZone.utmZone);
+          var upperLeftUtm = mgrs.LLtoUTM(clippedExtent.ymax, clippedExtent.xmin,
+            visibleGridZone.nonPolarGridZone.utmZone);
 
           // using the UTM coordinates, find the min/max values
           // (index 0 of a UTM point is easting, 1 is northing)
@@ -381,7 +383,7 @@ define([
           lowerRightUtm[1], upperRightUtm[1], upperLeftUtm[1]); // - 10000;
           var maxNorthing = Math.max(lowerLeftUtm[1],
             lowerRightUtm[1], upperRightUtm[1], upperLeftUtm[1]);
-          
+
           var handlerArgs = {
             "minE": minEasting,
             "maxE": maxEasting,
@@ -391,7 +393,8 @@ define([
             "latitudeZone": latitudeZone,
             "polygon": visibleGridZone.polygon,
             "offset": visibleGridZone.offset,
-            "fullZoneGeometry": gridGeomUtils.extentToPolygon(visibleGridZone.nonPolarGridZone.extent)
+            "fullZoneGeometry": gridGeomUtils.extentToPolygon(
+              visibleGridZone.nonPolarGridZone.extent)
           };
           polys = polys.concat(this.handle100kGrids(handlerArgs, map, extent));
         }
@@ -417,7 +420,7 @@ define([
       var maxN = args.maxN;
       var poly100k = [];
 
-      var n, e, i, ring, pt, text, polygon, polyline, gridPolygonArgs, gridPolygon;
+      var n, e, i, ring, pt, text, polygon, gridPolygonArgs, gridPolygon;
 
       // Loop through northings, starting at the increment just south of minN
       // go through each increment of 100K meters, until maxN is reached
@@ -467,30 +470,33 @@ define([
           }
           // create the polygon, from the ring created above
           polygon = new Polygon([ring]);
-          
+
           //we need to rotate the drawn extent to match the angle of the grid
-          var angle = geomUtils.getAngleBetweenPoints(polygon.getPoint(0, polygon.rings[0].length - 1),polygon.getPoint(0, polygon.rings[0].length - 2));
-          extentRotated = geometryEngine.rotate(gridGeomUtils.extentToPolygon(extent),angle * -1);
-          
+          var angle = geomUtils.getAngleBetweenPoints(
+            polygon.getPoint(0, polygon.rings[0].length - 1),
+            polygon.getPoint(0, polygon.rings[0].length - 2));
+          var extentRotated = geometryEngine.rotate(
+            gridGeomUtils.extentToPolygon(extent),angle * -1);
+
           // now that the 100k grid polygon exists, clip it by the grid zone polygon
           var clippedPolygon = geometryEngine.intersect(
             gridGeomUtils.toWebMercator(polygon),
             gridGeomUtils.toWebMercator(zonePolygon));
-            
+
           var clippedPolygonRotated = geometryEngine.intersects(
               extentRotated,
               gridGeomUtils.toWebMercator(polygon));
-          
+
           // after being clipped above, they may no longer exist
           // (i.e. they were not within the bounds of the zone)
           // if this is the case, skip the rest and move on to the next increment of n or e
           if (clippedPolygon || clippedPolygonRotated) {
-           
+            var clippedPolyToUTMZone;
             if(clippedPolygonRotated) {
-                var clippedPolyToUTMZone = geometryEngine.intersect(
+                clippedPolyToUTMZone = geometryEngine.intersect(
                 gridGeomUtils.toWebMercator(polygon),
                 gridGeomUtils.toWebMercator(fullZoneGeometry));
-              }            
+              }
 
             gridPolygonArgs = {
               "clippedPolygon": clippedPolygon,
@@ -501,21 +507,21 @@ define([
               "ymin": n,
               "xmax": (e + 100000),
               "ymax": (n + 100000),
-              "x": '',
-              "y": '',
+              "x": "",
+              "y": "",
               "minMaxType": "utm",
               "utmZone": utmZone,
               "latitudeZone": latitudeZone,
               "utmZonePoly": zonePolygon,
               "fullZoneGeometry" : fullZoneGeometry,
-              "GZD": text, 
-              "text": text            
+              "GZD": text,
+              "text": text
             };
-            
+
             if(!clippedPolyToUTMZone){
                 continue;
             }
-              
+
             gridPolygon = new GridPolygon(gridPolygonArgs);
             poly100k.push(gridPolygon);
           }
@@ -525,7 +531,7 @@ define([
     },
 
     /**
-     * Creates graphics for grid interval 
+     * Creates graphics for grid interval
      * (i.e. lines at less than 100K meter spacing)
      * @param  {module:mgrs-utils~MgrsGridHandlerArguments} poly
      * An object holding the arguments for the various handlers
@@ -538,20 +544,20 @@ define([
       var utmZone = poly.utmZone;
       var fullZoneGeometry = poly.fullZoneGeometry;
       var GZD = poly.GZD;
-      var offset = poly.offset;
       var minE = poly.xmin;
       var maxE = poly.xmax;
       var minN = poly.ymin;
-      var maxN = poly.ymax;      
+      var maxN = poly.ymax;
       var n, e, text, polygon, gridPolygonArgs, extentRotated;
-      var firstRow = true; 
+      var ptBL, ptBR, ptTL, ptTR;
+      var firstRow = true;
       var firstColumn = true;
-      
+
       extent = gridGeomUtils.toWebMercator(extent);
-      
+
       for (n = Math.floor(minN / interval) * interval; n < maxN; n += interval) {
         for (e = Math.floor(minE / interval) * interval; e < maxE; e += interval) {
-            ring = [];
+            var ring = [];
             ptBL = mgrs.UTMtoLL(n, e, utmZone);
             ring.push([ptBL.lon, ptBL.lat]);
             ptTL = mgrs.UTMtoLL(n + interval, e, utmZone);
@@ -562,39 +568,40 @@ define([
             ring.push([ptBR.lon, ptBR.lat]);
             //close off poly
             ring.push([ptBL.lon, ptBL.lat]);
-            
+
             polygon = new Polygon([ring]);
-            
+
             var clippedExtent = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(gridGeomUtils.extentToPolygon(extent)),
               gridGeomUtils.toWebMercator(fullZoneGeometry));
-            
+
             if (firstRow && firstColumn) {
               //we only need to calculate the angle for the first polygon in the group
-              var angle = geomUtils.getAngleBetweenPoints(new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
-              extentRotated = geometryEngine.rotate(clippedExtent,angle * -1);              
+              var angle = geomUtils.getAngleBetweenPoints(
+                new Point(ptBL.lon,ptBL.lat),new Point(ptTL.lon,ptTL.lat));
+              extentRotated = geometryEngine.rotate(clippedExtent,angle * -1);
             }
-            
+
             var clippedPolygon = geometryEngine.intersect(
               gridGeomUtils.toWebMercator(polygon),
               zonePolygon);
-            
+
             var clippedPolygonRotated = geometryEngine.intersects(
               extentRotated,
-              gridGeomUtils.toWebMercator(polygon));            
+              gridGeomUtils.toWebMercator(polygon));
             
+            var clippedPolyToUTMZone;
             if (clippedPolygon || clippedPolygonRotated) {
-              
               if(clippedPolygonRotated) {
-                var clippedPolyToUTMZone = geometryEngine.intersect(
+                clippedPolyToUTMZone = geometryEngine.intersect(
                 gridGeomUtils.toWebMercator(polygon),
                 gridGeomUtils.toWebMercator(fullZoneGeometry));
               }
-            
-              text = GZD + (this._padZero(e % 100000 / interval,  5 - Math.log10(interval))).toString() 
-                + (this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
+              text = GZD + (this._padZero(e % 100000 / interval,  
+                5 - Math.log10(interval))).toString() + 
+                (this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,
                 5 - Math.log10(interval))).toString();
-              
+
               gridPolygonArgs = {
                 "clippedPolygon": clippedPolygon,
                 "unclippedPolygon": polygon,
@@ -606,19 +613,20 @@ define([
                 "xmax": e + interval,
                 "ymax": n + interval,
                 "x": this._padZero(e % 100000 / interval,  5 - Math.log10(interval)).toString(),
-                "y": this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / interval,5 - Math.log10(interval)).toString(),
+                "y": this._padZero((minN < 0 ? (10000000 + n) : n) % 100000 / 
+                  interval,5 - Math.log10(interval)).toString(),
                 "minMaxType": "utm",
                 "utmZone": utmZone,
                 "latitudeZone": latitudeZone,
                 "GZD": GZD,
                 "utmZonePoly": zonePolygon,
-                "text": text            
+                "text": text
               };
-              
+
               if(!clippedPolyToUTMZone){
                 continue;
               }
-              gridPolygon = new GridPolygon(gridPolygonArgs);
+              var gridPolygon = new GridPolygon(gridPolygonArgs);
               polyOut.push(gridPolygon);
             }
         firstRow = false;
@@ -627,7 +635,7 @@ define([
       }
       return polyOut;
     },
-    
+
     /**
      * Pads text with zeros
      */
@@ -637,7 +645,6 @@ define([
         number = "0" + number;
       }
       return number;
-    },
-
+    }
   };
 });

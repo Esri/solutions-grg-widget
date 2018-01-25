@@ -13,108 +13,91 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
-
+/*jshint bitwise: false*/
 define([
-  'dojo/_base/declare',
-  'jimu/BaseWidget',
-  'dojo/_base/array',
-  'dojo/_base/lang',
-  'dojo/dom-class',
-  'dojo/dom-attr',
-  'dojo/dom-construct',
-  'dojo/dom-style',
-  'dojo/on',
-  'dojo/keys',
-  'dojo/query',  
-  'dojo/string',
-  'dojo/topic',
-  'dojo/_base/html',
-  
-  'dijit/_WidgetBase',
-  'dijit/_WidgetsInTemplateMixin',
-  'dijit/registry',
-  'dijit/TooltipDialog',
-  'dijit/popup',
-  'dijit/Menu',
-  'dijit/MenuItem',
-  'dijit/MenuSeparator',
-  
-  'jimu/dijit/Message',
-  'jimu/dijit/LoadingIndicator',
-  'jimu/LayerInfos/LayerInfos',
-  'jimu/utils',
-  
-  'esri/IdentityManager',
-  'esri/arcgis/OAuthInfo',
-  'esri/arcgis/Portal',
-  'esri/config',
-  'esri/Color',
-  'esri/dijit/util/busyIndicator',
-  'esri/graphic',
-  'esri/geometry/geometryEngine',
-  'esri/geometry/Extent',
-  'esri/geometry/Point',  
-  'esri/geometry/Polyline',
-  'esri/geometry/Polygon',
-  'esri/geometry/webMercatorUtils',
-  'esri/layers/FeatureLayer',
-  'esri/layers/GraphicsLayer',
-  'esri/layers/LabelClass',
-  'esri/SpatialReference',
-  'esri/symbols/Font',
-  'esri/symbols/SimpleMarkerSymbol',
-  'esri/symbols/SimpleFillSymbol',
-  'esri/symbols/TextSymbol',
-  'esri/toolbars/draw',
-  'esri/toolbars/edit',
-  'esri/renderers/SimpleRenderer',
-  'esri/tasks/query',
-  'esri/request',
-  
-  './js/GridSettings',
-  './js/CoordinateInput',
-  './js/drawGRG',
-  './js/DrawFeedBack',
-  './js/EditOutputCoordinate',
-  './js/geometry-utils',
-  './js/geometryUtils',
-  './js/mgrs-utils',
-  './js/mgrs',
-  'dijit/form/NumberTextBox',
-  'dijit/form/RadioButton',
-  'dijit/form/NumberSpinner',
+  "dojo",
+  "dojo/_base/declare",
+  "jimu/BaseWidget",
+  "dojo/_base/array",
+  "dojo/_base/lang",
+  "dojo/dom-class",
+  "dojo/dom-construct",
+  "dojo/on",
+  "dojo/keys",
+  "dojo/string",
+  "dojo/topic",
+  "dojo/_base/html",
+
+  "dijit/_WidgetBase",
+  "dijit/_WidgetsInTemplateMixin",
+  "dijit/TooltipDialog",
+  "dijit/popup",
+  "dijit/Menu",
+  "dijit/MenuItem",
+
+  "jimu/dijit/Message",
+  "jimu/dijit/LoadingIndicator",
+  "jimu/LayerInfos/LayerInfos",
+  "jimu/utils",
+
+  "esri/IdentityManager",
+  "esri/arcgis/Portal",
+  "esri/Color",
+  "esri/dijit/util/busyIndicator",
+  "esri/graphic",
+  "esri/geometry/geometryEngine",
+  "esri/geometry/Extent",
+  "esri/geometry/Point",
+  "esri/geometry/Polyline",
+  "esri/geometry/webMercatorUtils",
+  "esri/layers/FeatureLayer",
+  "esri/layers/GraphicsLayer",
+  "esri/layers/LabelClass",
+  "esri/symbols/SimpleMarkerSymbol",
+  "esri/symbols/SimpleFillSymbol",
+  "esri/symbols/TextSymbol",
+  "esri/toolbars/draw",
+  "esri/toolbars/edit",
+  "esri/renderers/SimpleRenderer",
+
+  "./js/GridSettings",
+  "./js/CoordinateInput",
+  "./js/drawGRG",
+  "./js/DrawFeedBack",
+  "./js/EditOutputCoordinate",
+  "./js/geometry-utils",
+  "./js/geometryUtils",
+  "./js/mgrs-utils",
+  "./js/mgrs",
+  "dijit/form/NumberTextBox",
+  "dijit/form/RadioButton",
+  "dijit/form/NumberSpinner"
 ],
   function (
+    dojo,
     declare,
     BaseWidget,
     array,
     lang,
     domClass,
-    domAttr,
     domConstruct,
-    domStyle,
     on,
     keys,
-    query,
     dojoString,
     topic,
     html,
-    dijitWidgetBase,    
+    dijitWidgetBase,
     dijitWidgetsInTemplate,
-    dijitRegistry,
     dijitTooltipDialog,
     dijitPopup,
-    Menu, 
-    MenuItem, 
-    MenuSeparator,      
+    Menu,
+    MenuItem,
     Message,
     LoadingIndicator,
     jimuLayerInfos,
     utils,
     esriId,
-    esriOAuthInfo,
     esriPortal,
-    esriConfig,
     Color,
     busyIndicator,
     Graphic,
@@ -122,21 +105,16 @@ define([
     Extent,
     Point,
     Polyline,
-    Polygon,
     WebMercatorUtils,
     FeatureLayer,
     GraphicsLayer,
     LabelClass,
-    SpatialReference,
-    Font,
     SimpleMarkerSymbol,
     SimpleFillSymbol,
     TextSymbol,
     Draw,
     Edit,
     SimpleRenderer,
-    Query,
-    esriRequest,
     GridSettings,
     coordInput,
     drawGRG,
@@ -148,7 +126,7 @@ define([
     mgrs
   ) {
     return declare([BaseWidget, dijitWidgetBase, dijitWidgetsInTemplate], {
-      baseClass: 'jimu-widget-GRGDrafter',
+      baseClass: "jimu-widget-GRGDrafter",
       _lastOpenPanel: "mainPage", //Flag to hold last open panel, default will be main page
       _currentOpenPanel: "mainPage", //Flag to hold last open panel, default will be main page
       _gridSettingsInstance: null, //Object to hold Grid Settings instance
@@ -159,23 +137,23 @@ define([
       _labelTypeWithRefSys: "gridReferenceSystem", //Current selected label type
       _labelDirection: "horizontal", //Current selected label direction
       _gridOrigin: "center", //Current selected grid origin
-      _referenceSystem: 'MGRS', //Current selected reference system
-      _showLabels: true, //flag to hold whether labels should be shown 
+      _referenceSystem: "MGRS", //Current selected reference system
+      _showLabels: true, //flag to hold whether labels should be shown
       _GRGAreaFillSymbol: null, //Fill symbol used for GRG cells
       _cellTextSymbol: null, //Text symbol used for GRG labeling
       angle: 0, //angle of GRG
       featureLayerInfo: null,
       centerPoint: [], //Current center point of the GRG extent
       geodesicGrid: true, //Flag for if the GRG is to be created geodesically
-          
+
       postMixInProperties: function () {
         //mixin default nls with widget nls
         this.nls.common = {};
         lang.mixin(this.nls.common, window.jimuNls.common);
       },
-      
+
       constructor: function (args) {
-        declare.safeMixin(this, args);       
+        declare.safeMixin(this, args);
       },
 
       postCreate: function () {
@@ -183,11 +161,8 @@ define([
         if (!String.prototype.format) {
           String.prototype.format = function() {
             var args = arguments;
-            return this.replace(/{(\d+)}/g, function(match, number) { 
-              return typeof args[number] != 'undefined'
-                ? args[number]
-                : match
-              ;
+            return this.replace(/{(\d+)}/g, function(match, number) {
+              return typeof args[number] !== 'undefined'? args[number]: match;
             });
           };
         }
@@ -275,7 +250,7 @@ define([
               "spatialReference":{
                 "wkid":102100
               }
-            },
+            }
           }
         };
         
@@ -287,12 +262,15 @@ define([
         });   
         
         //add the GRG feature layer and the GRG extent graphics layer to the map 
-        this.map.addLayers([this._graphicsLayerGRGTimeExtent,this.GRGArea,this._graphicsLayerGRGExtent]);
+        this.map.addLayers([this._graphicsLayerGRGTimeExtent,
+          this.GRGArea,this._graphicsLayerGRGExtent]);
         
+        var featureLayerInfo;
         //must ensure the layer is loaded before we can access it to turn on the labels if required
         if(this.GRGArea.loaded){
           // show or hide labels
-          featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+          featureLayerInfo = 
+            jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
           featureLayerInfo.enablePopup();
           if(this._showLabels) {
             featureLayerInfo.showLabels();
@@ -300,7 +278,8 @@ define([
         } else {
           this.GRGArea.on("load", lang.hitch(this, function () {
             // show or hide labels
-            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+            featureLayerInfo = 
+              jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
             featureLayerInfo.enablePopup();
             if(this._showLabels) {
               featureLayerInfo.showLabels();
@@ -309,7 +288,8 @@ define([
         }
         
         //set up coordinate input dijit for GRG Point by Size
-        this.grgPointBySizeCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
+        this.grgPointBySizeCoordTool = new coordInput({nls: this.nls, 
+          appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
         this.grgPointBySizeCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointBySizeCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
@@ -319,11 +299,14 @@ define([
         //we need an extra class added the the coordinate format node for the Dart theme 
         if(this.appConfig.theme.name === 'DartTheme')
         {
-          domClass.add(this.grgPointBySizeCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
+          domClass.add(this.grgPointBySizeCoordinateFormat.domNode,
+            'dartThemeClaroDijitTooltipContainerOverride');
         }
         
         //set up coordinate input dijit for GRG Point by Ref System
-        this.grgPointByRefSystemCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointByRefSystemOriginCoords);      
+        this.grgPointByRefSystemCoordTool = new coordInput({
+          nls: this.nls, 
+          appConfig: this.appConfig}, this.newGRGPointByRefSystemOriginCoords);      
         this.grgPointByRefSystemCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointByRefSystemCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
@@ -333,11 +316,14 @@ define([
         //we need an extra class added the the coordinate format node for the Dart theme
         if(this.appConfig.theme.name === 'DartTheme')
         {
-          domClass.add(this.grgPointByRefSystemCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
+          domClass.add(this.grgPointByRefSystemCoordinateFormat.domNode,
+            'dartThemeClaroDijitTooltipContainerOverride');
         }
 
         //set up coordinate input dijit for GRG Point by Time
-        this.grgPointByTimeCoordTool = new coordInput({nls: this.nls, appConfig: this.appConfig}, this.newGRGPointByTimeOriginCoords);      
+        this.grgPointByTimeCoordTool = new coordInput({
+          nls: this.nls, 
+          appConfig: this.appConfig}, this.newGRGPointByTimeOriginCoords);      
         this.grgPointByTimeCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointByTimeCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
@@ -347,26 +333,34 @@ define([
         //we need an extra class added the the coordinate format node for the Dart theme
         if(this.appConfig.theme.name === 'DartTheme')
         {
-          domClass.add(this.grgPointByTimeCoordinateFormat.domNode, 'dartThemeClaroDijitTooltipContainerOverride');
+          domClass.add(this.grgPointByTimeCoordinateFormat.domNode, 
+            'dartThemeClaroDijitTooltipContainerOverride');
         }
         
         // add toolbar for drawing GRG Area by Extent
         this.dt_AreaBySize  = new Draw(this.map);
         
         // add extended toolbar for drawing GRG Point by Size
-        this.dt_PointBySize = new drawFeedBackPoint(this.map,this.grgPointBySizeCoordTool.inputCoordinate.util);
+        this.dt_PointBySize = new drawFeedBackPoint(
+          this.map,
+          this.grgPointBySizeCoordTool.inputCoordinate.util);
         
         // add extended toolbar for drawing GRG Point by Reference System
-        this.dt_PointByRefSystem = new drawFeedBackPoint(this.map,this.grgPointByRefSystemCoordTool.inputCoordinate.util);
+        this.dt_PointByRefSystem = new drawFeedBackPoint(
+          this.map, this.grgPointByRefSystemCoordTool.inputCoordinate.util);
         
         // add extended toolbar for drawing GRG Point by Time
-        this.dt_PointByTime = new drawFeedBackPoint(this.map,this.grgPointByTimeCoordTool.inputCoordinate.util);
+        this.dt_PointByTime = new drawFeedBackPoint(
+          this.map,this.grgPointByTimeCoordTool.inputCoordinate.util);
 
         // add toolbar for drawing GRG MGRS
         this.dt_AreaByRefSystem = new Draw(this.map);
         
         // add edit toolbar that will be used for rotating grid 
-        this.editToolbar = new Edit(this.map,{uniformScaling:true,allowAddVertices:true,allowDeleteVertices:true});
+        this.editToolbar = new Edit(this.map,{
+          uniformScaling:true,
+          allowAddVertices:true,
+          allowDeleteVertices:true});
                               
         this._initLoading();
         
@@ -378,7 +372,9 @@ define([
 
       startup: function () {
         this.inherited(arguments);
-        this.busyIndicator = busyIndicator.create({target: this.domNode.parentNode.parentNode.parentNode, backgroundOpacity: 0});
+        this.busyIndicator = busyIndicator.create({
+          target: this.domNode.parentNode.parentNode.parentNode,
+          backgroundOpacity: 0});
         this._setTheme();        
       },
 
@@ -466,7 +462,8 @@ define([
             
             //Handle click event new GRG from non standard grid button
             // not implemented yet
-            //this.own(on(this.newAreaGRGFromNonStandardButton, 'click', lang.hitch(this, function () {
+            //this.own(on(this.newAreaGRGFromNonStandardButton, 'click', 
+              //lang.hitch(this, function () {
               //this._showPanel("grgAreaFromNonStandard");
             //})));
             
@@ -534,9 +531,11 @@ define([
               if(this.cellHorizontal.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
                   if(this.angle === 0) {
-                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(
+                      this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
                   } else {   
-                    this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
+                    this._calculateCellWidthAndHeight(
+                      this._graphicsLayerGRGExtent.graphics[0].geometry);                  
                   }
                 }
               }
@@ -547,9 +546,11 @@ define([
               if(this.cellVertical.isValid()) {
                 if(this._graphicsLayerGRGExtent.graphics[0]) {                  
                   if(this.angle === 0) {
-                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                    this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(
+                      this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
                   } else {   
-                    this._calculateCellWidthAndHeight(this._graphicsLayerGRGExtent.graphics[0].geometry);                  
+                    this._calculateCellWidthAndHeight(
+                      this._graphicsLayerGRGExtent.graphics[0].geometry);                  
                   }
                 }
               }
@@ -559,15 +560,19 @@ define([
             this.own(on(this.grgAreaBySizeRotation, 'keyup', lang.hitch(this, function () {
               //set time out needed to give chance for the the input validation to occur
               setTimeout(lang.hitch(this, function(){ 
-                this.grgAreaBySizeRotation.setValue(parseFloat(this.grgAreaBySizeRotation.displayedValue)); 
-                if (this.grgAreaBySizeRotation.isValid() && !isNaN(this.grgAreaBySizeRotation.value) && this._graphicsLayerGRGExtent.graphics[0]){                        
-                  var rotateBy = this.grgAreaBySizeRotation.getValue() - this.angle;            
-                  var geom = GeometryEngine.rotate(this._graphicsLayerGRGExtent.graphics[0].geometry, rotateBy*-1);
-                  this._graphicsLayerGRGExtent.clear();
-                  var graphic = new Graphic(geom, this._extentSym);
-                  this._graphicsLayerGRGExtent.add(graphic);            
-                  this.angle = this.grgAreaBySizeRotation.getValue();
-                  this.editToolbar.deactivate();
+                this.grgAreaBySizeRotation.setValue(
+                  parseFloat(this.grgAreaBySizeRotation.displayedValue)); 
+                if (this.grgAreaBySizeRotation.isValid() && 
+                  !isNaN(this.grgAreaBySizeRotation.value) && 
+                  this._graphicsLayerGRGExtent.graphics[0]) {                        
+                    var rotateBy = this.grgAreaBySizeRotation.getValue() - this.angle;            
+                    var geom = GeometryEngine.rotate(
+                      this._graphicsLayerGRGExtent.graphics[0].geometry, rotateBy*-1);
+                    this._graphicsLayerGRGExtent.clear();
+                    var graphic = new Graphic(geom, this._extentSym);
+                    this._graphicsLayerGRGExtent.add(graphic);            
+                    this.angle = this.grgAreaBySizeRotation.getValue();
+                    this.editToolbar.deactivate();
                 }}), 1000);              
             })));
         
@@ -575,15 +580,17 @@ define([
         * GRG from Area by Reference System panel
         **/        
             //Handle click event of back button
-            this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
-              this._resetOnBackToMainPage();
+            this.own(on(this.grgAreaByRefSystemPanelBackButton, 'click', 
+              lang.hitch(this, function () {
+                this._resetOnBackToMainPage();
             })));
             
             //handle Grid Settings button
             if(!this.config.grg.lockSettings) {
-              this.own(on(this.grgAreaByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-                this._updateSettingsPage(this._currentOpenPanel);
-                this._showPanel("settingsPage");
+              this.own(on(this.grgAreaByRefSystemSettingsButton, "click", 
+                lang.hitch(this, function () {
+                  this._updateSettingsPage(this._currentOpenPanel);
+                  this._showPanel("settingsPage");
               })));
             } else {
               this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
@@ -599,8 +606,9 @@ define([
               this._grgAreaByRefSystemCreateGRGButtonClicked)));
 
             //Handle click event of clear GRG button        
-            this.own(on(this.grgAreaByRefSystemClearGRGButton, 'click', lang.hitch(this, function () {
-              this._clearLayers(true);
+            this.own(on(this.grgAreaByRefSystemClearGRGButton, 'click', 
+              lang.hitch(this, function () {
+                this._clearLayers(true);
             })));            
             
             //Handle completion of extent drawing
@@ -627,16 +635,18 @@ define([
           NOT IMPLEMENTED YET
           
             //Handle click event of back button
-            this.own(on(this.grgAreaByNonStandardPanelBackButton, 'click', lang.hitch(this, function () {
-              this._resetOnBackToMainPage();
+            this.own(on(this.grgAreaByNonStandardPanelBackButton, 'click', 
+              //lang.hitch(this, function () {
+                this._resetOnBackToMainPage();
             })));
 
             //handle Grid Settings button
             if(!this.config.grg.lockSettings) {
               //handle Grid Settings button
-              this.own(on(this.grgAreaByNonStandardSettingsButton, "click", lang.hitch(this, function () {
-                this._updateSettingsPage(this._currentOpenPanel);
-                this._showPanel("settingsPage");
+              this.own(on(this.grgAreaByNonStandardSettingsButton, "click", 
+                //lang.hitch(this, function () {
+                  this._updateSettingsPage(this._currentOpenPanel);
+                  this._showPanel("settingsPage");
               })));
             } else {
               this.grgAreaByNonStandardSettingsButton.title = this.nls.lockSettings;
@@ -683,17 +693,20 @@ define([
               this._dt_PointBySizeComplete)));
               
             //Handle change in coord input      
-            this.own(this.grgPointBySizeCoordTool.inputCoordinate.watch('outputString', lang.hitch(this,
-              function (r, ov, nv) {
-                if(!this.grgPointBySizeCoordTool.manualInput){
-                  this.grgPointBySizeCoordTool.set('value', nv);
-                }
+            this.own(this.grgPointBySizeCoordTool.inputCoordinate.watch('outputString', 
+              lang.hitch(this,
+                function (r, ov, nv) {
+                  r = ov = null;
+                  if(!this.grgPointBySizeCoordTool.manualInput) {
+                    this.grgPointBySizeCoordTool.set('value', nv);
+                  }
               }
             )));
 
             //Handle change in start point and update coord input
             this.own(this.dt_PointBySize.watch('startPoint', lang.hitch(this, 
               function (r, ov, nv) {
+                r = ov = null;
                 this.grgPointBySizeCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
                 this.dt_PointBySize.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
               }
@@ -708,31 +721,32 @@ define([
               this._grgPointBySizeCoordFormatButtonClicked)));
             
             //Handle click event on apply button of the coord format popup        
-            this.own(on(this.grgPointBySizeCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
-              this._grgPointBySizeCoordFormatPopupApplyButtonClicked)));
+            this.own(on(this.grgPointBySizeCoordinateFormat.content.applyButton, 'click', 
+              lang.hitch(this, this._grgPointBySizeCoordFormatPopupApplyButtonClicked)));
             
             //Handle click event on cancel button of the coord format popup         
-            this.own(on(this.grgPointBySizeCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
-              function () {
-                dijitPopup.close(this.grgPointBySizeCoordinateFormat);
-              }
+            this.own(on(this.grgPointBySizeCoordinateFormat.content.cancelButton, 'click', 
+              lang.hitch(this, 
+                function () {
+                  dijitPopup.close(this.grgPointBySizeCoordinateFormat);
+                }
             )));
         
         /**
         * GRG from Point by Reference System panel
         **/        
             //Handle click event of back button
-            this.own(on(this.grgPointByRefSystemPanelBackButton, 'click', lang.hitch(this, function () {
-              this._resetOnBackToMainPage();
-            })));
+            this.own(on(this.grgPointByRefSystemPanelBackButton, 'click', 
+              lang.hitch(this, function () {this._resetOnBackToMainPage();})));
 
             //handle Grid Settings button
             if(!this.config.grg.lockSettings) {
               //handle Grid Settings button
-              this.own(on(this.grgPointByRefSystemSettingsButton, "click", lang.hitch(this, function () {
-                this._updateSettingsPage(this._currentOpenPanel);
-                this._showPanel("settingsPage");
-              })));
+              this.own(on(this.grgPointByRefSystemSettingsButton, "click",
+                lang.hitch(this, function () {
+                  this._updateSettingsPage(this._currentOpenPanel);
+                  this._showPanel("settingsPage");
+                })));
             } else {
               this.grgPointByRefSystemSettingsButton.title = this.nls.lockSettings;
               //html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
@@ -743,9 +757,8 @@ define([
               this._grgPointByRefSystemCreateGRGButtonClicked)));
               
             //Handle click event of clear GRG Point button        
-            this.own(on(this.grgPointByRefSystemClearGRGButton, 'click', lang.hitch(this, function () {
-              this._clearLayers(true);
-            })));
+            this.own(on(this.grgPointByRefSystemClearGRGButton, 'click', 
+              lang.hitch(this, function () {this._clearLayers(true);})));
 
             //Handle click event of Add GRG Point draw button
             this.own(on(this.grgPointByRefSystemAddPointBtn, 'click', lang.hitch(this, 
@@ -756,8 +769,9 @@ define([
               this._dt_PointByRefSystemComplete)));
             
             //Handle change in coord input      
-            this.own(this.grgPointByRefSystemCoordTool.inputCoordinate.watch('outputString', lang.hitch(this,
-              function (r, ov, nv) {
+            this.own(this.grgPointByRefSystemCoordTool.inputCoordinate.watch('outputString', 
+              lang.hitch(this, function (r, ov, nv) {
+                r = ov = null;
                 if(!this.grgPointByRefSystemCoordTool.manualInput){
                   this.grgPointByRefSystemCoordTool.set('value', nv);
                 }
@@ -767,8 +781,10 @@ define([
             //Handle change in start point and update coord input
             this.own(this.dt_PointByRefSystem.watch('startPoint', lang.hitch(this, 
               function (r, ov, nv) {
+                r = ov = null;
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
-                this.dt_PointByRefSystem.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
+                this.dt_PointByRefSystem.addStartGraphic(nv,this._ptSym,
+                  this._graphicsLayerGRGExtent);
               }
             )));
             
@@ -781,14 +797,15 @@ define([
               this._grgPointByRefSystemCoordFormatButtonClicked)));
             
             //Handle click event on apply button of the coord format popup        
-            this.own(on(this.grgPointByRefSystemCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
-              this._grgPointByRefSystemCoordFormatPopupApplyButtonClicked)));
+            this.own(on(this.grgPointByRefSystemCoordinateFormat.content.applyButton, 'click',
+              lang.hitch(this,this._grgPointByRefSystemCoordFormatPopupApplyButtonClicked)));
             
             //Handle click event on cancel button of the coord format popup         
-            this.own(on(this.grgPointByRefSystemCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
-              function () {
-                dijitPopup.close(this.grgPointByRefSystemCoordinateFormat);
-              }
+            this.own(on(this.grgPointByRefSystemCoordinateFormat.content.cancelButton, 'click', 
+              lang.hitch(this, 
+                function () {
+                  dijitPopup.close(this.grgPointByRefSystemCoordinateFormat);
+                }
             )));
             
             //Handle grid size dropdown change
@@ -844,17 +861,20 @@ define([
               this._dt_PointByTimeComplete)));
             
             //Handle change in coord input      
-            this.own(this.grgPointByTimeCoordTool.inputCoordinate.watch('outputString', lang.hitch(this,
-              function (r, ov, nv) {
-                if(!this.grgPointByTimeCoordTool.manualInput){
-                  this.grgPointByTimeCoordTool.set('value', nv);
+            this.own(this.grgPointByTimeCoordTool.inputCoordinate.watch('outputString',
+              lang.hitch(this,
+                function (r, ov, nv) {
+                  r = ov = null;
+                  if(!this.grgPointByTimeCoordTool.manualInput){
+                    this.grgPointByTimeCoordTool.set('value', nv);
+                  }
                 }
-              }
             )));
             
             //Handle change in start point and update coord input
             this.own(this.dt_PointByTime.watch('startPoint', lang.hitch(this, 
               function (r, ov, nv) {
+                r = ov = null;
                 this.grgPointByTimeCoordTool.inputCoordinate.set('coordinateEsriGeometry', nv);
                 this.dt_PointByTime.addStartGraphic(nv, this._ptSym, this._graphicsLayerGRGExtent);
               }
@@ -869,14 +889,15 @@ define([
               this._grgPointByTimeCoordFormatButtonClicked)));
             
             //Handle click event on apply button of the coord format popup        
-            this.own(on(this.grgPointByTimeCoordinateFormat.content.applyButton, 'click', lang.hitch(this,
-              this._grgPointByTimeCoordFormatPopupApplyButtonClicked)));
+            this.own(on(this.grgPointByTimeCoordinateFormat.content.applyButton, 'click',
+              lang.hitch(this, this._grgPointByTimeCoordFormatPopupApplyButtonClicked)));
             
             //Handle click event on cancel button of the coord format popup         
-            this.own(on(this.grgPointByTimeCoordinateFormat.content.cancelButton, 'click', lang.hitch(this, 
-              function () {
-                dijitPopup.close(this.grgPointByTimeCoordinateFormat);
-              }
+            this.own(on(this.grgPointByTimeCoordinateFormat.content.cancelButton, 'click',
+              lang.hitch(this, 
+                function () {
+                  dijitPopup.close(this.grgPointByTimeCoordinateFormat);
+                }
             )));
             
             //Handle click event of number of row / columns checkbox        
@@ -910,7 +931,7 @@ define([
             this.own(on(this.grgAreaBySizePublishGRGButton, 'click', lang.hitch(this, function () {
               if(this.addGRGNameArea.isValid()) {
                 this.publishMessage.innerHTML = '';
-                this._initSaveToPortal(this.addGRGNameArea.value)
+                this._initSaveToPortal(this.addGRGNameArea.value);
               } else {
                 // Invalid entry
                 this.publishMessage.innerHTML = this.nls.missingLayerNameMessage;
@@ -919,7 +940,8 @@ define([
             
             //Handle click event of show labels toggle button
             this.own(on(this.settingsShowLabelsToggle, 'click', lang.hitch(this, function () {
-              var featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
+              var featureLayerInfo = 
+                jimuLayerInfos.getInstanceSync().getLayerInfoById("Gridded-Reference-Graphic");
               this._showLabels = this.settingsShowLabelsToggle.checked;
               if(this.settingsShowLabelsToggle.checked) {                
                 featureLayerInfo.showLabels();
@@ -945,7 +967,8 @@ define([
             //Handle graphic vertices changed 
             this.own(on(this.editToolbar, "vertex-move-stop", lang.hitch(this,function(evt){
                 this.centerPoint = evt.graphic.geometry.getCentroid();
-                this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                this._calculateCellWidthAndHeight(gridGeomUtils.extentToPolygon(
+                  this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
             })));
 
             //Handle graphic scaled 
@@ -962,16 +985,24 @@ define([
       **/
       _updateSettingsPage: function (panelName) {
         //reset the grid settings to show all
-        html.removeClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
-        html.removeClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');
-        html.removeClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
-        html.removeClass(this._gridSettingsInstance.labelStartPositionContainer, 'controlGroupHidden');
-        html.removeClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.gridShapeContainer,
+          'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.gridUnitsContainer,
+          'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelStyleContainer,
+          'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelStartPositionContainer,
+          'controlGroupHidden');
+        html.removeClass(this._gridSettingsInstance.labelDirectionContainer,
+          'controlGroupHidden');
         
         //hide the grid origin and reference system settings (these are not common to all settings)
-        html.addClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
-        html.addClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
-        html.addClass(this._gridSettingsInstance.labelStyleWithRefSysContainer, 'controlGroupHidden');
+        html.addClass(this._gridSettingsInstance.gridOriginContainer,
+          'controlGroupHidden');
+        html.addClass(this._gridSettingsInstance.gridRefSystemContainer,
+          'controlGroupHidden');
+        html.addClass(this._gridSettingsInstance.labelStyleWithRefSysContainer,
+          'controlGroupHidden');
         
         
         switch (panelName) {         
@@ -981,18 +1012,26 @@ define([
             break;
           case "grgPointBySize":
             //when creating point by size the grid orign can be used so remove the hidden class
-            html.removeClass(this._gridSettingsInstance.gridOriginContainer, 'controlGroupHidden');
+            html.removeClass(this._gridSettingsInstance.gridOriginContainer,
+              'controlGroupHidden');
             break;
           case "grgAreaByRefSystem":
           case "grgPointByRefSystem":
             //hide elements that are not relevant to creating by reference system            
-            html.addClass(this._gridSettingsInstance.gridShapeContainer, 'controlGroupHidden');
-            html.addClass(this._gridSettingsInstance.gridUnitsContainer, 'controlGroupHidden');            
-            html.addClass(this._gridSettingsInstance.labelStyleContainer, 'controlGroupHidden');
-            html.addClass(this._gridSettingsInstance.labelDirectionContainer, 'controlGroupHidden');
-            //when creating by reference system give the user a choice of which one by removing the hidden class
-            html.removeClass(this._gridSettingsInstance.gridRefSystemContainer, 'controlGroupHidden');
-            html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer, 'controlGroupHidden');          
+            html.addClass(this._gridSettingsInstance.gridShapeContainer,
+              'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.gridUnitsContainer,
+              'controlGroupHidden');            
+            html.addClass(this._gridSettingsInstance.labelStyleContainer,
+              'controlGroupHidden');
+            html.addClass(this._gridSettingsInstance.labelDirectionContainer,
+              'controlGroupHidden');
+            //when creating by reference system give the user a 
+            //choice of which one by removing the hidden class
+            html.removeClass(this._gridSettingsInstance.gridRefSystemContainer,
+              'controlGroupHidden');
+            html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer,
+              'controlGroupHidden');          
             break;
           case "grgPointByTime":
             break;
@@ -1061,7 +1100,7 @@ define([
         this.map.enableMapNavigation();
         
         //remove any active classes from the tool icons          
-        dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
+        dojo.removeClass(this.grgAreaBySizeDrawPolygonIcon,'jimu-polygon-active');
         dojo.removeClass(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
         dojo.removeClass(this.grgPointBySizeAddPointBtn, 'jimu-edit-active');
         dojo.removeClass(this.grgPointByRefSystemAddPointBtn, 'jimu-edit-active');
@@ -1169,10 +1208,9 @@ define([
             var textColor = new Color(updatedSettings.fontSettings.textColor);            
             var labelTrans = (1 - updatedSettings.fontSettings.labelTransparency) * 255;
             
+            var haloSize = 0;
             if(updatedSettings.fontSettings.haloOn){
-              var haloSize = parseInt(updatedSettings.fontSettings.haloSize);
-            } else {
-              var haloSize = 0;
+              haloSize = parseInt(updatedSettings.fontSettings.haloSize,10);
             }
             
             var haloColor = new Color(updatedSettings.fontSettings.haloColor);
@@ -1195,7 +1233,7 @@ define([
               ],              
               "horizontalAlignment": "center",
               "font": {
-                "size": parseInt(updatedSettings.fontSettings.fontSize),
+                "size": parseInt(updatedSettings.fontSettings.fontSize,10),
                 "style": updatedSettings.fontSettings.font.italic?"italic":"normal",
                 "weight": updatedSettings.fontSettings.font.bold?"bold":"normal",
                 "family": updatedSettings.fontSettings.font.fontFamily,
@@ -1392,15 +1430,16 @@ define([
       * @memberOf widgets/GRG/Widget
       **/
       _dt_AreaBySizeComplete: function (evt) {
+        var graphic;
         this.map.enableMapNavigation();
         this.dt_AreaBySize.deactivate();        
         if(evt.geometry.type === 'extent'){
           evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry);
-          var graphic = new Graphic(evt.geometry, this._extentSym);
+          graphic = new Graphic(evt.geometry, this._extentSym);
           this.grgAreaBySizeRotation.set('disabled', false);
           domClass.toggle(this.grgAreaBySizeDrawExtentIcon, 'jimu-extent-active');
         } else {
-          var graphic = new Graphic(evt.geometry, this._extentSym);
+          graphic = new Graphic(evt.geometry, this._extentSym);
           evt.geometry = gridGeomUtils.extentToPolygon(evt.geometry.getExtent());
           domClass.toggle(this.grgAreaBySizeDrawPolygonIcon, 'jimu-polygon-active');
         }
@@ -1426,29 +1465,46 @@ define([
        
         //calculate the geodesic width and height of the required grid cells
         var calculatedCellWidth = ((GeometryEngine.geodesicLength(new Polyline({
-            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y], [geometry.getPoint(0,1).x, geometry.getPoint(0,1).y]]],
+            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y],
+              [geometry.getPoint(0,1).x, geometry.getPoint(0,1).y]]],
             spatialReference: geometry.spatialReference
           }), this._cellUnits))/this.cellHorizontal.value);
           
         var calculatedCellHeight = ((GeometryEngine.geodesicLength(new Polyline({
-            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y], [geometry.getPoint(0,3).x, geometry.getPoint(0,3).y]]],
+            paths: [[[geometry.getPoint(0,0).x, geometry.getPoint(0,0).y],
+              [geometry.getPoint(0,3).x, geometry.getPoint(0,3).y]]],
             spatialReference: geometry.spatialReference
           }), this._cellUnits))/this.cellVertical.value);
           
         //convert the width and height into meters
-        var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellWidth, this._cellUnits);
-        var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellHeight, this._cellUnits);
+        var cellWidthMeters = 
+          this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellWidth,
+          this._cellUnits);
+        var cellHeightMeters = 
+          this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(calculatedCellHeight,
+            this._cellUnits);
         
         //if the width or height of a grid cell is over 20000m we need to use a planar grid
         //so recalculate the width and height using a planar measurement
-        if((cellWidthMeters < 20000) && ((cellHeightMeters < 20000 && this._cellShape !== "hexagon") || this._cellShape === "hexagon")) {
+        if((cellWidthMeters < 20000) && ((cellHeightMeters < 20000 && 
+          this._cellShape !== "hexagon") || this._cellShape === "hexagon")) {
           this.geodesicGrid = true;
           this.grgAreaBySizeCellWidth.setValue(calculatedCellWidth);
-          this._cellShape === "default"?this.grgAreaBySizeCellHeight.setValue(calculatedCellHeight):this.grgAreaBySizeCellHeight.setValue(0);
+          if(this._cellShape === "default") {
+            this.grgAreaBySizeCellHeight.setValue(calculatedCellHeight);
+          } else {
+            this.grgAreaBySizeCellHeight.setValue(0);
+          }
         } else {
           this.geodesicGrid = false;
-          this.grgAreaBySizeCellWidth.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,1), this._cellUnits))/this.cellHorizontal.value)); 
-          this._cellShape === "default"?this.grgAreaBySizeCellHeight.setValue(((GeometryEngine.distance(geometry.getPoint(0,0), geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value)):this.grgAreaBySizeCellHeight.setValue(0);
+          this.grgAreaBySizeCellWidth.setValue(((GeometryEngine.distance(geometry.getPoint(0,0),
+            geometry.getPoint(0,1), this._cellUnits))/this.cellHorizontal.value)); 
+          if(this._cellShape === "default") {
+            this.grgAreaBySizeCellHeight.setValue(((GeometryEngine.distance(geometry.getPoint(0,0),
+               geometry.getPoint(0,3), this._cellUnits))/this.cellVertical.value));
+          } else { 
+            this.grgAreaBySizeCellHeight.setValue(0);
+          }
         }        
       },
       
@@ -1503,7 +1559,7 @@ define([
           this.grgPointBySizeCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
               if(r.inputType === "UNKNOWN"){
-                var alertMessage = new Message({
+                new Message({
                   message: this.nls.parseCoordinatesError
                 });
               } else {
@@ -1516,7 +1572,8 @@ define([
                 var fs = this.grgPointBySizeCoordinateFormat.content.formats[r.inputType];
                 this.grgPointBySizeCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
                 this.grgPointBySizeCoordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dt_PointBySize.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
+                this.dt_PointBySize.addStartGraphic(r.coordinateEsriGeometry, 
+                  this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1532,7 +1589,7 @@ define([
           this.grgPointByRefSystemCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
               if(r.inputType === "UNKNOWN"){
-                var alertMessage = new Message({
+                new Message({
                   message: this.nls.parseCoordinatesError
                 });
               } else {
@@ -1543,9 +1600,11 @@ define([
                 );
                 this._grgPointByRefSystemSetCoordLabel(r.inputType);
                 var fs = this.grgPointByRefSystemCoordinateFormat.content.formats[r.inputType];
-                this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
+                this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatString', 
+                  fs.defaultFormat);
                 this.grgPointByRefSystemCoordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dt_PointByRefSystem.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
+                this.dt_PointByRefSystem.addStartGraphic(r.coordinateEsriGeometry, 
+                  this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1561,7 +1620,7 @@ define([
           this.grgPointByTimeCoordTool.inputCoordinate.getInputType().then(lang.hitch(this, 
             function (r) {
               if(r.inputType === "UNKNOWN"){
-                var alertMessage = new Message({
+                new Message({
                   message: this.nls.parseCoordinatesError
                 });
               } else {
@@ -1574,7 +1633,8 @@ define([
                 var fs = this.grgPointByTimeCoordinateFormat.content.formats[r.inputType];
                 this.grgPointByTimeCoordTool.inputCoordinate.set('formatString', fs.defaultFormat);
                 this.grgPointByTimeCoordTool.inputCoordinate.set('formatType', r.inputType);
-                this.dt_PointByTime.addStartGraphic(r.coordinateEsriGeometry, this._ptSym, this._graphicsLayerGRGExtent);
+                this.dt_PointByTime.addStartGraphic(r.coordinateEsriGeometry, 
+                  this._ptSym, this._graphicsLayerGRGExtent);
               }
             }
           ));
@@ -1619,7 +1679,8 @@ define([
       * Point by Size Panel
       **/
       _grgPointBySizeCoordFormatButtonClicked: function () {
-        this.grgPointBySizeCoordinateFormat.content.set('ct', this.grgPointBySizeCoordTool.inputCoordinate.formatType);
+        this.grgPointBySizeCoordinateFormat.content.set('ct', 
+          this.grgPointBySizeCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
             popup: this.grgPointBySizeCoordinateFormat,
             around: this.grgPointBySizeCoordFormatButton
@@ -1631,7 +1692,8 @@ define([
       * Point by Reference System Panel
       **/
       _grgPointByRefSystemCoordFormatButtonClicked: function () {
-        this.grgPointByRefSystemCoordinateFormat.content.set('ct', this.grgPointByRefSystemCoordTool.inputCoordinate.formatType);
+        this.grgPointByRefSystemCoordinateFormat.content.set('ct', 
+          this.grgPointByRefSystemCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
             popup: this.grgPointByRefSystemCoordinateFormat,
             around: this.grgPointByRefSystemCoordFormatButton
@@ -1643,7 +1705,8 @@ define([
       * Point by Time Panel
       **/
       _grgPointByTimeCoordFormatButtonClicked: function () {
-        this.grgPointByTimeCoordinateFormat.content.set('ct', this.grgPointByTimeCoordTool.inputCoordinate.formatType);
+        this.grgPointByTimeCoordinateFormat.content.set('ct', 
+          this.grgPointByTimeCoordTool.inputCoordinate.formatType);
         dijitPopup.open({
             popup: this.grgPointByTimeCoordinateFormat,
             around: this.grgPointByTimeCoordFormatButton
@@ -1655,7 +1718,8 @@ define([
       * Point by Size Panel
       **/
       _grgPointBySizeCoordFormatPopupApplyButtonClicked: function () {
-        var fs = this.grgPointBySizeCoordinateFormat.content.formats[this.grgPointBySizeCoordinateFormat.content.ct];
+        var fs = this.grgPointBySizeCoordinateFormat.content.formats[
+          this.grgPointBySizeCoordinateFormat.content.ct];
         var cfs = fs.defaultFormat;
         var fv = this.grgPointBySizeCoordinateFormat.content.frmtSelect.get('value');
         if (fs.useCustom) {
@@ -1676,7 +1740,8 @@ define([
       * Point by Reference System Panel
       **/
       _grgPointByRefSystemCoordFormatPopupApplyButtonClicked: function () {
-        var fs = this.grgPointByRefSystemCoordinateFormat.content.formats[this.grgPointByRefSystemCoordinateFormat.content.ct];
+        var fs = this.grgPointByRefSystemCoordinateFormat.content.formats[
+          this.grgPointByRefSystemCoordinateFormat.content.ct];
         var cfs = fs.defaultFormat;
         var fv = this.grgPointByRefSystemCoordinateFormat.content.frmtSelect.get('value');
         if (fs.useCustom) {
@@ -1697,7 +1762,8 @@ define([
       * Point by Time Panel
       **/
       _grgPointByTimeCoordFormatPopupApplyButtonClicked: function () {
-        var fs = this.grgPointByTimeCoordinateFormat.content.formats[this.grgPointByTimeCoordinateFormat.content.ct];
+        var fs = this.grgPointByTimeCoordinateFormat.content.formats[
+          this.grgPointByTimeCoordinateFormat.content.ct];
         var cfs = fs.defaultFormat;
         var fv = this.grgPointByTimeCoordinateFormat.content.frmtSelect.get('value');
         if (fs.useCustom) {
@@ -1752,11 +1818,13 @@ define([
       **/
       _grgAreaBySizeCreateGRGButtonClicked: function () {                 
         //check form inputs for validity
-        if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
+        if (this._graphicsLayerGRGExtent.graphics[0] && this.grgAreaBySizeCellWidth.isValid() && 
+          this.grgAreaBySizeCellHeight.isValid() && this.grgAreaBySizeRotation.isValid()) {
           this._clearLayers(false);
           
           var geom = (this.angle === 0) ?
-            gridGeomUtils.extentToPolygon(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()):
+            gridGeomUtils.extentToPolygon(
+              this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()):
             this._graphicsLayerGRGExtent.graphics[0].geometry;
           
           //if the input is geographics project the geometry to WMAS
@@ -1769,26 +1837,35 @@ define([
           //work out width and height of AOI, method depends on if the grid is to be geodesic
           if (this.geodesicGrid) {
             GRGAreaWidth = GeometryEngine.geodesicLength(new Polyline({
-              paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
+              paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y],
+                [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
               spatialReference: geom.spatialReference
             }), 'meters');          
             GRGAreaHeight = GeometryEngine.geodesicLength(new Polyline({
-              paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,3).x, geom.getPoint(0,3).y]]],
+              paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], 
+                [geom.getPoint(0,3).x, geom.getPoint(0,3).y]]],
               spatialReference: geom.spatialReference
             }), 'meters');            
           } else {
-            GRGAreaWidth = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,1), 'meters'); 
-            GRGAreaHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,3), 'meters');
+            GRGAreaWidth = GeometryEngine.distance(geom.getPoint(0,0), 
+              geom.getPoint(0,1), 'meters'); 
+            GRGAreaHeight = GeometryEngine.distance(geom.getPoint(0,0), 
+              geom.getPoint(0,3), 'meters');
           }
           
-          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellWidth.value, this._cellUnits);
-          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgAreaBySizeCellHeight.value,this._cellUnits);
+          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+            this.grgAreaBySizeCellWidth.value, this._cellUnits);
+          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+            this.grgAreaBySizeCellHeight.value,this._cellUnits);
           
-          //work out how many cells are needed horizontally & Vertically to cover the whole canvas area
+          //work out how many cells are needed horizontally & Vertically 
+          //to cover the whole canvas area
           var numCellsHorizontal = Math.round(GRGAreaWidth/cellWidth);
           
           var numCellsVertical;
-          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaHeight/cellHeight):numCellsVertical = Math.round(GRGAreaHeight/(cellWidth)/Math.cos(30* Math.PI/180)) + 1;
+          numCellsVertical = this._cellShape === "default"?
+            Math.round(GRGAreaHeight/cellHeight):
+            Math.round(GRGAreaHeight/(cellWidth)/Math.cos(30* Math.PI/180)) + 1;
           
           if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical))
           {
@@ -1805,13 +1882,17 @@ define([
               this._cellShape,
               'center',
               this.geodesicGrid,
-              this.map,              
-              esriConfig.defaults.geometryService); 
+              this.map); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
-            this.map.setExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().expand(2),false);
+            this.map.setExtent(
+              this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().expand(2),false);
             this._graphicsLayerGRGExtent.clear(); 
             this._showPanel("publishPage");
+          } else {
+            new Message({
+              message: this.nls.tooManyCellsErrorMessage
+            });
           }
         }
       },
@@ -1821,22 +1902,29 @@ define([
       **/
       _grgPointBySizeCreateGRGButtonClicked: function () {
         //check form inputs for validity
-        if (this.dt_PointBySize.startGraphic && this.grgPointBySizeCellWidth.isValid() && this.grgPointBySizeCellHeight.isValid() && this.gridAnglePoint.isValid()) {
+        if (this.dt_PointBySize.startGraphic && this.grgPointBySizeCellWidth.isValid() && 
+          this.grgPointBySizeCellHeight.isValid() && this.gridAnglePoint.isValid()) {
           
           //get center point of AOI
-          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointBySizeCoordTool.inputCoordinate.coordinateEsriGeometry);
+          var centerPoint = WebMercatorUtils.geographicToWebMercator(
+            this.grgPointBySizeCoordTool.inputCoordinate.coordinateEsriGeometry);
           
-          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointBySizeCellWidth.value,this._cellUnits);
-          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointBySizeCellHeight.value,this._cellUnits);          
+          var cellWidth = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+            this.grgPointBySizeCellWidth.value,this._cellUnits);
+          var cellHeight = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+            this.grgPointBySizeCellHeight.value,this._cellUnits);          
 
           // if the width or height of a grid cell is over 20000m we need to use a planar grid
-          if((cellWidth < 20000) && ((cellHeight < 20000 && this._cellShape !== "hexagon") || this._cellShape === "hexagon")) {
-            this.geodesicGrid = true;
+          if((cellWidth < 20000) && 
+            ((cellHeight < 20000 && this._cellShape !== "hexagon") || 
+            this._cellShape === "hexagon")) {
+              this.geodesicGrid = true;
           } else {
             this.geodesicGrid = false;
           }
           
-          if(drawGRG.checkGridSize(this.grgPointBySizeCellHorizontal.value,this.grgPointBySizeCellVertical.value))
+          if(drawGRG.checkGridSize(this.grgPointBySizeCellHorizontal.value,
+            this.grgPointBySizeCellVertical.value))
           {
             var features = drawGRG.createGRG(
               this.grgPointBySizeCellHorizontal.value,
@@ -1851,8 +1939,7 @@ define([
               this._cellShape,
               this._gridOrigin,
               this.geodesicGrid,
-              this.map,
-              esriConfig.defaults.geometryService); 
+              this.map); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
             this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
@@ -1860,13 +1947,17 @@ define([
             for(var i = 0;i < features.length;i++){
               geomArray.push(features[i].geometry);
             }
-            var union = GeometryEngine.union(geomArray)
+            var union = GeometryEngine.union(geomArray);
             this.map.setExtent(union.getExtent().expand(2),false);
             this._showPanel("publishPage");
-          }          
+          } else {
+            new Message({
+              message: this.nls.tooManyCellsErrorMessage
+            });
+          }         
         } else {
           // Invalid entry
-          var alertMessage = new Message({
+          new Message({
             message: this.nls.missingParametersMessage
           });          
         }
@@ -1876,47 +1967,60 @@ define([
       * Handle create GRG button being clicked on the GRG Point by Time Panel
       **/
       _grgPointByTimeCreateGRGButtonClicked: function () {
+        var buffer, geom, GRGAreaWidthHeight, cellWidthMeters, cellHeightMeters; 
         //check there is a origin point set and the time and speed values are valid
-        if (this.dt_PointByTime.startGraphic && this.grgPointByTimeTime.isValid() && this.grgPointByTimeRate.isValid() && this.grgPointByTimeRotation.isValid()) {
+        if (this.dt_PointByTime.startGraphic && this.grgPointByTimeTime.isValid() && 
+          this.grgPointByTimeRate.isValid() && this.grgPointByTimeRotation.isValid()) {
           
           // from the time and spped settings work out the radius in meters
-          var timeInSeconds = this.grgPointByTimeTime.get('value') * this.grgPointByTimeTimeUnits.get('value');
-          var rateInMetersPerSecond = (this.grgPointByTimeRate.get('value') * this.grgPointByTimeRateUnits.value.split(';')[0]) / this.grgPointByTimeRateUnits.value.split(';')[1];
+          var timeInSeconds = this.grgPointByTimeTime.get('value') * 
+            this.grgPointByTimeTimeUnits.get('value');
+          var rateInMetersPerSecond = (this.grgPointByTimeRate.get('value') * 
+            this.grgPointByTimeRateUnits.value.split(';')[0]) / 
+            this.grgPointByTimeRateUnits.value.split(';')[1];
           var calculatedRadiusInMeters = timeInSeconds * rateInMetersPerSecond;
           
-          // now we have the radius in meters we can create a polygon of the grg area from the origin point         
-          var centerPoint = WebMercatorUtils.geographicToWebMercator(this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);  
+          // now we have the radius in meters we can create a 
+          // polygon of the grg area from the origin point 
+          var centerPoint = WebMercatorUtils.geographicToWebMercator(
+            this.grgPointByTimeCoordTool.inputCoordinate.coordinateEsriGeometry);  
           
-          // if the radius to large we need to create the grid in planar measurements otherwise geodesic
+          // if the radius to large we need to create the grid in 
+          // planar measurements otherwise geodesic
           if(calculatedRadiusInMeters < 200000) {
             this.geodesicGrid = true;
-            var buffer = GeometryEngine.geodesicBuffer(centerPoint, calculatedRadiusInMeters, 9001);
-            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
-            // as we have created a circle the grg area and width should be uniform so we only need to calculate one of them
-            var GRGAreaWidthHeight = GeometryEngine.geodesicLength(new Polyline({
-                paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
+            buffer = GeometryEngine.geodesicBuffer(centerPoint, calculatedRadiusInMeters, 9001);
+            geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            // as we have created a circle the grg area and width should 
+            // be uniform so we only need to calculate one of them
+            GRGAreaWidthHeight = GeometryEngine.geodesicLength(new Polyline({
+                paths: [[[geom.getPoint(0,0).x, geom.getPoint(0,0).y], 
+                [geom.getPoint(0,1).x, geom.getPoint(0,1).y]]],
                 spatialReference: geom.spatialReference
               }), 'meters');            
           } else {
             this.geodesicGrid = false;
-            var buffer = GeometryEngine.buffer(centerPoint, calculatedRadiusInMeters, 9001);
-            var geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
-            var GRGAreaWidthHeight = GeometryEngine.distance(geom.getPoint(0,0), geom.getPoint(0,1), 'meters');
+            buffer = GeometryEngine.buffer(centerPoint, calculatedRadiusInMeters, 9001);
+            geom = gridGeomUtils.extentToPolygon(buffer.getExtent());
+            GRGAreaWidthHeight = GeometryEngine.distance(geom.getPoint(0,0), 
+              geom.getPoint(0,1), 'meters');
           }          
           
           // add the buffer to the graphics layer
           var graphic = new Graphic(buffer, this._extentSym);
           this._graphicsLayerGRGTimeExtent.add(graphic);        
                     
-          // the required cell width and height to be used depends on the setting of the define rows and columns toggle
+          // the required cell width and height to be used depends on 
+          // the setting of the define rows and columns toggle
           if(this.setNumberRowsColumnsTime.checked) {
             // check validity of the number of horizontal and vertical cell values
-            if(this.grgPointByTimeCellHorizontal.isValid() && this.grgPointByTimeCellVertical.isValid()) {
-              var cellWidthMeters = GRGAreaWidthHeight / this.grgPointByTimeCellHorizontal.value;
-              var cellHeightMeters = GRGAreaWidthHeight / this.grgPointByTimeCellVertical.value; 
+            if(this.grgPointByTimeCellHorizontal.isValid() && 
+              this.grgPointByTimeCellVertical.isValid()) {
+              cellWidthMeters = GRGAreaWidthHeight / this.grgPointByTimeCellHorizontal.value;
+              cellHeightMeters = GRGAreaWidthHeight / this.grgPointByTimeCellVertical.value; 
             } else {
               // Invalid values
-              var alertMessage = new Message({
+              new Message({
                 message: this.nls.invalidHorizontalVerticalParametersMessage
               });
               return;
@@ -1924,24 +2028,31 @@ define([
           } else {            
             // check validity of the cell width and height values
             if(this.grgPointByTimeCellWidth.isValid() && this.grgPointByTimeCellHeight.isValid()) {
-              var cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellWidth.value, this._cellUnits);
-              var cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByTimeCellHeight.value,this._cellUnits);              
+              cellWidthMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+                this.grgPointByTimeCellWidth.value, this._cellUnits);
+              cellHeightMeters = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+                this.grgPointByTimeCellHeight.value,this._cellUnits);              
             } else {
              // Invalid values
-              var alertMessage = new Message({
+              new Message({
                 message: this.nls.invalidWidthHeightParametersMessage
               });
               return;              
             }
           }
           
-          //work out how many cells are needed horizontally & Vertically to cover the whole canvas area
+          // work out how many cells are needed horizontally & Vertically
+          // to cover the whole canvas area
           var numCellsHorizontal = Math.round(GRGAreaWidthHeight/cellWidthMeters);
             
           var numCellsVertical;
-          this._cellShape === "default"?numCellsVertical = Math.round(GRGAreaWidthHeight/cellHeightMeters):numCellsVertical = Math.round(GRGAreaWidthHeight/(cellWidthMeters)/Math.cos(30* Math.PI/180)) + 1;
+          numCellsVertical = this._cellShape === "default"?
+            Math.round(GRGAreaWidthHeight/cellHeightMeters):
+            Math.round(GRGAreaWidthHeight/(cellWidthMeters)/
+              Math.cos(30* Math.PI/180)) + 1;
           
-          // there is a possibility that the cell width and height already cover the whole GRG area in this case just set the number of cells horizontal and vertical to 1
+          // there is a possibility that the cell width and height already cover the whole
+          // GRG area in this case just set the number of cells horizontal and vertical to 1
           if(numCellsHorizontal < 1) {
             numCellsHorizontal = 1;
           }
@@ -1964,8 +2075,7 @@ define([
               this._cellShape,
               this._gridOrigin,
               this.geodesicGrid,
-              this.map,
-              esriConfig.defaults.geometryService); 
+              this.map); 
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
             this.createGraphicDeleteMenu();
@@ -1974,13 +2084,17 @@ define([
             for(var i = 0;i < features.length;i++){
               geomArray.push(features[i].geometry);
             }
-            var union = GeometryEngine.union(geomArray)
+            var union = GeometryEngine.union(geomArray);
             this.map.setExtent(union.getExtent().expand(2),false);
             this._showPanel("publishPage");
-          }          
+          } else {
+            new Message({
+              message: this.nls.tooManyCellsErrorMessage
+            });
+          }         
         } else {
           // Invalid entry
-          var alertMessage = new Message({
+          new Message({
             message: this.nls.missingOriginParametersMessage
           });
         }        
@@ -1990,23 +2104,28 @@ define([
       * Handle create GRG button being clicked on the GRG Point by Reference System Panel
       **/
       _grgPointByRefSystemCreateGRGButtonClicked: function () {
-        var width, height, cellBLPoint, extent, MGRS, offsets;
+        var width, height, cellBLPoint, extent, MGRS;
         var geomArray = [];
         this._clearLayers(false);
-        if(drawGRG.checkGridSize(this.grgPointByRefCellHorizontal.getValue(),this.grgPointByRefCellVertical.getValue())){        
-          if (this.dt_PointByRefSystem.startGraphic && this.grgPointByRefCellHorizontal.isValid() && this.grgPointByRefCellVertical.isValid()) {
-            var gridOrigin = this.grgPointByRefSystemCoordTool.inputCoordinate.coordinateEsriGeometry;
+        if(drawGRG.checkGridSize(this.grgPointByRefCellHorizontal.getValue(),
+          this.grgPointByRefCellVertical.getValue())){        
+          if (this.dt_PointByRefSystem.startGraphic && 
+            this.grgPointByRefCellHorizontal.isValid() && 
+            this.grgPointByRefCellVertical.isValid()) {
+            var gridOrigin = 
+              this.grgPointByRefSystemCoordTool.inputCoordinate.coordinateEsriGeometry;
             switch(this.grgPointByRefSystemGridSize.getValue()){
               case 'UTM':
+                  var tempLon, tempLat;
                   if(gridOrigin.x < 0){
-                    var tempLon = (gridOrigin.x - (gridOrigin.x % 6)) - 6;
+                    tempLon = (gridOrigin.x - (gridOrigin.x % 6)) - 6;
                   } else {
-                    var tempLon = gridOrigin.x - (gridOrigin.x % 6);
+                    tempLon = gridOrigin.x - (gridOrigin.x % 6);
                   }
                   if(gridOrigin.y < 0){
-                    var tempLat = (gridOrigin.y - (gridOrigin.y % 8)) - 8;
+                    tempLat = (gridOrigin.y - (gridOrigin.y % 8)) - 8;
                   } else {
-                    var tempLat = gridOrigin.y - (gridOrigin.y % 8);
+                    tempLat = gridOrigin.y - (gridOrigin.y % 8);
                   }                    
                 break;              
               case '100000':
@@ -2032,12 +2151,14 @@ define([
               width =  this.grgPointByRefCellHorizontal.getValue() * 6;          
               height = this.grgPointByRefCellVertical.getValue() * 8;
               extent = new Extent({
-                "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellBLPoint.x + width,"ymax":cellBLPoint.y + height,
+                "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,
+                "xmax":cellBLPoint.x + width,"ymax":cellBLPoint.y + height,
                 "spatialReference":{"wkid":4326}
               });                          
             } else {
               cellBLPoint = mgrs.USNGtoPoint(MGRS);
-              //if the origin point is in a polar region cellBLPoint x and y will be NaN display error to user and break out of function
+              // if the origin point is in a polar region cellBLPoint x and y will be
+              // NaN display error to user and break out of function
               if(isNaN(cellBLPoint.x) || isNaN(cellBLPoint.y)) {
                 new Message({
                   message: this.nls.grgPolarOriginError
@@ -2045,17 +2166,22 @@ define([
                 return;
               }
               
-              width =  this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellHorizontal.getValue());          
-              height = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * (this.grgPointByRefCellVertical.getValue());
+              width =  this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+                this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * 
+                (this.grgPointByRefCellHorizontal.getValue());          
+              height = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+                this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) * 
+                (this.grgPointByRefCellVertical.getValue());
               
               var cellTLPoint = geometryUtils.getDestinationPoint(cellBLPoint, 90, width);
               cellTLPoint = geometryUtils.getDestinationPoint(cellTLPoint, 0, height);
               
-              offset = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) / 5;
+              var offset = this.grgPointBySizeCoordTool.inputCoordinate.util.convertToMeters(
+                this.grgPointByRefSystemGridSize.getValue(),this._cellUnits) / 5;
               
               //shrink the extent slightly so that we dont pick up extra cells around the edge
-              var cellBLPoint = geometryUtils.getDestinationPoint(cellBLPoint, 45, offset);
-              var cellTLPoint = geometryUtils.getDestinationPoint(cellTLPoint, 225, offset);
+              cellBLPoint = geometryUtils.getDestinationPoint(cellBLPoint, 45, offset);
+              cellTLPoint = geometryUtils.getDestinationPoint(cellTLPoint, 225, offset);
               
               extent = new Extent({
                 "xmin":cellBLPoint.x,"ymin":cellBLPoint.y,"xmax":cellTLPoint.x,"ymax":cellTLPoint.y,
@@ -2073,18 +2199,19 @@ define([
             extent = WebMercatorUtils.geographicToWebMercator(extent);
               
             var zones = mgrsUtils.zonesFromExtent(extent,this.map); 
-            
+            var graphic, label;
             var features = [];
             
             switch(this.grgPointByRefSystemGridSize.getValue()){
               case 'UTM':              
-                for (i = 0; i < zones.length; i++) {                  
+                for (var i = 0; i < zones.length; i++) {                  
                   if (this.map.spatialReference.wkid !== 4326) {
-                    var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                    graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(
+                      zones[i].gridPolygon.unclippedPolygon));
                   } else {
-                    var graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
+                    graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
                   }
-                  var label = this.grgPointByRefLabelFormat.value
+                  label = this.grgPointByRefLabelFormat.value;
                   label = label.replace(/Z/, zones[i].gridPolygon.text);
                   graphic.setAttributes({'grid': label});
                   features.push(graphic);
@@ -2092,29 +2219,33 @@ define([
                 }           
                 break;
               default:
-                  var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000, extent);
+                  var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, extent);
                   var currentValue = 10000;              
                   while (currentValue >= this.grgPointByRefSystemGridSize.getValue()) {
                     var polys = [];
                     for (i = 0; i < polysToLoop.length; i++) {
-                      polys = polys.concat(mgrsUtils.handleGridSquares(polysToLoop[i],this.map, currentValue, extent));
+                      polys = polys.concat(mgrsUtils.handleGridSquares(
+                        polysToLoop[i],this.map, currentValue, extent));
                     }
                     polysToLoop = [];
                     polysToLoop = polys;
                     currentValue = currentValue / 10;                
                   }                  
                   for (i = 0; i < polysToLoop.length; i++) {
+                    
                     if (this.map.spatialReference.wkid !== 4326) {
-                      var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                      graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
                     } else {
-                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone));
+                      graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(
+                        polysToLoop[i].clippedPolyToUTMZone));
                     }
                     if(this._labelTypeWithRefSys === 'gridReferenceSystem') {
-                      var label = this.grgPointByRefLabelFormat.value
+                      label = this.grgPointByRefLabelFormat.value;
                       label = label.replace(/Y/, polysToLoop[i].y);
                       label = label.replace(/X/, polysToLoop[i].x); 
                       label = label.replace(/S/, polysToLoop[i].GZD); 
-                      label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                      label = label.replace(/Z/, polysToLoop[i].utmZone + 
+                        polysToLoop[i].latitudeZone); 
                       graphic.setAttributes({'grid': label});                  
                       features.push(graphic);                      
                     }
@@ -2124,12 +2255,13 @@ define([
             }
             // change map scale to extent of grg
             if(geomArray.length > 0) {
-              var union = GeometryEngine.union(geomArray)
+              var union = GeometryEngine.union(geomArray);
               this.map.setExtent(union.getExtent().expand(2),false);
             }
             
             if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
-              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgPointByRefSystemGridSize.getValue());
+              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, 
+                this._labelStartPosition, this.grgPointByRefSystemGridSize.getValue());
             }
             
             //apply the edits to the feature layer
@@ -2140,6 +2272,10 @@ define([
             this._graphicsLayerGRGExtent.hide();
             this._showPanel("publishPage");
           }
+        } else {
+          new Message({
+            message: this.nls.tooManyCellsErrorMessage
+          });
         }
       },
       
@@ -2147,13 +2283,20 @@ define([
       * Handle create GRG button being clicked on the GRG Area by Reference System Panel
       **/
       _grgAreaByRefSystemCreateGRGButtonClicked: function () {                 
+        var graphic, label;
         //check form inputs for validity
         if (this._graphicsLayerGRGExtent.graphics[0]) {
-          var numCellsHorizontal = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth()) / this.grgAreaByRefSystemGridSize.getValue();
-          var numCellsVertical = parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight()) / this.grgAreaByRefSystemGridSize.getValue();
-          if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical)){
+          var numCellsHorizontal = 
+            parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getWidth(),10)/ 
+            this.grgAreaByRefSystemGridSize.getValue();
+          var numCellsVertical = 
+            parseInt(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent().getHeight(),10)/ 
+            this.grgAreaByRefSystemGridSize.getValue();
+          if(drawGRG.checkGridSize(numCellsHorizontal,numCellsVertical) || 
+            this.grgAreaByRefSystemGridSize.getValue() === 'UTM'){
             if (this.map.spatialReference.wkid !== 4326) {          
-              if(drawGRG.checkPolarRegion(WebMercatorUtils.webMercatorToGeographic(this._graphicsLayerGRGExtent.graphics[0].geometry))) {
+              if(drawGRG.checkPolarRegion(WebMercatorUtils.webMercatorToGeographic(
+                  this._graphicsLayerGRGExtent.graphics[0].geometry))) {
                   new Message({
                     message: this.nls.grgPolarRegionError
                   });
@@ -2165,11 +2308,11 @@ define([
                   });
                 }
             }
-            var TRString, BRString;
             var geomArray = [];
             this._clearLayers(false);           
             // determine which UTM grid zones and bands fall within the extent
-            var zones = mgrsUtils.zonesFromExtent(this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent(),this.map);
+            var zones = mgrsUtils.zonesFromExtent(
+              this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent(),this.map);
             var features = [];
             
             switch(this.grgAreaByRefSystemGridSize.getValue()){
@@ -2177,59 +2320,66 @@ define([
                 for (i = 0; i < zones.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
                     if (this.map.spatialReference.wkid !== 4326) {
-                      var graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
+                      graphic = new Graphic(zones[i].gridPolygon.clippedPolygon);
                     } else {
-                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(zones[i].gridPolygon.clippedPolygon));
+                      graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(
+                        zones[i].gridPolygon.clippedPolygon));
                     }
                   } else {
                     if (this.map.spatialReference.wkid !== 4326) {
-                      var graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(zones[i].gridPolygon.unclippedPolygon));
+                      graphic = new Graphic(WebMercatorUtils.geographicToWebMercator(
+                        zones[i].gridPolygon.unclippedPolygon));
                     } else {
-                      var graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
+                      graphic = new Graphic(zones[i].gridPolygon.unclippedPolygon);
                     }
                   }
                   geomArray.push(graphic.geometry);
-                  var label = this.grgAreaByRefLabelFormat.value
+                  label = this.grgAreaByRefLabelFormat.value;
                   label = label.replace(/Z/, zones[i].gridPolygon.text);
                   graphic.setAttributes({'grid': label});
                   features.push(graphic);
                 }            
                 break;
               default:                  
-                var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map, 100000,this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
+                var polysToLoop = mgrsUtils.processZonePolygons(zones, this.map,
+                  this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent());
                 var currentValue = 10000;              
                 while (currentValue >= this.grgAreaByRefSystemGridSize.getValue()) {
                   var polys = [];
                   for (i = 0; i < polysToLoop.length; i++) {
-                    polys = polys.concat(mgrsUtils.handleGridSquares(polysToLoop[i],this.map, currentValue, this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
+                    polys = polys.concat(mgrsUtils.handleGridSquares(polysToLoop[i],this.map,
+                      currentValue, this._graphicsLayerGRGExtent.graphics[0].geometry.getExtent()));
                   }
                   polysToLoop = [];
                   polysToLoop = polys;
                   currentValue = currentValue / 10;                
                 }                
                 
-                for (i = 0; i < polysToLoop.length; i++) {
+                for (var i = 0; i < polysToLoop.length; i++) {
                   if(this.grgAreaByRefSystemClipToggle.checked) {
                     if (this.map.spatialReference.wkid !== 4326) {
-                      var graphic = new Graphic(polysToLoop[i].clippedPolygon);
+                      graphic = new Graphic(polysToLoop[i].clippedPolygon);
                     } else {
-                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolygon));
+                      graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(
+                        polysToLoop[i].clippedPolygon));
                     }
                     geomArray.push(graphic.geometry);                    
                   } else {
                     if (this.map.spatialReference.wkid !== 4326) {
-                      var graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
+                      graphic = new Graphic(polysToLoop[i].clippedPolyToUTMZone);
                     } else {
-                      var graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(polysToLoop[i].clippedPolyToUTMZone));
+                      graphic = new Graphic(WebMercatorUtils.webMercatorToGeographic(
+                        polysToLoop[i].clippedPolyToUTMZone));
                     }
                     geomArray.push(graphic.geometry);
                   }
                   if(this._labelTypeWithRefSys === 'gridReferenceSystem') {
-                    var label = this.grgAreaByRefLabelFormat.value
+                    label = this.grgAreaByRefLabelFormat.value;
                     label = label.replace(/Y/, polysToLoop[i].y);
                     label = label.replace(/X/, polysToLoop[i].x); 
                     label = label.replace(/S/, polysToLoop[i].GZD); 
-                    label = label.replace(/Z/, polysToLoop[i].utmZone + polysToLoop[i].latitudeZone);                   
+                    label = label.replace(/Z/, polysToLoop[i].utmZone + 
+                      polysToLoop[i].latitudeZone); 
                     graphic.setAttributes({'grid': label});                  
                     features.push(graphic);                  
                   }
@@ -2239,12 +2389,13 @@ define([
             }
             // change map scale to extent of grg
             if(geomArray.length > 0) {
-              var union = GeometryEngine.union(geomArray)
-              this.map.setExtent(union.getExtent().expand(2),false)
+              var union = GeometryEngine.union(geomArray);
+              this.map.setExtent(union.getExtent().expand(2),false);
             }
             
             if(this._labelTypeWithRefSys !== 'gridReferenceSystem') {
-              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, this._labelStartPosition, this.grgAreaByRefSystemGridSize.getValue());
+              features = drawGRG.labelReferenceGrid(geomArray, this._labelTypeWithRefSys, 
+                this._labelStartPosition, this.grgAreaByRefSystemGridSize.getValue());
             }
             //apply the edits to the feature layer
             this.GRGArea.applyEdits(features, null, null);
@@ -2252,6 +2403,10 @@ define([
             //we want to keep the extent but not show it on the publish page, so just hide the layer
             this._graphicsLayerGRGExtent.hide();
             this._showPanel("publishPage");
+          } else {
+            new Message({
+              message: this.nls.tooManyCellsErrorMessage
+            });
           }
         }
       },
@@ -2261,11 +2416,11 @@ define([
       **/
       createGraphicDeleteMenu: function () {
         // Creates right-click context menu for GRAPHICS
-        ctxMenuForGraphics = new Menu({}); 
+        var ctxMenuForGraphics = new Menu({}); 
                 
         ctxMenuForGraphics.addChild(new MenuItem({ 
           label: "Delete",
-          onClick: lang.hitch(this, function() {
+          onClick: lang.hitch(this, function(selected) {
             this.GRGArea.remove(selected);
             //refresh each of the feature/graphic layers to enusre labels are removed
             this.GRGArea.refresh();             
@@ -2275,7 +2430,6 @@ define([
         ctxMenuForGraphics.startup();
 
         this.GRGArea.on("mouse-over", function(evt) {
-          selected = evt.graphic;           
           ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
         });
 
@@ -2330,9 +2484,11 @@ define([
           this._removeStyleFile(this.folderUrl + "css/dartTheme.css", 'css');
         }
         //Check if DashBoardTheme
-        if (this.appConfig.theme.name === "DashboardTheme" && this.appConfig.theme.styles[0] === "default"){
+        if (this.appConfig.theme.name === "DashboardTheme" && 
+          this.appConfig.theme.styles[0] === "default"){
           //Load appropriate CSS for dashboard theme
-          utils.loadStyleLink('darkDashboardOverrideCSS', this.folderUrl + "css/dashboardTheme.css", null);
+          utils.loadStyleLink('darkDashboardOverrideCSS', this.folderUrl + 
+            "css/dashboardTheme.css", null);
         } else {
           this._removeStyleFile(this.folderUrl + "css/dashboardTheme.css", 'css');
         }
@@ -2346,7 +2502,7 @@ define([
         this.inherited(arguments);        
         this.map.removeLayer(this._graphicsLayerGRGExtent);
         this.map.removeLayer(this.GRGArea);
-        console.log('grg widget distroyed')
+        console.log('grg widget distroyed');
       },
       
       /**
@@ -2355,39 +2511,53 @@ define([
       _initSaveToPortal: function(layerName) {        
         esriId.registerOAuthInfos();        
         var featureServiceName = layerName;
-        esriId.getCredential(this.appConfig.portalUrl + "/sharing", { oAuthPopupConfirmation: false }).then(lang.hitch(this, function() {
+        esriId.getCredential(this.appConfig.portalUrl + 
+          "/sharing", { oAuthPopupConfirmation: false }).then(lang.hitch(this, function() {
           //sign in
-          new esriPortal.Portal(this.appConfig.portalUrl).signIn().then(lang.hitch(this, function(portalUser) {
+          new esriPortal.Portal(
+            this.appConfig.portalUrl).signIn().then(lang.hitch(this, function(portalUser) {
            //Get the token
             var token = portalUser.credential.token;
             var orgId = portalUser.orgId;
             var userName = portalUser.username;
             
-            var checkServiceNameUrl = this.appConfig.portalUrl + "sharing/rest/portals/" + orgId + "/isServiceNameAvailable";
-            var createServiceUrl = this.appConfig.portalUrl + "sharing/content/users/" + userName + "/createService"; 
+            var checkServiceNameUrl = this.appConfig.portalUrl + 
+              "sharing/rest/portals/" + orgId + "/isServiceNameAvailable";
+            var createServiceUrl = this.appConfig.portalUrl + 
+              "sharing/content/users/" + userName + "/createService"; 
 
-            drawGRG.isNameAvailable(checkServiceNameUrl, token, featureServiceName).then(lang.hitch(this, function(response0) {
+            drawGRG.isNameAvailable(checkServiceNameUrl, token, 
+              featureServiceName).then(lang.hitch(this, function(response0) {
               if (response0.available) {
                 //set the widget to busy
                 this.busyIndicator.show();
                 //create the service
-                drawGRG.createFeatureService(createServiceUrl, token, drawGRG.getFeatureServiceParams(featureServiceName, this.map)).then(lang.hitch(this, function(response1) {
+                drawGRG.createFeatureService(createServiceUrl, token, 
+                  drawGRG.getFeatureServiceParams(featureServiceName, 
+                    this.map)).then(lang.hitch(this, function(response1) {
                   if (response1.success) {
-                    var addToDefinitionUrl = response1.serviceurl.replace(new RegExp('rest', 'g'), "rest/admin") + "/addToDefinition";
-                    drawGRG.addDefinitionToService(addToDefinitionUrl, token, drawGRG.getLayerParams(featureServiceName, this.map, this._cellTextSymbol, this._GRGAreaFillSymbol)).then(lang.hitch(this, function(response2) {
+                    var addToDefinitionUrl = response1.serviceurl.replace(
+                      new RegExp('rest', 'g'), "rest/admin") + "/addToDefinition";
+                    drawGRG.addDefinitionToService(addToDefinitionUrl, token, 
+                      drawGRG.getLayerParams(featureServiceName, this.map,
+                      this._cellTextSymbol, this._GRGAreaFillSymbol)).then(lang.hitch(this,
+                        function(response2) {
                       if (response2.success) {
                         //Push features to new layer
-                        var newFeatureLayer = new FeatureLayer(response1.serviceurl + "/0?token=" + token, {
-                          id: featureServiceName,
-                          outFields: ["*"],
-                              
+                        var newFeatureLayer = 
+                          new FeatureLayer(response1.serviceurl + "/0?token=" + token, {
+                            id: featureServiceName,
+                            outFields: ["*"]                            
                          });                        
                         this.map.addLayers([newFeatureLayer]);                        
                         
-                        //must ensure the layer is loaded before we can access it to turn on the labels if required
+                        // must ensure the layer is loaded before we can 
+                        // access it to turn on the labels if required
+                        var featureLayerInfo;
                         if(newFeatureLayer.loaded){
                           // show or hide labels
-                          featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
+                          featureLayerInfo = 
+                            jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
                           featureLayerInfo.enablePopup();
                           if(this._showLabels) {
                             featureLayerInfo.showLabels();
@@ -2395,7 +2565,8 @@ define([
                         } else {
                           newFeatureLayer.on("load", lang.hitch(this, function () {
                             // show or hide labels
-                            featureLayerInfo = jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
+                            featureLayerInfo = 
+                              jimuLayerInfos.getInstanceSync().getLayerInfoById(featureServiceName);
                             featureLayerInfo.enablePopup();
                             if(this._showLabels) {
                               featureLayerInfo.showLabels();
@@ -2405,40 +2576,47 @@ define([
                         
                         var newGraphics = [];
                         array.forEach(this.GRGArea.graphics, function (g) {
-                          newGraphics.push(new Graphic(g.geometry, null, {grid: g.attributes["grid"]}));
+                          newGraphics.push(new Graphic(g.geometry, null, 
+                            {grid: g.attributes.grid}));
                         }, this);
-                        newFeatureLayer.applyEdits(newGraphics, null, null).then(lang.hitch(this, function(){
+                        newFeatureLayer.applyEdits(newGraphics, null, null).then(lang.hitch(this, 
+                          function(){
                           this._reset();                                
                         })).otherwise(lang.hitch(this,function(){
                           this._reset();
                         })); 
                         this.busyIndicator.hide();
-                        var newURL = '<br /><a href="' + this.appConfig.portalUrl + "home/item.html?id=" + response1.itemId + '" target="_blank">';
-                        this.publishMessage.innerHTML = this.nls.successfullyPublished.format(newURL) + '</a>';
+                        var newURL = '<br /><a href="' + this.appConfig.portalUrl + 
+                          "home/item.html?id=" + response1.itemId + '" target="_blank">';
+                        this.publishMessage.innerHTML = 
+                          this.nls.successfullyPublished.format(newURL) + '</a>';
                         
                       }                      
                     }), function(err2) {
                       this.busyIndicator.hide();
-                      this.publishMessage.innerHTML = this.nls.addToDefinition.format(err2.message);                                                    
+                      this.publishMessage.innerHTML = 
+                        this.nls.addToDefinition.format(err2.message); 
                     });                    
                   } else {
                     this.busyIndicator.hide();
-                    this.publishMessage.innerHTML = this.nls.unableToCreate.format(featureServiceName);                    
+                    this.publishMessage.innerHTML = 
+                      this.nls.unableToCreate.format(featureServiceName); 
                   }
                 }), function(err1) {
                   this.busyIndicator.hide();
-                  this.publishMessage.innerHTML = this.nls.createService.format(err1.message);                  
+                  this.publishMessage.innerHTML = this.nls.createService.format(err1.message); 
                 });
               } else {
                   this.busyIndicator.hide();
-                  this.publishMessage.innerHTML = this.nls.publishingFailedLayerExists.format(featureServiceName); 
+                  this.publishMessage.innerHTML = 
+                    this.nls.publishingFailedLayerExists.format(featureServiceName); 
                   
               }
             }), function(err0) {
               this.busyIndicator.hide();
               this.publishMessage.innerHTML = this.nls.checkService.format(err0.message);
             });
-          }))
+          }));
         }));        
       }     
     });
