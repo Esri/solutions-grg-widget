@@ -16,15 +16,15 @@
 
 define([
     'dojo/_base/declare',
-    "dojo/_base/lang",
+    'dojo/_base/lang',
     'dojo/_base/html',
     'dojo/on',
-    './ColorPickerEditor',
-    './FontSetting',
+    '../js/ColorPickerEditor',
+    '../js/FontSetting',
     'dijit/_WidgetsInTemplateMixin',
     'jimu/utils',
     'jimu/BaseWidgetSetting',
-    "jimu/dijit/CheckBox",
+    'jimu/dijit/CheckBox',
     'jimu/dijit/TabContainer',
     'jimu/dijit/LoadingShelter'
   ],
