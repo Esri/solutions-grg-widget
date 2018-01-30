@@ -19,6 +19,7 @@ define([
   "dojo/_base/array",
   "dojo/_base/html",
   "dojo/on",
+  "dojo/dom-style",
   "./ColorPickerEditor",
   "./FontSetting",
   "jimu/BaseWidget",
@@ -34,6 +35,7 @@ define([
     array,
     html,
     on,
+    domstyle,
     ColorPickerEditor,
     FontSetting,
     BaseWidget,
@@ -78,6 +80,7 @@ define([
 
         this.gridOutlineColorPicker = 
           new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
+        domstyle.set(this.gridOutlineColorPicker.slider.domNode,"width","");  
         this.gridOutlineColorPicker.setValues({
             "color": this.config.grg.cellOutline.color,
             "transparency": this.config.grg.cellOutline.transparency
@@ -85,6 +88,7 @@ define([
         this.gridOutlineColorPicker.startup();
 
         this.gridFillColorPicker = new ColorPickerEditor({nls: this.nls}, this.cellFillColorPicker);
+        domstyle.set(this.gridFillColorPicker.slider.domNode,"width","");
         this.gridFillColorPicker.setValues({
             "color": this.config.grg.cellFill.color,
             "transparency": this.config.grg.cellFill.transparency

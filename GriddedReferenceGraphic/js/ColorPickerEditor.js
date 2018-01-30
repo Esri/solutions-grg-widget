@@ -50,7 +50,8 @@ define([
 
     postCreate: function () {
       this.colorPicker = new ColorPicker({
-        color: this._defaultColor
+        color: this._defaultColor,
+        width: this._defaultWidth,
       }, this.colorPicker);
       this.colorPicker.startup();
       this.slider = new HorizontalSlider({
@@ -61,7 +62,7 @@ define([
         discreteValues: 101,
         intermediateChanges: true,
         showButtons: false,
-        style: "display: inline-block;"
+        style: "width:140px;display: inline-block;"
       }, this.sliderBar);
       this.slider.startup();
       this.inherited(arguments);

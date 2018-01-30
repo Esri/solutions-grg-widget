@@ -383,7 +383,7 @@ define([
       * @memberOf widgets/GRG/Widget
       */
       onOpen: function () {
-        console.log('widget opened');
+        
       },
 
       /**
@@ -391,7 +391,7 @@ define([
       * @memberOf widgets/GRG/Widget
       */
       onClose: function () {
-        console.log('widget closed');
+        
       },        
 
       /**
@@ -2501,8 +2501,7 @@ define([
       destroy: function() {        
         this.inherited(arguments);        
         this.map.removeLayer(this._graphicsLayerGRGExtent);
-        this.map.removeLayer(this.GRGArea);
-        console.log('grg widget distroyed');
+        this.map.removeLayer(this.GRGArea);        
       },
       
       /**
