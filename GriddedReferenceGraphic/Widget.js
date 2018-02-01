@@ -1033,7 +1033,7 @@ define([
             html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer,
               'controlGroupHidden');          
             break;
-          case "grgPointByTime":
+          case "grgPointByTime":            
             break;
         }
       },
@@ -1066,6 +1066,9 @@ define([
             break;
           case "grgPointByTime":
             node = this.grgPointByTimePageNode;
+            // must ensure grid origin is center
+            this._gridSettingsInstance.gridOrigin.set('value','center');
+            this._gridOrigin = 'center';
             break;
           case "settingsPage":
             node = this.settingsPageNode;
@@ -1941,8 +1944,7 @@ define([
               this.geodesicGrid,
               this.map); 
             //apply the edits to the feature layer
-            this.GRGArea.applyEdits(features, null, null);
-            this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
+            this.GRGArea.applyEdits(features, null, null);            
             var geomArray = [];
             for(var i = 0;i < features.length;i++){
               geomArray.push(features[i].geometry);
@@ -2416,11 +2418,12 @@ define([
       **/
       createGraphicDeleteMenu: function () {
         // Creates right-click context menu for GRAPHICS
+        var selected;
         var ctxMenuForGraphics = new Menu({}); 
                 
         ctxMenuForGraphics.addChild(new MenuItem({ 
           label: "Delete",
-          onClick: lang.hitch(this, function(selected) {
+          onClick: lang.hitch(this, function() {
             this.GRGArea.remove(selected);
             //refresh each of the feature/graphic layers to enusre labels are removed
             this.GRGArea.refresh();             
@@ -2430,6 +2433,7 @@ define([
         ctxMenuForGraphics.startup();
 
         this.GRGArea.on("mouse-over", function(evt) {
+          selected = evt.graphic;
           ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
         });
 
