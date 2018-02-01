@@ -1033,7 +1033,7 @@ define([
             html.removeClass(this._gridSettingsInstance.labelStyleWithRefSysContainer,
               'controlGroupHidden');          
             break;
-          case "grgPointByTime":
+          case "grgPointByTime":            
             break;
         }
       },
@@ -1066,6 +1066,9 @@ define([
             break;
           case "grgPointByTime":
             node = this.grgPointByTimePageNode;
+            // must ensure grid origin is center
+            this._gridSettingsInstance.gridOrigin.set('value','center');
+            this._gridOrigin = 'center';
             break;
           case "settingsPage":
             node = this.settingsPageNode;
@@ -1941,8 +1944,7 @@ define([
               this.geodesicGrid,
               this.map); 
             //apply the edits to the feature layer
-            this.GRGArea.applyEdits(features, null, null);
-            this.dt_PointBySize.removeStartGraphic(this._graphicsLayerGRGExtent);
+            this.GRGArea.applyEdits(features, null, null);            
             var geomArray = [];
             for(var i = 0;i < features.length;i++){
               geomArray.push(features[i].geometry);
