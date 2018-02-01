@@ -2416,11 +2416,12 @@ define([
       **/
       createGraphicDeleteMenu: function () {
         // Creates right-click context menu for GRAPHICS
+        var selected;
         var ctxMenuForGraphics = new Menu({}); 
                 
         ctxMenuForGraphics.addChild(new MenuItem({ 
           label: "Delete",
-          onClick: lang.hitch(this, function(selected) {
+          onClick: lang.hitch(this, function() {
             this.GRGArea.remove(selected);
             //refresh each of the feature/graphic layers to enusre labels are removed
             this.GRGArea.refresh();             
@@ -2430,6 +2431,7 @@ define([
         ctxMenuForGraphics.startup();
 
         this.GRGArea.on("mouse-over", function(evt) {
+          selected = evt.graphic;
           ctxMenuForGraphics.bindDomNode(evt.graphic.getDojoShape().getNode());
         });
 
