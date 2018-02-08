@@ -171,7 +171,6 @@ define([
         while (lon > 180) {lon -= 360;}
       }
       if (lon > 360 || lon < -180 || lat > 90 || lat < -90) {
-        console.error("Bad input. lat: " + lat + " lon: " + lon);
         //debugger;
       }
       // convert 0-360 to [-180 to 180] range
@@ -231,7 +230,6 @@ define([
         while (lon > 180) {lon -= 360;}
       }
       if (lon > 360 || lon < -180 || lat > 90 || lat < -90) {
-        console.error("Bad input. lat: " + lat + " lon: " + lon);
         //debugger;
       }
       // Make sure the longitude is between -180.00 .. 179.99..
