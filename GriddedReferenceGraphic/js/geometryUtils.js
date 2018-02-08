@@ -102,7 +102,6 @@ define([
         σ = s / (b * A) + Δσ;
       } while (Math.abs(σ - σʹ) > 1e-12 && ++iterations < 200);
       if (iterations >= 200) {
-        console.log('Formula failed to converge'); // not possible?
         return null;
       }
 
