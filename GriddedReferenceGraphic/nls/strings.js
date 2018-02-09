@@ -162,6 +162,32 @@ define({
     "missingLayerNameMessage": "You must enter a valid layer name before you can publish", //shown as error message for invalid layer name
     "parseCoordinatesError": "Unable to parse coordinates. Please check your input.", //Shown as error message for unknown coordinates
     "grgPolarRegionError": "The GRG extent is within a polar region. Cells that fall within the polar region will not be created.", //Shown as warning message for GRG overlapping polar region
-    "grgPolarOriginError": "The GRG origin point cannot be within a polar region when creating a GRG by Reference System." //Shown as warning message for GRG origin in polar region
+    "grgPolarOriginError": "The GRG origin point cannot be within a polar region when creating a GRG by Reference System.", //Shown as warning message for GRG origin in polar region
+    
+    // notation strings
+    "DD": "DD", // Shown as DD label in coordinate type dropdown within format input settings
+    "DDM": "DDM", // Shown as DDM label in coordinate type dropdown within format input settings
+    "DMS": "DMS", // Shown as DMS label in coordinate type dropdown within format input settings
+    "DDRev": "DDRev", // Shown as DDRev label in coordinate type dropdown within format input settings
+    "DDMRev": "DDMRev", // Shown as DDMRev label in coordinate type dropdown within format input settings
+    "DMSRev": "DMSRev", // Shown as DMSRev label in coordinate type dropdown within format input settings
+    "USNG": "USNG", // Shown as USNG label in coordinate type dropdown within format input settings
+    "MGRS": "MGRS", // Shown as MGRS label in coordinate type dropdown within format input settings
+    "UTM_H": "UTM (H)", // Shown as UTM (H) label in coordinate type dropdown within format input settings
+    "UTM": "UTM", // Shown as UTM label in coordinate type dropdown within format input settings
+    "GARS": "GARS", // Shown as GARS label in coordinate type dropdown within format input settings
+    "GEOREF": "GEOREF", // Shown as GEOREF label in coordinate type dropdown within format input settings
+    "DDLatLongNotation": "Decimal Degrees - Latitude/Longitude", // Shown as Decimal Degrees - Latitude/Longitude label in confirm coordinate type dropdown
+    "DDLongLatNotation": "Decimal Degrees  - Longitude/Latitude", // Shown as Decimal Degrees  - Longitude/Latitude label in confirm coordinate type dropdown
+    "DDMLatLongNotation": "Degrees Decimal Minutes - Latitude/Longitude", // Shown as Degrees Decimal Minutes - Latitude/Longitude label in confirm coordinate type dropdown
+    "DDMLongLatNotation": "Degrees Decimal Minutes - Longitude/Latitude", // Shown as Degrees Decimal Minutes - Longitude/Latitude label in confirm coordinate type dropdown
+    "DMSLatLongNotation": "Degrees Minutes Seconds - Latitude/Longitude", // Shown as Degrees Minutes Seconds - Latitude/Longitude label in confirm coordinate type dropdown
+    "DMSLongLatNotation": "Degrees Minutes Seconds - Longitude/Latitude", // Shown as Degrees Minutes Seconds - Longitude/Latitude label in confirm coordinate type dropdown
+    "GARSNotation": "GARS", // Shown as GARS label in confirm coordinate type dropdown
+    "GEOREFNotation": "GEOREF", // Shown as GEOREF label in confirm coordinate type dropdown
+    "MGRSNotation": "MGRS", // Shown as MGRS label in confirm coordinate type dropdown
+    "USNGNotation": "USNG", // Shown as USNG label in confirm coordinate type dropdown
+    "UTMBandNotation": "UTM - Band Letter", // Shown as UTM - Band Letter label in confirm coordinate type dropdown
+    "UTMHemNotation": "UTM - Hemisphere (N/S)" // Shown as UTM - Hemisphere (N/S)de label in confirm coordinate type dropdown
   })
 });
