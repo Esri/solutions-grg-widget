@@ -224,5 +224,5 @@ define({
   "vi": 0,
   "zh-cn": 0,
   "zh-hk": 0,
-  "zh-tw": 1
+  "zh-tw": 0
 });
