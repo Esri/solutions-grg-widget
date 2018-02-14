@@ -2511,7 +2511,7 @@ define([
       /**
       * Handle publish GRG to portal
       **/
-      _initSaveToPortal: function(layerName) {        
+      _initSaveToPortal: function(layerName) {       
         esriId.registerOAuthInfos();        
         var featureServiceName = layerName;
         esriId.getCredential(this.appConfig.portalUrl + 
@@ -2522,13 +2522,11 @@ define([
            //Get the token
             var token = portalUser.credential.token;
             var orgId = portalUser.orgId;
-            var userName = portalUser.username;
-            
+            var userName = portalUser.username;            
             var checkServiceNameUrl = this.appConfig.portalUrl + 
               "sharing/rest/portals/" + orgId + "/isServiceNameAvailable";
             var createServiceUrl = this.appConfig.portalUrl + 
-              "sharing/content/users/" + userName + "/createService"; 
-
+              "sharing/content/users/" + userName + "/createService";
             drawGRG.isNameAvailable(checkServiceNameUrl, token, 
               featureServiceName).then(lang.hitch(this, function(response0) {
               if (response0.available) {
@@ -2575,8 +2573,7 @@ define([
                               featureLayerInfo.showLabels();
                             }
                           }));
-                        }
-                        
+                        }                        
                         var newGraphics = [];
                         array.forEach(this.GRGArea.graphics, function (g) {
                           newGraphics.push(new Graphic(g.geometry, null, 
@@ -2592,35 +2589,36 @@ define([
                         var newURL = '<br /><a href="' + this.appConfig.portalUrl + 
                           "home/item.html?id=" + response1.itemId + '" target="_blank">';
                         this.publishMessage.innerHTML = 
-                          this.nls.successfullyPublished.format(newURL) + '</a>';
-                        
+                          this.nls.successfullyPublished.format(newURL) + '</a>';                        
                       }                      
-                    }), function(err2) {
+                    }), lang.hitch(this, function(err2) {
                       this.busyIndicator.hide();
                       this.publishMessage.innerHTML = 
                         this.nls.addToDefinition.format(err2.message); 
-                    });                    
+                    }));                    
                   } else {
                     this.busyIndicator.hide();
                     this.publishMessage.innerHTML = 
                       this.nls.unableToCreate.format(featureServiceName); 
                   }
-                }), function(err1) {
+                }), lang.hitch(this, function(err1) {
                   this.busyIndicator.hide();
                   this.publishMessage.innerHTML = this.nls.createService.format(err1.message); 
-                });
+                }));
               } else {
                   this.busyIndicator.hide();
                   this.publishMessage.innerHTML = 
-                    this.nls.publishingFailedLayerExists.format(featureServiceName); 
-                  
+                    this.nls.publishingFailedLayerExists.format(featureServiceName);
               }
-            }), function(err0) {
+            }), lang.hitch(this, function(err0) {
               this.busyIndicator.hide();
               this.publishMessage.innerHTML = this.nls.checkService.format(err0.message);
-            });
-          }));
-        }));        
+            }));
+          }), lang.hitch(this, function(err) {
+              this.publishMessage.innerHTML = err.message;
+            }));
+        }));
+        esriId.destroyCredentials();
       }     
     });
   });
