@@ -130,7 +130,8 @@ define({
     "unableToCreate": "Unable to create: {0}", //{0} will be replaced in the code so do not remove
     "addToDefinition": "Add to definition: {0}", //{0} will be replaced in the code so do not remove
     "successfullyPublished": "Successfully published web layer{0}Manage the web layer", //{0} will be replaced in the code so do not remove
-
+    "userRole": "Unable to create service because user does not have permissions", //displayed as warning when publishing service
+    
     //common
     "createGRGBtn": "Create GRG", // Shown as label on create button
     "clearGRGBtn": "Clear", // Shown as label on clear button

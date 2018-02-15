@@ -166,7 +166,8 @@
     float: left;
     line-height: 16px;
     padding: 18px 0px 0px 0;
-    font-weight: bold;
+    font-weight: bold;    
+    overflow-wrap: break-word;
 }
 
 /*------------------------- Styles for Main Page End-----------------------*/
