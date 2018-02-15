@@ -167,7 +167,8 @@
     line-height: 16px;
     padding: 18px 0px 0px 0;
     font-weight: bold;    
-    overflow-wrap: break-word;
+    display: inline-block;
+    word-break: break-all;
 }
 
 /*------------------------- Styles for Main Page End-----------------------*/
