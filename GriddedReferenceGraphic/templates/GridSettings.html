@@ -1,13 +1,8 @@
-﻿<div>
-    <!-- Grid Settings DropDown -->
-    <div class="GRGDrafterSettingsRow">
-        <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.gridSettingsLabel}">
-            ${nls.gridSettingsLabel}</div>
-        <div class="GRGDrafterLabelSettingsDownButton GRGDrafterSettingsButtonIcon GRGDrafterPointer" title="${nls.gridSettingsButtonLabel}" data-dojo-attach-point="gridSettingsButton">
-        </div>
-    </div>
-    
-    <div class="controlGroupHidden" data-dojo-attach-point="gridSettingsContainer">
+﻿<div>       
+    <div class="tabs" data-dojo-attach-point="tabsContainer">
+      <!-- Grid Settings Tab --> 
+      <div class="content-tab" data-dojo-attach-point="gridTab">
+        
         <!-- Grid Shape -->
         <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="gridShapeContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.cellShape}">
@@ -50,23 +45,15 @@
         </div>
         
         <!-- Cell fill Color -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
           <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.cellFill}">
                 ${nls.gridSettings.cellFill}</div>
           <div class="colorPicker" data-dojo-attach-point="cellFillColorPicker"></div>
         </div>
-    </div>
-    
-    <!-- Label Settings DropDown -->
-    <div class="GRGDrafterSettingsRow">
-        <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.labelSettingsLabel}">
-            ${nls.labelSettingsLabel}</div>
-        <div class="GRGDrafterLabelSettingsDownButton GRGDrafterSettingsButtonIcon GRGDrafterPointer" title="${nls.labelSettingsButtonLabel}" data-dojo-attach-point="labelSettingsButton">
-        </div>
-    </div>
-    
-    <div class="controlGroupHidden" data-dojo-attach-point="labelSettingsContainer">
-        
+      </div>
+      
+      <!-- Label Settings Tab -->
+      <div class="content-tab" data-dojo-attach-point="labelTab">  
         <!-- Label Start Position Selector -->
         <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="labelStartPositionContainer">
             <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.gridSettings.labelStartPosition}">
@@ -100,11 +87,11 @@
         </div>
         
         <!-- Font Settings -->
-        <div class="GRGDrafterFullWidth GRGDrafterSettingRow SettingsLastRow" data-dojo-attach-point="fontSettingsContainer">
+        <div class="GRGDrafterFullWidth GRGDrafterSettingRow" data-dojo-attach-point="fontSettingsContainer">
           <div class="GRGDrafterDropdownLabel GRGDrafterEllipsis" title="${nls.labelStyle}">
                 ${nls.labelStyle}</div>
           <div data-dojo-attach-point="fontSettingNode"></div>
         </div>        
-        
+      </div>  
     </div>
 </div>

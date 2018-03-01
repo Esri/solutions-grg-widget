@@ -120,24 +120,26 @@
 }
 
 .jimu-widget-grg-setting .dijitSliderImageHandleH{
-  top: -7px;
+  top: -10px;
+  width: 20px;
+  height: 20px;
 }
 .jimu-widget-grg-setting .dijitSliderImageHandle.dijitSliderImageHandleH{
-  background-image: url("../../images/sliderball.png");
+  background-image: url("../../css/images/sliderball.svg");
   background-position: 0 0;
 }
 .jimu-widget-grg-setting .tabs .dijitSliderThumbHover{
-  background-image: url("../../images/sliderball_hover.png");
+  background-image: url("../../css/images/sliderball.svg");
   background-position: 0 0;
 }
 /*left*/
 .jimu-widget-grg-setting .dijitSlider .dijitSliderProgressBarH,
 .jimu-widget-grg-setting .dijitSlider .dijitSliderLeftBumper{
-  border-color: #24b5cc;
-  background-color: #24b5cc;
-  background-image: -webkit-linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
-  background-image: -o-linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
-  background-image: linear-gradient(top, #24b5cc 0px, #24b5cc 1px, rgba(255, 255, 255, 0) 2px);
+  border-color: #000;
+  background-color: #000;
+  background-image: -webkit-linear-gradient(top, #000 0px, #000 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: -o-linear-gradient(top, #000 0px, #000 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: linear-gradient(top, #000 0px, #000 1px, rgba(255, 255, 255, 0) 2px);
 }
 .jimu-widget-grg-setting .dijitSlider .dijitSliderRemainingBarH,
 .jimu-widget-grg-setting .dijitSlider .dijitSliderRightBumper{
@@ -159,11 +161,6 @@
 
 
 /* 1 content */
-.jimu-widget-grg-setting .content-tab{
-
-}
-.jimu-widget-grg-setting .content-tab .editor-container{
-}
 .jimu-widget-grg-setting .content-tab .editor-container .dijitEditorIFrameContainer textarea {
 	resize: none;
 }
@@ -191,36 +188,7 @@
 	background: no-repeat;
 	margin-bottom: 5px;
 }
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent25{
-	background: url("../../images/percent25.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent25.selected{
-	background: url("../../images/percent25_selected.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent50{
-	background: url("../../images/percent50.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent50.selected{
-	background: url("../../images/percent50_selected.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent75{
-	background: url("../../images/percent75.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent75.selected{
-	background: url("../../images/percent75_selected.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent100{
-	background: url("../../images/percent100.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .percent100.selected{
-	background: url("../../images/percent100_selected.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .custom{
-	background: url("../../images/custom.svg") center center no-repeat;;
-}
-.jimu-widget-grg-setting .appearance-tab .size-selector .custom.selected{
-	background: url("../../images/custom_selected.svg") center center no-repeat;;
-}
+
 .jimu-widget-grg-setting .appearance-tab .size-selector .custom-label{
 	vertical-align: top;
 	line-height: 20px;
@@ -279,19 +247,19 @@
 	margin: 0 5px 5px 5px;
 }
 .jimu-widget-grg-setting .appearance-tab .align-selector .top{
-	background: url("../../images/top.svg") center center no-repeat;
+	background: url("../../css/images/top.svg") center center no-repeat;
 	border: none;
 }
 .jimu-widget-grg-setting .appearance-tab .align-selector .top.selected{
-	background: url("../../images/top_selected.svg") center center no-repeat;
+	background: url("../../css/images/top_selected.svg") center center no-repeat;
 	border: 1px #24B5CC solid;
 }
 .jimu-widget-grg-setting .appearance-tab .align-selector .middle{
-	background: url("../../images/middle.svg") center center no-repeat;
+	background: url("../../css/images/middle.svg") center center no-repeat;
 	border: none;
 }
 .jimu-widget-grg-setting .appearance-tab .align-selector .middle.selected{
-	background: url("../../images/middle_selected.svg") center center no-repeat;
+	background: url("../../css/images/middle_selected.svg") center center no-repeat;
 	border: 1px #24B5CC solid;
 }
 
@@ -595,27 +563,27 @@
 }
 
 .jimu-widget-grg-setting .style-selector .bold {
-  background: url("../../images/B.svg") no-repeat;
+  background: url("../../css/images/font_B.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .bold.selected {
-  background: url("../../images/B_selected.svg") no-repeat;
+  background: url("../../css/images/font_B_selected.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .italic {
-  background: url("../../images/I.svg") no-repeat;
+  background: url("../../css/images/font_I.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .italic.selected {
-  background: url("../../images/I_selected.svg") no-repeat;
+  background: url("../../css/images/font_I_selected.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .underline {
-  background: url("../../images/U.svg") no-repeat;
+  background: url("../../css/images/font_U.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .style-selector .underline.selected {
-  background: url("../../images/U_selected.svg") no-repeat;
+  background: url("../../css/images/font_U_selected.svg") no-repeat;
 }
 
 .jimu-widget-grg-setting .switch-toggle-group {

@@ -288,13 +288,16 @@ define([
         }
         
         //set up coordinate input dijit for GRG Point by Size
-        this.grgPointBySizeCoordTool = new coordInput({nls: this.nls, 
-          appConfig: this.appConfig}, this.newGRGPointBySizeOriginCoords);      
+        this.grgPointBySizeCoordTool = new coordInput({
+          nls: this.nls, 
+          appConfig: this.appConfig, 
+          style: 'width: calc(100% - 60px);'}, this.newGRGPointBySizeOriginCoords);      
         this.grgPointBySizeCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointBySizeCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
           style: 'width: 400px'
         });
+        
         
         //we need an extra class added the the coordinate format node for the Dart theme 
         if(this.appConfig.theme.name === 'DartTheme')
@@ -306,7 +309,8 @@ define([
         //set up coordinate input dijit for GRG Point by Ref System
         this.grgPointByRefSystemCoordTool = new coordInput({
           nls: this.nls, 
-          appConfig: this.appConfig}, this.newGRGPointByRefSystemOriginCoords);      
+          appConfig: this.appConfig,
+          style: 'width: calc(100% - 60px);'}, this.newGRGPointByRefSystemOriginCoords);      
         this.grgPointByRefSystemCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointByRefSystemCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
@@ -323,7 +327,8 @@ define([
         //set up coordinate input dijit for GRG Point by Time
         this.grgPointByTimeCoordTool = new coordInput({
           nls: this.nls, 
-          appConfig: this.appConfig}, this.newGRGPointByTimeOriginCoords);      
+          appConfig: this.appConfig,
+          style: 'width: calc(100% - 60px);'}, this.newGRGPointByTimeOriginCoords);      
         this.grgPointByTimeCoordTool.inputCoordinate.formatType = 'DD';
         this.grgPointByTimeCoordinateFormat = new dijitTooltipDialog({
           content: new editOutputCoordinate({nls: this.nls}),
@@ -414,39 +419,39 @@ define([
         **/
             //handle new GRG Area button click
             this.own(on(this.newGRGAreaButton, "click", lang.hitch(this, function () {
-              if(domClass.contains(this.newGRGAreaButton,'GRGDrafterLabelSettingsDownButton')) {
-                //in closed state - so open and change arrow to up
+              if(domClass.contains(this.newGRGAreaButton,'GRGNewRightButton')) {
+                //in closed state - so open and change arrow to down
                 html.removeClass(this.fromAreaContainer, 'controlGroupHidden');
-                html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
-                html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
+                html.removeClass(this.newGRGAreaButton, 'GRGNewRightButton');
+                html.addClass(this.newGRGAreaButton, 'GRGNewDownButton');
                 //close grg by point dropdown if open
                 html.addClass(this.fromPointContainer, 'controlGroupHidden');
-                html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
-                html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
+                html.removeClass(this.newGRGPointButton, 'GRGNewDownButton');
+                html.addClass(this.newGRGPointButton, 'GRGNewRightButton');
               } else {
-                //in open state - so close and change arrow to down
+                //in open state - so close and change arrow to right
                 html.addClass(this.fromAreaContainer, 'controlGroupHidden');
-                html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
-                html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
+                html.addClass(this.newGRGAreaButton, 'GRGNewRightButton');
+                html.removeClass(this.newGRGAreaButton, 'GRGNewDownButton');
               }
             })));
             
             //handle new GRG Point button click
             this.own(on(this.newGRGPointButton, "click", lang.hitch(this, function () {
-              if(domClass.contains(this.newGRGPointButton,'GRGDrafterLabelSettingsDownButton')) {
-                //in closed state - so open and change arrow to up
+              if(domClass.contains(this.newGRGPointButton,'GRGNewRightButton')) {
+                //in closed state - so open and change arrow to down
                 html.removeClass(this.fromPointContainer, 'controlGroupHidden');
-                html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
-                html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
+                html.removeClass(this.newGRGPointButton, 'GRGNewRightButton');
+                html.addClass(this.newGRGPointButton, 'GRGNewDownButton');
                 //close grg by area dropdown if open
                 html.addClass(this.fromAreaContainer, 'controlGroupHidden');
-                html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
-                html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
+                html.removeClass(this.newGRGAreaButton, 'GRGNewDownButton');
+                html.addClass(this.newGRGAreaButton, 'GRGNewRightButton');
               } else {
-                //in open state - so close and change arrow to down
+                //in open state - so close and change arrow to right
                 html.addClass(this.fromPointContainer, 'controlGroupHidden');
-                html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
-                html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
+                html.addClass(this.newGRGPointButton, 'GRGNewRightButton');
+                html.removeClass(this.newGRGPointButton, 'GRGNewDownButton');
               }
             })));
         
@@ -498,7 +503,8 @@ define([
               })));
             } else {
               this.grgAreaBySizeSettingsButton.title = this.nls.lockSettings;
-              //html.addClass(this.grgAreaBySizeSettingsButton, 'controlGroupHidden');
+              html.addClass(this.grgAreaBySizeSettingsButton, 'settingsLocked');
+              html.removeClass(this.grgAreaBySizeSettingsButton, 'GRGDrafterSettingsIcon');
             }
             
             //Handle click event of Add GRG Area by Polygon button
@@ -594,7 +600,8 @@ define([
               })));
             } else {
               this.grgAreaByRefSystemSettingsButton.title = this.nls.lockSettings;
-              //html.addClass(this.grgAreaByRefSystemSettingsButton, 'controlGroupHidden');
+              html.addClass(this.grgAreaByRefSystemSettingsButton, 'settingsLocked');
+              html.removeClass(this.grgAreaByRefSystemSettingsButton, 'GRGDrafterSettingsIcon');
             }          
             
             //Handle click event of draw extent icon
@@ -671,7 +678,8 @@ define([
               })));
             } else {
               this.grgPointBySizeSettingsButton.title = this.nls.lockSettings;
-              //html.addClass(this.grgPointBySizeSettingsButton, 'controlGroupHidden');
+              html.addClass(this.grgPointBySizeSettingsButton, 'settingsLocked');
+              html.removeClass(this.grgPointBySizeSettingsButton, 'GRGDrafterSettingsIcon');
             }
                         
             //Handle click event of create GRG point button        
@@ -749,7 +757,8 @@ define([
                 })));
             } else {
               this.grgPointByRefSystemSettingsButton.title = this.nls.lockSettings;
-              //html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
+              html.addClass(this.grgPointByRefSystemSettingsButton, 'settingsLocked');
+              html.removeClass(this.grgPointByRefSystemSettingsButton, 'GRGDrafterSettingsIcon');
             }          
             
             //Handle click event of create GRG point button        
@@ -840,7 +849,8 @@ define([
               })));
             } else {
               this.grgPointByTimeSettingsButton.title = this.nls.lockSettings;
-              //html.addClass(this.grgPointByRefSystemSettingsButton, 'controlGroupHidden');
+              html.addClass(this.grgPointByTimeSettingsButton, 'settingsLocked');
+              html.removeClass(this.grgPointByTimeSettingsButton, 'GRGDrafterSettingsIcon');
             }
             
             //Handle click event of create GRG point button        
@@ -1110,11 +1120,11 @@ define([
         
         //reset the two dropdown menus on the main page
         html.addClass(this.fromAreaContainer, 'controlGroupHidden');
-        html.addClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsDownButton');
-        html.removeClass(this.newGRGAreaButton, 'GRGDrafterLabelSettingsUpButton');
+        html.addClass(this.newGRGAreaButton, 'GRGNewRightButton');
+        html.removeClass(this.newGRGAreaButton, 'GRGNewDownButton');
         html.addClass(this.fromPointContainer, 'controlGroupHidden');
-        html.addClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsDownButton');
-        html.removeClass(this.newGRGPointButton, 'GRGDrafterLabelSettingsUpButton');
+        html.addClass(this.newGRGPointButton, 'GRGNewRightButton');
+        html.removeClass(this.newGRGPointButton, 'GRGNewDownButton');
       },
 
       _clearLayers: function (includeExtentLayer) {

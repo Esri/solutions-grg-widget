@@ -23,6 +23,7 @@ define([
   "./ColorPickerEditor",
   "./FontSetting",
   "jimu/BaseWidget",
+  "jimu/dijit/TabContainer",
   "dijit/_WidgetsInTemplateMixin",
   "dojo/text!../templates/GridSettings.html",
   "dojo/_base/lang",
@@ -39,6 +40,7 @@ define([
     ColorPickerEditor,
     FontSetting,
     BaseWidget,
+    TabContainer,
     _WidgetsInTemplateMixin,
     GridSettingsTemplate,
     lang,
@@ -77,7 +79,20 @@ define([
 
       //Load all the options on startup
       startup: function () {
-
+        //create tabs
+        this.tab = new TabContainer({
+          tabs: [{
+            title: this.nls.gridSettingsLabel,
+            content: this.gridTab
+          }, {
+            title: this.nls.labelSettingsLabel,
+            content: this.labelTab
+          }],
+          selected: this.nls.gridTabLabel
+        });
+        this.tab.placeAt(this.tabsContainer);
+        this.tab.startup();
+        
         this.gridOutlineColorPicker = 
           new ColorPickerEditor({nls: this.nls}, this.cellOutlineColorPicker);
         domstyle.set(this.gridOutlineColorPicker.slider.domNode,"width","");  
@@ -153,44 +168,6 @@ define([
       * @memberOf widgets/GRG/Widget
       **/
       _handleClickEvents: function () {
-        //handle grid settings button clicked
-        this.own(on(this.gridSettingsButton, "click", lang.hitch(this, function () {
-          if(domClass.contains(this.gridSettingsButton,"GRGDrafterLabelSettingsDownButton")) {
-            //in closed state - so open and change arrow to up
-            html.removeClass(this.gridSettingsContainer, "controlGroupHidden");
-            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
-            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
-            //close label settings if open
-            html.addClass(this.labelSettingsContainer, "controlGroupHidden");
-            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
-            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
-          } else {
-            //in open state - so close and change arrow to down
-            html.addClass(this.gridSettingsContainer, "controlGroupHidden");
-            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
-            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
-          }
-        })));
-
-        //handle label settings button clicked
-        this.own(on(this.labelSettingsButton, "click", lang.hitch(this, function () {
-          if(domClass.contains(this.labelSettingsButton,"GRGDrafterLabelSettingsDownButton")) {
-            //in closed state - so open and change arrow to up
-            html.removeClass(this.labelSettingsContainer, "controlGroupHidden");
-            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
-            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
-            //close label settings if open
-            html.addClass(this.gridSettingsContainer, "controlGroupHidden");
-            html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
-            html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
-          } else {
-            //in open state - so close and change arrow to down
-            html.addClass(this.labelSettingsContainer, "controlGroupHidden");
-            html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
-            html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
-          }
-        })));
-
         this.own(on(this.cellShape, "change", lang.hitch(this, function () {
           if(this.cellShape.get("value") === "hexagon") {
             this.labelDirection.set("disabled",true);
@@ -290,12 +267,6 @@ define([
         if (this._isSettingsChanged()) {
           this.onGridsettingsChanged();
         }
-        html.addClass(this.gridSettingsContainer, "controlGroupHidden");
-        html.addClass(this.labelSettingsButton, "GRGDrafterLabelSettingsDownButton");
-        html.removeClass(this.labelSettingsButton, "GRGDrafterLabelSettingsUpButton");
-        html.addClass(this.labelSettingsContainer, "controlGroupHidden");
-        html.addClass(this.gridSettingsButton, "GRGDrafterLabelSettingsDownButton");
-        html.removeClass(this.gridSettingsButton, "GRGDrafterLabelSettingsUpButton");
       },
 
       /**

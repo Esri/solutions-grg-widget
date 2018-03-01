@@ -1,76 +1,88 @@
 <div class="GRGDrafterMainContainer GRGDrafterFullHeight" data-dojo-attach-point="mainNode">
-    <div class="GRGDrafterFullHeight GRGDrafterFullWidth" data-dojo-attach-point="widgetMainNode">
-        
+    <div class="GRGDrafterFullHeight GRGDrafterFullWidth" data-dojo-attach-point="widgetMainNode">        
         <!---------------------
           Main Page Node
-        ---------------------->
-        
+        ---------------------->        
         <div class="esirCTMainPage" data-dojo-attach-point="mainPageNode">
             <!-- Create From Area -->
-            <div class="GRGDrafterMainPageRow">
-                <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromAreaButtonLabel}">
-                    ${nls.newGRGFromAreaButtonLabel}</div>
-                <div class="GRGDrafterNewGRGAreaButton GRGDrafterMainMenuDropDownIcon GRGDrafterPointer" title="${nls.newGRGFromAreaButtonLabel}" data-dojo-attach-point="newGRGAreaButton">
+            <div class="GRGDrafterMainPageRowBlock"> 
+                <div class="GRGDrafterMainPageRow">
+                    <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer" 
+                      title="${nls.newGRGFromAreaButtonLabel}" data-dojo-attach-point="newGRGAreaButton">
+                    </div>
+                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromAreaButtonLabel}">
+                        ${nls.newGRGFromAreaButtonLabel}
+                    </div>                
                 </div>
+              
+                <!-- Create From Area Options -->
+                <div class="controlGroupHidden" data-dojo-attach-point="fromAreaContainer">
+                    <!-- Define by size -->
+                    <div class="GRGDrafterMainPageRowItem">
+                        <div class="GRGDrafterButtonIcon GRGDrafterNewGRGByDimension GRGDrafterPointer"></div>
+                        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGBySizeButtonLabel}">
+                            ${nls.newGRGBySizeButtonLabel}
+                        </div>
+                        <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer GRGFloatRight" 
+                          title="${nls.newGRGBySizeButtonLabel}" data-dojo-attach-point="newAreaGRGBySizeButton">
+                        </div>
+                    </div>
+                    <!-- Define from reference system -->
+                    <div class="GRGDrafterMainPageRowItem">
+                        <div class="GRGDrafterButtonIcon GRGDrafterNewGRGByRefSystemButton GRGDrafterPointer"></div>
+                        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromRefSystemButtonLabel}">
+                            ${nls.newGRGFromRefSystemButtonLabel}
+                        </div>
+                        <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer GRGFloatRight" 
+                          title="${nls.newGRGFromRefSystemButtonLabel}" data-dojo-attach-point="newAreaGRGFromRefSystemButton">
+                        </div>
+                    </div>                    
+              </div>
             </div>
-            
-            <!-- Create From Area Options -->
-            <div class="controlGroupHidden" data-dojo-attach-point="fromAreaContainer">
-              <!-- Define by size -->
-                <div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGBySizeButtonLabel}">
-                        ${nls.newGRGBySizeButtonLabel}</div>
-                    <div class="GRGDrafterNewGRGAreaBySizeButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGBySizeButtonLabel}" data-dojo-attach-point="newAreaGRGBySizeButton">
-                    </div>
-                </div>
-                <!-- Define from reference system -->
-                <div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromRefSystemButtonLabel}">
-                        ${nls.newGRGFromRefSystemButtonLabel}</div>
-                    <div class="GRGDrafterNewGRGAreaByRefSystemButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGFromRefSystemButtonLabel}" data-dojo-attach-point="newAreaGRGFromRefSystemButton">
-                    </div>
-                </div>
-                <!-- Define from non standard --> <!-- not implemented yet -->
-                <!-- div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromNonStandardButtonLabel}">
-                        ${nls.newGRGFromNonStandardButtonLabel}</div>
-                    <div class="GRGDrafterNewGRGPointButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGFromNonStandardButtonLabel}" data-dojo-attach-point="newAreaGRGFromNonStandardButton">
-                    </div>
-                </div -->
-            </div>
-            
             <!-- Create From Point -->
-            <div class="GRGDrafterMainPageRow">
-                <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromPointButtonLabel}">
-                    ${nls.newGRGFromPointButtonLabel}</div>
-                <div class="GRGDrafterNewGRGPointButton GRGDrafterMainMenuDropDownIcon GRGDrafterPointer" title="${nls.newGRGFromPointButtonLabel}" data-dojo-attach-point="newGRGPointButton">
+            <div class="GRGDrafterMainPageRowBlock">            
+                <div class="GRGDrafterMainPageRow">
+                    <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer" 
+                      title="${nls.newGRGFromPointButtonLabel}" data-dojo-attach-point="newGRGPointButton">
+                    </div>
+                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis SubTitle" title="${nls.newGRGFromPointButtonLabel}">
+                        ${nls.newGRGFromPointButtonLabel}
+                    </div>
                 </div>
-            </div>
 
-            <!-- Create From Point Options -->
-            <div class="controlGroupHidden" data-dojo-attach-point="fromPointContainer">
-                <!-- Define by size -->
-                <div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGBySizeButtonLabel}">
-                        ${nls.newGRGBySizeButtonLabel}</div>
-                    <div class="GRGDrafterNewGRGPointBySizeButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGBySizeButtonLabel}" data-dojo-attach-point="newPointGRGBySizeButton">
+                <!-- Create From Point Options -->
+                <div class="controlGroupHidden" data-dojo-attach-point="fromPointContainer">
+                    <!-- Define by size -->
+                    <div class="GRGDrafterMainPageRowItem">
+                        <div class="GRGDrafterButtonIcon GRGDrafterNewGRGByDimension GRGDrafterPointer"></div>
+                        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGBySizeButtonLabel}">
+                            ${nls.newGRGBySizeButtonLabel}
+                        </div>
+                        <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer GRGFloatRight" 
+                          title="${nls.newGRGBySizeButtonLabel}" data-dojo-attach-point="newPointGRGBySizeButton">
+                        </div>
+                    </div>
+                    <!-- Define from reference system -->
+                    <div class="GRGDrafterMainPageRowItem">
+                        <div class="GRGDrafterButtonIcon GRGDrafterNewGRGByRefSystemButton GRGDrafterPointer"></div>
+                        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromRefSystemButtonLabel}">
+                            ${nls.newGRGFromRefSystemButtonLabel}
+                        </div>
+                        <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer GRGFloatRight" 
+                            title="${nls.newGRGFromRefSystemButtonLabel}" data-dojo-attach-point="newPointGRGFromRefSystemButton">
+                        </div>
+                    </div>
+                    <!-- Define from reference system -->
+                    <div class="GRGDrafterMainPageRowItem">
+                        <div class="GRGDrafterButtonIcon GRGDrafterNewGRGByTimeButton GRGDrafterPointer"></div>
+                        <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGByTimeLabel}">
+                            ${nls.newGRGByTimeLabel}</div>
+                        <div class="GRGDrafterMainButtonIcon GRGNewRightButton GRGDrafterPointer GRGFloatRight"" 
+                          title="${nls.newGRGByTimeLabel}" data-dojo-attach-point="newPointGRGFromTimeButton">
+                        </div>
                     </div>
                 </div>
-                <!-- Define from reference system -->
-                <div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGFromRefSystemButtonLabel}">
-                        ${nls.newGRGFromRefSystemButtonLabel}</div>
-                    <div class="GRGDrafterNewGRGAreaByRefSystemButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGFromRefSystemButtonLabel}" data-dojo-attach-point="newPointGRGFromRefSystemButton">
-                    </div>
-                </div>
-                <!-- Define from reference system -->
-                <div class="GRGDrafterMainPageRowItem">
-                    <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.newGRGByTimeLabel}">
-                        ${nls.newGRGByTimeLabel}</div>
-                    <div class="GRGDrafterNewGRGAreaByTimeButton GRGDrafterButtonIcon GRGDrafterPointer" title="${nls.newGRGByTimeLabel}" data-dojo-attach-point="newPointGRGFromTimeButton">
-                    </div>
-                </div>
-            </div>
+              </div>
         </div> 
        
         <!---------------------
@@ -90,7 +102,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgAreaBySizeSettingsButton"></div>
                 <!-- GRG Area Form -->
-                <div class="GRGDrafterMainPageRow">                  
+                <div class="GRGDrafterPanelRow">                  
                   <!-- Draw GRG Area Tool -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRowPaddingTop20" data-dojo-attach-point="grgAreaBySizeDrawContainer">
                     <div class="GRGDrafterFullWidth">
@@ -180,7 +192,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgAreaByRefSystemSettingsButton"></div>
                 <!-- GRG Area Form -->
-                <div class="GRGDrafterMainPageRow">
+                <div class="GRGDrafterPanelRow">
                   <!-- Draw GRG Area Tool -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRowPaddingTop20">
                     <div class="GRGDrafterFullWidth" data-dojo-attach-point="grgAreaByRefSystemDrawContainer">
@@ -245,7 +257,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgAreaByNonStandardSettingsButton"></div>
                 <!-- GRG Area Form -->
-                <div class="GRGDrafterMainPageRow">
+                <div class="GRGDrafterPanelRow">
                   <!-- GRG Layer Name -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="Area GRG by Reference System">Area GRG from Non Standard Grid To Do</div>
@@ -271,12 +283,12 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgPointBySizeSettingsButton"></div>
                 <!-- GRG Point Form -->
-                <div class="GRGDrafterMainPageRow">                  
+                <div class="GRGDrafterPanelRow">                  
                   <!-- Draw GRG Point Coordinate Input -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis" style="width: 100%" title="${nls.coordInputLabel}" data-dojo-attach-point="grgPointBySizeCoordInputLabel">${nls.coordInputLabel}</div>                      
                         <div>
-                          <input class="jimu-input textInput" data-dojo-attach-point="newGRGPointBySizeOriginCoords" />                        
+                          <input class="jimu-input textInput" style="width: 100%" data-dojo-attach-point="newGRGPointBySizeOriginCoords" />                        
                           <div  title="${nls.formatIconTooltip}" class="jimu-icon settingBtn" data-dojo-attach-point="grgPointBySizeCoordFormatButton"></div>
                           <div title="${nls.addPointToolTip}" class="jimu-icon editBtn" data-dojo-attach-point="grgPointBySizeAddPointBtn"></div>
                         </div>  
@@ -353,7 +365,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgPointByRefSystemSettingsButton"></div>
                 <!-- GRG Point Form -->
-                <div class="GRGDrafterMainPageRow">
+                <div class="GRGDrafterPanelRow">
                   <!-- Draw GRG Point Coordinate Input -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis" style="width: 100%" title="${nls.coordInputLabel}" data-dojo-attach-point="grgPointByRefSystemCoordInputLabel">${nls.coordInputLabel}</div>                      
@@ -426,7 +438,7 @@
                 <!-- Settings Icon -->
                 <div class="GRGDrafterSettingsIcon GRGDrafterPointer" title="${nls.settingsTitle}" data-dojo-attach-point="grgPointByTimeSettingsButton"></div>
                 <!-- GRG Point Form -->
-                <div class="GRGDrafterMainPageRow">
+                <div class="GRGDrafterPanelRow">
                   <!-- Draw GRG Point Coordinate Input -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                       <div class="GRGDrafterInputLabel GRGDrafterEllipsis" style="width: 100%" title="${nls.coordInputLabel}" data-dojo-attach-point="grgPointByTimeCoordInputLabel">${nls.coordInputLabel}</div>                      
@@ -573,7 +585,7 @@
                 <div class="GRGDrafterTitleDiv GRGDrafterEllipsis" title="${nls.publishTitle}">
                     ${nls.publishTitle}
                 </div>
-                <div class="GRGDrafterMainPageRow">                
+                <div class="GRGDrafterPanelRow">                
                   <!-- GRG Layer Name -->
                   <div class="GRGDrafterFullWidth GRGDrafterSettingRow">
                     <div class="GRGDrafterInputLabel GRGDrafterEllipsis" title="${nls.GRGLayerName}">${nls.GRGLayerName}</div>
@@ -595,7 +607,6 @@
                   <div class="GRGDrafterPublishMessage" data-dojo-attach-point="publishMessage"></div>
                 </div>  
             </div>             
-        </div>
-        
+        </div>        
     </div>    
 </div>

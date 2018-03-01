@@ -108,6 +108,54 @@
     background: url('./images/settings_white_hover.png');
 }
 
+.jimu-widget-GRGDrafter .GRGNewRightButton:hover
+{
+    background: url("./images/arrow-right_white_hover.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGNewDownButton:hover
+{
+    background: url("./images/arrow-down_white_hover.png") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterItemLeftArrow:hover
+{
+    background-image: url('./images/left-arrow_white.png');
+    float: left;
+    margin: 0px 5px 0px 0px;
+    width: 15px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterSettingsIcon 
+{
+    height: 15px;
+    width: 15px;
+    background: url(./images/settings_white.png);
+}
+
+.jimu-widget-GRGDrafter .GRGDrafterSettingsIcon:Hover
+{
+    background-image: url('./images/settings_white_hover.png');
+    height: 15px;
+    width: 15px;
+    background-size: 15px;
+    float: right;
+    background-repeat: no-repeat;
+}
+
+.jimu-widget-GRGDrafter .settingsLocked
+{
+    background-image: url('./images/settings_white_locked.png');
+    height: 16px;
+    width: 16px;
+    background-size: 16px;
+    float: right;
+    background-repeat: no-repeat;
+}
+
 .jimu-widget-GRGDrafter .editBtn {
     display: right;
     background: url(./images/draw_white.png);
@@ -166,6 +214,76 @@
     background: url('./images/extent_white_hover.png');
     background-repeat: no-repeat;
     border: none;
+}
+
+.jimu-widget-GRGDrafter .helpBtn:hover {
+    background: url(./images/help_white_hover.png);
+}
+
+.jimu-widget-GRGDrafter .style-selector .bold {
+  background: url("./images/font_B_white.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .bold.selected {
+  background: url("./images/font_B_white_selected.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .italic {
+  background: url("./images/font_I_white.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .italic.selected {
+  background: url("./images/font_I_white_selected.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .underline {
+  background: url("./images/font_U_white.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter .style-selector .underline.selected {
+  background: url("./images/font_U_white_selected.svg") no-repeat;
+}
+
+.jimu-widget-GRGDrafter  .dijitSliderThumbHover{
+  background-image: url("./images/sliderball_white.svg");
+  background-position: 0 0;
+}
+
+.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH {
+  background-image: url("./images/sliderball_white.svg");
+  background-position: 0 0;
+}
+
+.jimu-widget-GRGDrafter .dijitSliderImageHandle.dijitSliderImageHandleH.dojoMoveItem {
+  background-image: url("./images/sliderball_white.svg");
+  background-position: 0 0;
+}
+
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderProgressBarH,
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderLeftBumper{
+  border-color: #fff;
+  background-color: #fff;
+  background-image: -webkit-linear-gradient(top, #fff 0px, #fff 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: -o-linear-gradient(top, #fff 0px, #fff 1px, rgba(255, 255, 255, 0) 2px);
+  background-image: linear-gradient(top, #fff 0px, #fff 1px, rgba(255, 255, 255, 0) 2px);
+}
+
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderRemainingBarH,
+.jimu-widget-GRGDrafter .dijitSlider .dijitSliderRightBumper{
+  border-color: #000;
+  background-color: #000;
+}
+
+.jimu-widget-GRGDrafter .jimu-tab>.control>.tab{
+	background-color: transparent !important;
+  border-bottom: 1px solid #dedede !important;
+}
+
+.jimu-widget-GRGDrafter .jimu-tab>.control>.tab.jimu-state-selected {
+	font-family: "Avenir Medium";
+  font-weight: bold;
+  border-bottom: 3px solid #fff !important;
+	color: #fff;
 }
 
 
