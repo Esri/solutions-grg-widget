@@ -1,4 +1,4 @@
-This repository is no longer maintained. The GRG widget is now releasd in [Web AppBilder for ArcGIS](https://doc.arcgis.com/en/web-appbuilder). To understand more about the GRG the documentation can be found here: (https://doc.arcgis.com/en/web-appbuilder/create-apps/widget-gridded-reference-graphic.htm)
+This repository is no longer maintained. The GRG widget is now releasd in [Web AppBilder for ArcGIS](https://doc.arcgis.com/en/web-appbuilder). To understand more about the GRG the documentation can be found here: https://doc.arcgis.com/en/web-appbuilder/create-apps/widget-gridded-reference-graphic.htm
 # GRG Widget
 
 A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations, including:
