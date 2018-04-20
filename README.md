@@ -1,4 +1,4 @@
-# GRG Widget 
+# GRG Widget
 
 A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations, including:
 - Cordon and search
