@@ -1,5 +1,9 @@
-# GRG Widget
-A GRG (Grid Reference Graphic) is a grid overlay used for a common reference point in many situations - from cordon and search operations to security for presidential inaugurations.
+# GRG Widget 
+
+A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference point in many situations, including:
+- Cordon and search
+- Security
+- Search and Rescue
 
 ![App](solutions-grg-widget.png)
 
