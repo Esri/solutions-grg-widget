@@ -8,7 +8,7 @@ A GRG (Gridded Reference Graphic) is a grid overlay used for a common reference 
 
 ![App](solutions-grg-widget.png)
 
-[View it live](https://nationalsecurity.esri.com/solutionsweb/GriddedReferenceGraphic)
+[Try It Now](http://esriurl.com/GriddedReferenceGraphicTIN)
 
 ## Sections
 
